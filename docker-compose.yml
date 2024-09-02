@@ -1,0 +1,106 @@
+---
+x-default-logging:
+  driver: json-file
+  options:
+    max-size: 5m
+    max-file: '2'
+    tag: '{{.Name}}'
+networks:
+  net:
+    driver: bridge
+services:
+# docker run --name pgvector-container -e POSTGRES_USER=langchain -e POSTGRES_PASSWORD=langchain -e POSTGRES_DB=langchain -p 6024:5432 -d pgvector/pgvector:pg16
+  db:
+    image: pgvector/pgvector:pg14
+    container_name: pgvector
+    ports: [7432:5432]
+    volumes:
+      # This script initialises the DB for integration tests
+      - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=langchain
+      - POSTGRES_USER=langchain
+      - POSTGRES_DB=langchain
+    restart: unless-stopped
+    # logging: *logging
+    networks: [net]
+    command: |
+      postgres -c log_statement=all
+  server:
+    # image: server
+    image: chromadb/chroma:latest
+    container_name: chroma
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    volumes:
+      # Be aware that indexed data are located in "/chroma/chroma/"
+      # Default configuration for persist_directory in chromadb/config.py
+      # Read more about deployments: https://docs.trychroma.com/deployment
+      # - chroma-data:/chroma/chroma
+[./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw]
+    command: --workers 1 --host 0.0.0.0 --port 8010 --proxy-headers --log-config chromadb/log_config.yml
+      --timeout-keep-alive 30
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
+      - CHROMA_SERVER_AUTHN_PROVIDER=${CHROMA_SERVER_AUTHN_PROVIDER}
+      - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=${CHROMA_SERVER_AUTHN_CREDENTIALS_FILE}
+      - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=${CHROMA_AUTH_TOKEN_TRANSPORT_HEADER}
+      - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
+      - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
+    ports: [8010:8010]
+    healthcheck:
+      # Adjust below to match your container port
+      test: [CMD, curl, -f, http://localhost:8010/api/v1/heartbeat]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - net
+
+  # NOTE: Use http://host.docker.internal:8010 to access the server from the admin container
+  chromadb-admin:
+    image: fengzhichao/chromadb-admin:latest
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    # hostname: 'chromadb-admin'
+    ports: [3000:3000/tcp]
+    container_name: chromadb-admin
+    expose: [3000]
+    restart: unless-stopped
+    networks:
+      - net
+    # depends_on:
+    # - server
+    depends_on:
+      server:
+        condition: service_started
+  redis:
+    image: bitnami/redis:6.2.10
+    hostname: goob-redis
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: 'yes'
+      REDIS_PORT_NUMBER: 7600
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
+    ports: [7600:7600]
+    volumes: [goob_redis_data:/bitnami/redis/data]
+volumes:
+  goob_redis_data:
+    driver: local
+  db:

@@ -20,15 +20,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, TypeVar
 
-
 from _pytest.logging import LogCaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
-from sandbox_agent.gen_ai.vectorstore import PGVectorDatabase, PineconeDatabase
-from sandbox_agent.models.vectorstores import (
-    EmbeddingsProvider,
-    PgvectorIntegration,
-    PineconeIntegration,
-)
 from langchain.document_loaders import TextLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -50,34 +43,6 @@ T = TypeVar("T")
 
 YieldFixture = Generator[T, None, None]
 
-# """
-# Log levels
-# __________
-
-# Setting logging levels during tests with pytest is tricky, since pytest replaces your logging configuration with its
-# own. To help with this, we leverage our TestContext fixture, which is used by most of our tests.
-# By default, it sets the log level to WARNING, unless we are running under a debugger, in which case it defaults to
-# DEBUG.
-
-# You can also explicitly set the log level for a specific test with the `set_log_level()` method of TestContext.
-
-# When not running a test, Venice code defaults the log level in the same pattern: DEBUG if running under a debugger
-# and WARNING otherwise. This default can be overriden by setting the environment variable VENICE_LOGLEVEL.
-
-# """
-
-# from prisma.utils import get_or_create_event_loop
-# from prisma.testing import reset_client
-
-# from ._utils import request_has_client
-
-# SOURCE: https://github.com/RobertCraigie/prisma-client-py/blob/da53c4280756f1a9bddc3407aa3b5f296aa8cc10/lib/testing/shared_conftest/_shared_conftest.py#L26-L30
-# @pytest.fixture(scope='session')
-# def event_loop() -> Iterable[asyncio.AbstractEventLoop]:
-#     loop = get_or_create_event_loop()
-#     yield loop
-#     loop.close()
-
 
 IS_RUNNING_ON_GITHUB_ACTIONS = bool(os.environ.get("GITHUB_ACTOR"))
 
@@ -85,6 +50,14 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
 
 print(f"HERE: {HERE}")
+
+
+# from sandbox_agent.gen_ai.vectorstore import PGVectorDatabase, PineconeDatabase
+# from sandbox_agent.models.vectorstores import (
+#     EmbeddingsProvider,
+#     PgvectorIntegration,
+#     PineconeIntegration,
+# )
 
 
 ########################################## vcr ##########################################
@@ -116,9 +89,7 @@ def is_opensearch_uri(uri: str) -> bool:
 
 
 def is_llm_uri(uri: str) -> bool:
-    return any(
-        x in uri for x in ["openai", "llm-proxy", "anthropic", "localhost", "127.0.0.1"]
-    )
+    return any(x in uri for x in ["openai", "llm-proxy", "anthropic", "localhost", "127.0.0.1"])
 
 
 def is_chroma_uri(uri: str) -> bool:
@@ -156,13 +127,6 @@ def request_matcher(r1: VCRRequest, r2: VCRRequest) -> bool:
         return r1.body == r2.body
 
     return False
-
-
-# @pytest.fixture(scope="module")
-# def vcr(vcr):
-#     # vcr.register_matcher("request_matcher", request_matcher)
-#     # vcr.match_on = ["request_matcher"]
-#     return vcr
 
 
 # SOURCE: https://github.com/kiwicom/pytest-recording/tree/master
@@ -209,9 +173,7 @@ def filter_request(request):
     if request.body is not None:
         dummy_date_str = "today's date which is DUMMY_DATE"
         request_body_str = request.body.decode("utf-8")
-        matches = re.findall(
-            r"today's date which is \d{4}-\d{2}-\d{2}", request_body_str
-        )
+        matches = re.findall(r"today's date which is \d{4}-\d{2}-\d{2}", request_body_str)
         if len(matches) > 0:
             for match in matches:
                 request_body_str = request_body_str.replace(match, dummy_date_str)
@@ -226,12 +188,8 @@ def filter_request(request):
         "username",
         "password",
     ]
-    replacements = [
-        p if isinstance(p, tuple) else (p, None) for p in filter_post_data_parameters
-    ]
-    filter_function = functools.partial(
-        filters.replace_post_data_parameters, replacements=replacements
-    )
+    replacements = [p if isinstance(p, tuple) else (p, None) for p in filter_post_data_parameters]
+    filter_function = functools.partial(filters.replace_post_data_parameters, replacements=replacements)
     request = filter_function(request)
 
     return request
@@ -292,35 +250,6 @@ def user_homedir() -> str:
 # # ---------------------------------------------------------------
 # # SOURCE: https://github.com/Zorua162/dpystest_minimal/blob/ebbe7f61c741498b8ea8897fc22a11781e4d67bf/conftest.py#L4
 # # ---------------------------------------------------------------
-# @pytest_asyncio.fixture
-# async def bot(event_loop):
-#     """Initialise bot to be able to run tests on it"""
-#     # Create the bot, similar to how it is done in start_bot
-#     bot = Bot(event_loop)
-#     bot.add_command(ping)
-#     bot.add_command(create_channel)
-#     bot.add_command(get_channel)
-#     bot.add_command(get_channel_history)
-
-#     if isinstance(bot.loop, _LoopSentinel):
-#         await bot._async_setup_hook()
-
-#     # Configure the bot to be in a test environment (similar to bot.run)
-#     dpytest.configure(bot)
-#     await bot.setup_hook()
-#     assert dpytest.get_message().content == "Message from setup hook"
-
-#     return bot
-
-# def pytest_sessionfinish():
-#     """Clean up files"""
-#     files = glob.glob('./dpytest_*.dat')
-#     for path in files:
-#         try:
-#             os.remove(path)
-#         except Exception as e:
-#             print(f"Error while deleting file {path}: {e}")
-# # ---------------------------------------------------------------
 
 
 def pytest_sessionfinish(session, exitstatus):
@@ -335,7 +264,7 @@ def pytest_sessionfinish(session, exitstatus):
             print("Error while deleting file : ", filePath)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_ebook_txt_file(tmp_path: Path) -> Path:
     """
     Fixture to create a mock text file for testing purposes.
@@ -353,8 +282,7 @@ def mock_ebook_txt_file(tmp_path: Path) -> Path:
 
     """
     test_ebook_txt_path: Path = (
-        tmp_path
-        / "The Project Gutenberg eBook of A Christmas Carol in Prose; Being a Ghost Story of Christmas.txt"
+        tmp_path / "The Project Gutenberg eBook of A Christmas Carol in Prose; Being a Ghost Story of Christmas.txt"
     )
     shutil.copy(
         "src/sandbox_agent/data/chroma/documents/The Project Gutenberg eBook of A Christmas Carol in Prose; Being a Ghost Story of Christmas.txt",
@@ -363,7 +291,7 @@ def mock_ebook_txt_file(tmp_path: Path) -> Path:
     return test_ebook_txt_path
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_text_documents(mock_ebook_txt_file: FixtureRequest) -> list[Document]:
     loader = TextLoader(f"{mock_ebook_txt_file}")
     documents = loader.load()
@@ -378,70 +306,70 @@ def mock_text_documents(mock_ebook_txt_file: FixtureRequest) -> list[Document]:
     return docs
 
 
-@pytest.fixture()
-def db_pgvector(mock_text_documents: list[Document]) -> YieldFixture[PGVectorDatabase]:
-    # VIA: https://github.com/apify/actor-vector-database-integrations/blob/877b8b45d600eebd400a01533d29160cad348001/code/src/vector_stores/base.py
-    from sandbox_agent.aio_settings import aiosettings
+# @pytest.fixture()
+# def db_pgvector(mock_text_documents: list[Document]) -> YieldFixture[PGVectorDatabase]:
+#     # VIA: https://github.com/apify/actor-vector-database-integrations/blob/877b8b45d600eebd400a01533d29160cad348001/code/src/vector_stores/base.py
+#     from sandbox_agent.aio_settings import aiosettings
 
-    # embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-    embeddings = OpenAIEmbeddings(
-        openai_api_key=aiosettings.openai_api_key.get_secret_value()
-    )
-    db = PGVectorDatabase(
-        actor_input=PgvectorIntegration(
-            postgresSqlConnectionStr=str(aiosettings.postgres_url),
-            postgresCollectionName=INDEX_NAME,
-            embeddingsProvider=EmbeddingsProvider.OpenAI.value,
-            embeddingsApiKey=aiosettings.openai_api_key.get_secret_value(),
-            datasetFields=["text"],
-        ),
-        embeddings=embeddings,
-    )
+#     # embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+#     embeddings = OpenAIEmbeddings(
+#         openai_api_key=aiosettings.openai_api_key.get_secret_value()
+#     )
+#     db = PGVectorDatabase(
+#         actor_input=PgvectorIntegration(
+#             postgresSqlConnectionStr=str(aiosettings.postgres_url),
+#             postgresCollectionName=INDEX_NAME,
+#             embeddingsProvider=EmbeddingsProvider.OpenAI.value,
+#             embeddingsApiKey=aiosettings.openai_api_key.get_secret_value(),
+#             datasetFields=["text"],
+#         ),
+#         embeddings=embeddings,
+#     )
 
-    db.unit_test_wait_for_index = 0
+#     db.unit_test_wait_for_index = 0
 
-    db.delete_all()
-    # Insert initially crawled objects
-    db.add_documents(
-        documents=mock_text_documents,
-        ids=[d.metadata["chunk_id"] for d in mock_text_documents],
-    )
+#     db.delete_all()
+#     # Insert initially crawled objects
+#     db.add_documents(
+#         documents=mock_text_documents,
+#         ids=[d.metadata["chunk_id"] for d in mock_text_documents],
+#     )
 
-    yield db
+#     yield db
 
-    db.delete_all()
+#     db.delete_all()
 
 
-@pytest.fixture()
-def db_pinecone(mock_text_documents: list[Document]) -> YieldFixture[PineconeDatabase]:
-    from sandbox_agent.aio_settings import aiosettings
+# @pytest.fixture()
+# def db_pinecone(mock_text_documents: list[Document]) -> YieldFixture[PineconeDatabase]:
+#     from sandbox_agent.aio_settings import aiosettings
 
-    # embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-    embeddings = OpenAIEmbeddings(
-        openai_api_key=aiosettings.openai_api_key.get_secret_value()
-    )
-    db = PineconeDatabase(
-        actor_input=PineconeIntegration(
-            pineconeIndexName=INDEX_NAME,
-            pineconeApiKey=aiosettings.pinecone_api_key.get_secret_value(),
-            embeddingsProvider=EmbeddingsProvider.OpenAI,
-            embeddingsApiKey=aiosettings.openai_api_key.get_secret_value(),
-            datasetFields=["text"],
-        ),
-        embeddings=embeddings,
-    )
-    # Data freshness - Pinecone is eventually consistent, so there can be a slight delay before new or changed records are visible to queries.
-    db.unit_test_wait_for_index = 10
+#     # embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+#     embeddings = OpenAIEmbeddings(
+#         openai_api_key=aiosettings.openai_api_key.get_secret_value()
+#     )
+#     db = PineconeDatabase(
+#         actor_input=PineconeIntegration(
+#             pineconeIndexName=INDEX_NAME,
+#             pineconeApiKey=aiosettings.pinecone_api_key.get_secret_value(),
+#             embeddingsProvider=EmbeddingsProvider.OpenAI,
+#             embeddingsApiKey=aiosettings.openai_api_key.get_secret_value(),
+#             datasetFields=["text"],
+#         ),
+#         embeddings=embeddings,
+#     )
+#     # Data freshness - Pinecone is eventually consistent, so there can be a slight delay before new or changed records are visible to queries.
+#     db.unit_test_wait_for_index = 10
 
-    db.delete_all()
-    # Insert initially crawled objects
-    db.add_documents(
-        documents=mock_text_documents,
-        ids=[d.metadata["chunk_id"] for d in mock_text_documents],
-    )
-    time.sleep(db.unit_test_wait_for_index)
+#     db.delete_all()
+#     # Insert initially crawled objects
+#     db.add_documents(
+#         documents=mock_text_documents,
+#         ids=[d.metadata["chunk_id"] for d in mock_text_documents],
+#     )
+#     time.sleep(db.unit_test_wait_for_index)
 
-    yield db
+#     yield db
 
-    db.delete_all()
-    time.sleep(db.unit_test_wait_for_index)
+#     db.delete_all()
+#     time.sleep(db.unit_test_wait_for_index)

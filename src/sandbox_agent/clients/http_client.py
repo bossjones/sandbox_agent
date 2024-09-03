@@ -26,7 +26,8 @@ from sandbox_agent.utils import retry
 
 
 USER_AGENT = (
-    f"goob-ai/{__version__} | Python/" f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    f"sandbox-agent/{__version__} | Python/"
+    f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 )
 _METHODS = typing.Literal["GET", "POST"]  # pylint: disable=invalid-name
 _TIMEOUT = 1.0

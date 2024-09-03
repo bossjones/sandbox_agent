@@ -49,42 +49,31 @@ from rich.console import Console
 from rich.pretty import pprint
 from rich.prompt import Prompt
 from rich.table import Table
-from sentry_sdk.integrations.argv import ArgvIntegration
-from sentry_sdk.integrations.atexit import AtexitIntegration
-from sentry_sdk.integrations.dedupe import DedupeIntegration
-from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-from sentry_sdk.integrations.modules import ModulesIntegration
-from sentry_sdk.integrations.stdlib import StdlibIntegration
-from sentry_sdk.integrations.threading import ThreadingIntegration
 from typer import Typer
 
 import sandbox_agent
 
-from sandbox_agent import db
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
 from sandbox_agent.asynctyper import AsyncTyper
 from sandbox_agent.bot_logger import get_logger, global_log_config
-from sandbox_agent.goob_bot import AsyncGoobBot
-from sandbox_agent.monitoring.sentry import sentry_init
-from sandbox_agent.services.chroma_service import ChromaService
-from sandbox_agent.services.screencrop_service import ImageService
+
+# from sandbox_agent.services.chroma_service import ChromaService
+# from sandbox_agent.services.screencrop_service import ImageService
 from sandbox_agent.utils import repo_typing
 from sandbox_agent.utils.base import print_line_seperator
 from sandbox_agent.utils.file_functions import fix_path
 
 
-# # Use the following to enable the debugger
-# from IPython.terminal.debugger import TerminalPdb  # noqa
-# sys.excepthook = TerminalPdb(
-#     call_pdb=True, ostream=sys.__stdout__
-# )
-# # sys.excepthook = TerminalPdb(
-# #     color_scheme="Linux", call_pdb=True, ostream=sys.__stdout__
-# # )
-
-# import manhole
-# # this will start the daemon thread
-# manhole.install()
+# from sandbox_agent import db
+# from sandbox_agent.monitoring.sentry import sentry_init
+# from sandbox_agent.bot import AsyncGoobBot
+# from sentry_sdk.integrations.argv import ArgvIntegration
+# from sentry_sdk.integrations.atexit import AtexitIntegration
+# from sentry_sdk.integrations.dedupe import DedupeIntegration
+# from sentry_sdk.integrations.excepthook import ExcepthookIntegration
+# from sentry_sdk.integrations.modules import ModulesIntegration
+# from sentry_sdk.integrations.stdlib import StdlibIntegration
+# from sentry_sdk.integrations.threading import ThreadingIntegration
 
 # SOURCE: https://python.langchain.com/v0.2/docs/how_to/debugging/
 if aiosettings.debug_langchain:
@@ -93,84 +82,18 @@ if aiosettings.debug_langchain:
     # Setting the verbose flag will print out inputs and outputs in a slightly more readable format and will skip logging certain raw outputs (like the token usage stats for an LLM call) so that you can focus on application logic.
     set_verbose(True)
 
-# if dev mode is enabled, set bpdb as the default debugger
-if aiosettings.dev_mode:
 
-    def info(type, value, tb):
-        LOGGER.info(f"type: {type}")
-        LOGGER.info(f"reveal_type(type): {typing.reveal_type(type)}")  # pylint: disable=undefined-variable
-
-        LOGGER.info(f"value: {value}")
-        LOGGER.info(f"reveal_type(value): {typing.reveal_type(value)}")  # pylint: disable=undefined-variable
-
-        LOGGER.info(f"tb: {tb}")
-        LOGGER.info(f"reveal_type(type): {typing.reveal_type(tb)}")  # pylint: disable=undefined-variable
-
-        if hasattr(sys, "ps1") or not sys.stderr.isatty() or not sys.stdin.isatty():
-            # stdin or stderr is redirected, just do the normal thing
-            original_hook(type, value, tb)
-        else:
-            # a terminal is attached and stderr is not redirected, debug
-            import traceback
-
-            traceback.print_exception(type, value, tb)
-            # environment variable PYTHON_DEBUG can select debugging type
-            debug_style = os.environ.get("PYTHON_DEBUG", "bpdb")
-            print(debug_style)
-            if debug_style in ["pdb", "bpdb"]:
-                print("[NOTE] automatic debugging from %s" % __file__, file=sys.stderr)
-            if debug_style == "bpdb":
-                import bpdb
-
-                bpdb.pm()
-            elif debug_style == "pdb":
-                import pdb
-
-                pdb.pm()
-            else:
-                raise Exception('cannot interpret environment variable PYTHON_DEBUG: "%s"' % debug_style)
-
-    # automatically debug unless stdout/stderr redirected via stack overflow
-    # ! note that python3 has more rigid scopes so you might not see everything you want
-    original_hook = sys.excepthook
-    # setting PYTHON_DEBUG to NO suppresses any debugging
-    if sys.excepthook == sys.__excepthook__ and os.environ.get("PYTHON_DEBUG", "pdb") not in ["NO", "no"]:
-        # if someone already patched excepthook, let them win
-        sys.excepthook = info
-
-
-if aiosettings.enable_sentry:
-    # NOTE: DISABLED: Currently till I update sentry_init and start using it more.
-    # sentry_init(
-    #     # Set traces_sample_rate to 1.0 to capture 100%
-    #     # of transactions for performance monitoring.
-    #     traces_sample_rate=1.0,
-    #     # Set profiles_sample_rate to 1.0 to profile 100%
-    #     # of sampled transactions.
-    #     # We recommend adjusting this value in production.
-    #     profiles_sample_rate=1.0,
-    #     # Turn off the default logging integration, but keep the rest.
-    #     default_integrations=False,
-    #     integrations=[
-    #         AtexitIntegration(),
-    #         ArgvIntegration(),
-    #         DedupeIntegration(),
-    #         ExcepthookIntegration(),
-    #         StdlibIntegration(),
-    #         ModulesIntegration(),
-    #         ThreadingIntegration(),
-    #     ],
-    # )
-    sentry_init(
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        traces_sample_rate=1.0,
-        # Set profiles_sample_rate to 1.0 to profile 100%
-        # of sampled transactions.
-        # We recommend adjusting this value in production.
-        profiles_sample_rate=1.0,
-    )
-    logging.getLogger("sentry_sdk").setLevel(logging.WARNING)
+# if aiosettings.enable_sentry:
+#     sentry_init(
+#         # Set traces_sample_rate to 1.0 to capture 100%
+#         # of transactions for performance monitoring.
+#         traces_sample_rate=1.0,
+#         # Set profiles_sample_rate to 1.0 to profile 100%
+#         # of sampled transactions.
+#         # We recommend adjusting this value in production.
+#         profiles_sample_rate=1.0,
+#     )
+#     logging.getLogger("sentry_sdk").setLevel(logging.WARNING)
 
 
 global_log_config(
@@ -258,119 +181,31 @@ def entry():
 
 
 async def run_bot():
-    try:
-        pool: ConnectionPool = db.get_redis_conn_pool()
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-    async with AsyncGoobBot() as bot:
-        if aiosettings.enable_redis:
-            bot.pool = pool
-        await bot.start()
-
-    await LOGGER.complete()
+    """Run the bot"""
+    LOGGER.info("Running bot")
+    pass
 
 
-# SOURCE: https://docs.pinecone.io/guides/getting-started/quickstart
-@APP.command()
-def create_index_quickstart() -> None:
-    """Create a pinecone index"""
-    typer.echo("Creating pinecone index...")
+# async def run_bot():
+#     try:
+#         pool: ConnectionPool = db.get_redis_conn_pool()
+#     except Exception as ex:
+#         print(f"{ex}")
+#         exc_type, exc_value, exc_traceback = sys.exc_info()
+#         print(f"Error Class: {ex.__class__}")
+#         output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
+#         print(output)
+#         print(f"exc_type: {exc_type}")
+#         print(f"exc_value: {exc_value}")
+#         traceback.print_tb(exc_traceback)
+#         if aiosettings.dev_mode:
+#             bpdb.pm()
+#     async with AsyncGoobBot() as bot:
+#         if aiosettings.enable_redis:
+#             bot.pool = pool
+#         await bot.start()
 
-    typer.echo("1. Initialize your client connection")
-    pc = Pinecone(api_key=aiosettings.pinecone_api_key.get_secret_value())
-
-    # 4. Create a serverless index
-    typer.echo("2. Create a serverless index")
-    pc.create_index(
-        name=aiosettings.pinecone_index,
-        dimension=8,
-        metric="cosine",
-        spec=ServerlessSpec(cloud="aws", region="us-east-1"),
-    )
-
-    # 5. Upsert vectors
-    typer.echo("3. Upsert vectors")
-    index: Index = pc.Index(aiosettings.pinecone_index)
-
-    ns1_upsert_resp: UpsertResponse = index.upsert(
-        vectors=[
-            {"id": "vec1", "values": [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]},
-            {"id": "vec2", "values": [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]},
-            {"id": "vec3", "values": [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]},
-            {"id": "vec4", "values": [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]},
-        ],
-        namespace="ns1",
-    )
-
-    ns2_upsert_resp: UpsertResponse = index.upsert(
-        vectors=[
-            {"id": "vec5", "values": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]},
-            {"id": "vec6", "values": [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]},
-            {"id": "vec7", "values": [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7]},
-            {"id": "vec8", "values": [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]},
-        ],
-        namespace="ns2",
-    )
-
-    # 6. Check the index
-    typer.echo("4. Check the index")
-    index_rsp: DescribeIndexStatsResponse = index.describe_index_stats()
-    # Returns:
-    # {'dimension': 8,
-    #  'index_fullness': 0.0,
-    #  'namespaces': {'ns1': {'vector_count': 4}, 'ns2': {'vector_count': 4}},
-    #  'total_vector_count': 8}
-    typer.echo("5. Run a similarity search")
-    n1_results: QueryResponse = index.query(
-        namespace="ns1", vector=[0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3], top_k=3, include_values=True
-    )
-
-    n2_results: QueryResponse = index.query(
-        namespace="ns2", vector=[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7], top_k=3, include_values=True
-    )
-
-    # Returns:
-    # {'matches': [{'id': 'vec3',
-    #               'score': 0.0,
-    #               'values': [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3]},
-    #              {'id': 'vec4',
-    #               'score': 0.0799999237,
-    #               'values': [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]},
-    #              {'id': 'vec2',
-    #               'score': 0.0800000429,
-    #               'values': [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2]}],
-    #  'namespace': 'ns1',
-    #  'usage': {'read_units': 6}}
-    # {'matches': [{'id': 'vec7',
-    #               'score': 0.0,
-    #               'values': [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7]},
-    #              {'id': 'vec8',
-    #               'score': 0.0799999237,
-    #               'values': [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8]},
-    #              {'id': 'vec6',
-    #               'score': 0.0799999237,
-    #               'values': [0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6]}],
-    #  'namespace': 'ns2',
-    #  'usage': {'read_units': 6}}
-
-
-# SOURCE: https://docs.pinecone.io/guides/getting-started/quickstart
-@APP.command()
-def delete_index_quickstart() -> None:
-    """Delete a pinecone index"""
-    typer.echo("Deleting pinecone index...")
-    pc = Pinecone(api_key=aiosettings.pinecone_api_key.get_secret_value())
-    pc.delete_index(aiosettings.pinecone_index)
-    typer.echo("Deleted!")
+#     await LOGGER.complete()
 
 
 @APP.command()
@@ -378,233 +213,6 @@ def run_pyright() -> None:
     """Generate typestubs GoobAI"""
     typer.echo("Generating type stubs for GoobAI")
     repo_typing.run_pyright()
-
-
-@APP.command()
-def run_screencrop() -> None:
-    """Manually run screncrop service and get bounding boxes"""
-    try:
-        asyncio.run(
-            ImageService.bindingbox_handler(
-                "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00000.JPEG",
-            )
-        )
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-@APP.command()
-def run_download_and_predict(
-    img_url: str = "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00000.JPEG",
-) -> None:
-    """Manually run screencrop's download_and_predict service and get bounding boxes"""
-    path_to_image_from_cli = fix_path(img_url)
-    try:
-        ImageService.handle_predict_from_file(path_to_image_from_cli)
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-@APP.command()
-def query_readthedocs() -> None:
-    """Smoketest for querying readthedocs pdfs against vectorstore."""
-    try:
-        import rich
-
-        from langchain_chroma import Chroma
-        from langchain_openai import OpenAIEmbeddings
-
-        from sandbox_agent.services.chroma_service import CHROMA_PATH, DATA_PATH, ChromaService
-        from sandbox_agent.utils import file_functions
-
-        client = ChromaService.client
-        test_collection_name = "readthedocs"
-
-        documents = []
-
-        d = file_functions.tree(DATA_PATH)
-        result = file_functions.filter_pdfs(d)
-
-        for filename in result:
-            LOGGER.info(f"Loading document: {filename}")
-            db: ChromaVectorStore = ChromaService.add_to_chroma(
-                path_to_document=f"{filename}",
-                collection_name=test_collection_name,
-                embedding_function=None,
-            )
-
-        embedding_function = OpenAIEmbeddings()
-
-        db: ChromaVectorStore = Chroma(
-            client=client,
-            collection_name=test_collection_name,
-            embedding_function=embedding_function,
-        )
-
-        # query it
-        query = "How do I enable syntax highlighting with rich?"
-        docs = db.similarity_search(query)
-        rich.print("Answer: ")
-        # rich.print(docs)
-        print(docs[0].page_content)
-
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-@APP.command()
-def run_predict_and_display(img_url: list[str] = None) -> None:
-    """Manually run screencrop's download_and_predict service and get bounding boxes"""
-    if img_url is None:
-        img_url = [  # type: ignore
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger.JPEG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger2.PNG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger3.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00000.JPEG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00001.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00002.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00003.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00004.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00005.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00006.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00007.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00008.PNG",
-            "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00009.PNG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00010.PNG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00011.PNG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00012.PNG",
-            # "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00013.PNG",
-        ]
-    path_to_image_from_cli = fix_path(img_url)
-    try:
-        ImageService.handle_predict_and_display(path_to_image_from_cli)
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-# THIS SHOULD BE THE FINAL ONE THAT PRODUCES THE PROPER CROP
-@APP.command()
-def run_final() -> None:
-    """Manually run screencrop's download_and_predict service and get bounding boxes"""
-    img_path = "/Users/malcolm/dev/bossjones/sandbox_agent/tests/fixtures/screenshot_image_larger00013.PNG"
-    path_to_image_from_cli = fix_path(img_path)
-    try:
-        ImageService.handle_final(path_to_image_from_cli)
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-# THIS SHOULD BE THE FINAL ONE THAT PRODUCES THE PROPER CROP
-@APP.command()
-def chroma(choices: ChromaChoices) -> None:
-    """Interact w/ chroma local vectorstore"""
-    try:
-        if choices == ChromaChoices.load:
-            ChromaService.load_documents()
-        elif choices == ChromaChoices.generate:
-            ChromaService.generate_data_store()
-        elif choices == ChromaChoices.get_response:
-            ChromaService.get_response("hello")
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-# THIS SHOULD BE THE FINAL ONE THAT PRODUCES THE PROPER CROP
-@APP.command()
-def add_and_query(collection_name: str, question: str, reset: bool = False) -> None:
-    """Add and Query Chroma vectorstore"""
-    try:
-        retriever = ChromaService.add_and_query(collection_name=collection_name, question=question)
-        # import bpdb
-
-        # bpdb.set_trace()
-        resp = ChromaService.get_response(question, collection_name=collection_name)
-        print_line_seperator("test")
-        rich.print(resp)
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
-
-
-@APP.command()
-def ask(collection_name: str, question: str) -> None:
-    """Ask vectorstore"""
-    try:
-        resp = ChromaService.get_response(question, collection_name=collection_name)
-        rich.print(resp)
-    except Exception as ex:
-        print(f"{ex}")
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        print(f"Error Class: {ex.__class__}")
-        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-        print(output)
-        print(f"exc_type: {exc_type}")
-        print(f"exc_value: {exc_value}")
-        traceback.print_tb(exc_traceback)
-        if aiosettings.dev_mode:
-            bpdb.pm()
 
 
 @APP.command()

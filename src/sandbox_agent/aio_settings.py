@@ -278,10 +278,15 @@ class AioSettings(BaseSettings):
     oco_prompt_module: str = Field(
         env="OCO_PROMPT_MODULE", description="OCO_PROMPT_MODULE", default="conventional-commit"
     )
+    oco_ai_provider: str = Field(env="OCO_AI_PROVIDER", description="OCO_AI_PROVIDER", default="openai")
 
     openai_embeddings_model: str = Field(
         env="OPENAI_EMBEDDINGS_MODEL", description="openai embeddings model", default="text-embedding-3-large"
     )
+
+    editor: str = Field(env="EDITOR", description="EDITOR", default="vim")
+    visual: str = Field(env="VISUAL", description="VISUAL", default="vim")
+    git_editor: str = Field(env="GIT_EDITOR", description="GIT_EDITOR", default="vim")
 
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(

@@ -983,7 +983,7 @@ pyzmq==26.2.0
     # via jupyter-server
 quantile-python==1.1
     # via aioprometheus
-questionary==1.10.0
+questionary==2.0.1
     # via pypi-command-line
 rank-bm25==0.2.2
     # via sandbox-agent

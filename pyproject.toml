@@ -141,6 +141,8 @@ dependencies = [
     "jedi-language-server>=0.41.4",
     "jq>=1.8.0",
     "faiss-cpu>=1.8.0.post1",
+    "duckdb>=1.0.0",
+    "asyncpg>=0.29.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

@@ -70,7 +70,7 @@ repos:
 
   # SOURCE: https://github.com/astral-sh/ruff-pre-commit
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.5
+    rev: v0.6.3
     hooks:
       # Run the linter.
       - id: ruff
@@ -328,7 +328,7 @@ repos:
     #  # exclude: ^marimo/_tutorials/.*\.md
     #         exclude: (CONTRIBUTING.md|DEBUG.md|REFERENCES.md|README.md|cursor_share_your_rules_for_ai.md)
   - repo: https://github.com/twisted/towncrier
-    rev: 24.7.1  # run 'pre-commit autoupdate' to update
+    rev: 24.8.0  # run 'pre-commit autoupdate' to update
     hooks:
       - id: towncrier-update
         files: $changelog\.d/
@@ -345,7 +345,7 @@ repos:
           - dockerfile
         entry: hadolint
   - repo: https://github.com/sirosen/texthooks
-    rev: 0.6.6
+    rev: 0.6.7
     hooks:
       # - id: alphabetize-codeowners
       - id: fix-smartquotes
@@ -377,7 +377,7 @@ repos:
     #     - id: pycln
     #       args: [--config=pyproject.toml]
   - repo: https://github.com/lyz-code/yamlfix
-    rev: 1.16.0
+    rev: 1.17.0
     hooks:
       - id: yamlfix
         args:
@@ -393,7 +393,7 @@ repos:
     #       types_or: [yaml, markdown, html, css, scss, javascript, json]
     #       args: [--prose-wrap=always]
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.1
+    rev: 0.29.2
     hooks:
       - id: check-dependabot
       - id: check-github-workflows
@@ -406,6 +406,6 @@ repos:
 
   # SOURCE: https://github.com/kiwicom/pytest-recording/tree/master
   - repo: https://github.com/codingjoe/relint
-    rev: 3.1.0
+    rev: 3.2.0
     hooks:
       - id: relint

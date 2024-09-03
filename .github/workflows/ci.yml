@@ -124,6 +124,8 @@ jobs:
           RYE_INSTALL_OPTION: --yes
       - name: install tesseract and ffmpeg
         run: |
+          sudo apt-get update
+          sudo apt-get install -y libmagic-dev poppler-utils libreoffice
           sudo apt-get install -y tesseract-ocr tesseract-ocr-por libyaml-dev poppler-utils
           sudo apt install ffmpeg -y
           sudo apt-get install autoconf automake build-essential libtool python3-dev libsqlite3-dev -y

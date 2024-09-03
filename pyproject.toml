@@ -88,7 +88,6 @@ dependencies = [
     "tqdm>=4.66.4",
     "transformers>=4.40.1",
     "typer[all]>=0.12.3",
-    "unstructured[all-docs]==0.15.8",
     "uritemplate>=4.1.1",
     "uritools>=4.0.2",
     "uvicorn>=0.29.0",

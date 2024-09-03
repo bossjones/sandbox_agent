@@ -4,7 +4,7 @@
 # last locked with the following flags:
 #   pre: false
 #   features: []
-#   all-features: false
+#   all-features: true
 #   with-sources: false
 #   generate-hashes: false
 #   universal: false
@@ -55,8 +55,6 @@ annotated-types==0.7.0
     # via pydantic
 anthropic==0.34.1
     # via langchain-anthropic
-antlr4-python3-runtime==4.9.3
-    # via omegaconf
 anyio==4.4.0
     # via anthropic
     # via asyncer
@@ -107,7 +105,6 @@ babel==2.16.0
     # via sandbox-agent
 backoff==2.2.1
     # via posthog
-    # via unstructured
 bcrypt==4.2.0
     # via chromadb
     # via passlib
@@ -118,7 +115,6 @@ beautifulsoup4==4.12.3
     # via mkdocs-with-pdf
     # via nbconvert
     # via sandbox-agent
-    # via unstructured
     # via wikipedia
     # via yfinance
 better-exceptions==0.3.3
@@ -161,7 +157,6 @@ certifi==2024.8.30
     # via pinecone-client
     # via requests
     # via sentry-sdk
-    # via unstructured-client
 cffi==1.17.0
     # via argon2-cffi-bindings
     # via cryptography
@@ -171,16 +166,12 @@ cfgv==3.4.0
     # via pre-commit
 chardet==5.2.0
     # via mbstrdecoder
-    # via pdfplumber
     # via sandbox-agent
     # via tox
-    # via unstructured
 charset-normalizer==3.3.2
     # via commitizen
     # via docformatter
-    # via pdfminer-six
     # via requests
-    # via unstructured-client
 chroma-hnswlib==0.7.3
     # via chromadb
 chromadb==0.5.3
@@ -194,9 +185,7 @@ click==8.1.7
     # via maison
     # via mkdocs
     # via mkdocstrings
-    # via nltk
     # via pyinspect
-    # via python-oxmsg
     # via rich-click
     # via sandbox-agent
     # via scenedetect
@@ -230,7 +219,6 @@ contourpy==1.3.0
 coverage==7.6.1
     # via pytest-cov
 cryptography==43.0.0
-    # via pdfminer-six
     # via types-pyopenssl
     # via types-redis
 cssselect2==0.7.0
@@ -246,8 +234,6 @@ dask==2024.8.2
     # via sandbox-agent
 dataclasses-json==0.6.7
     # via langchain-community
-    # via unstructured
-    # via unstructured-client
 dataproperty==1.0.1
     # via pytablewriter
     # via tabledata
@@ -260,8 +246,6 @@ decli==0.6.2
 decorator==4.4.2
     # via ipython
     # via moviepy
-deepdiff==8.0.1
-    # via unstructured-client
 defusedxml==0.7.1
     # via langchain-anthropic
     # via nbconvert
@@ -269,7 +253,6 @@ deprecated==1.2.14
     # via opentelemetry-api
     # via opentelemetry-exporter-otlp-proto-grpc
     # via opentelemetry-semantic-conventions
-    # via pikepdf
 dill==0.3.8
     # via datasets
     # via multiprocess
@@ -306,15 +289,9 @@ durabledict==0.9.4
     # via gutter
 editorconfig==0.12.4
     # via jsbeautifier
-effdet==0.4.1
-    # via unstructured
 email-validator==2.2.0
     # via fastapi
     # via pydantic
-emoji==2.12.1
-    # via unstructured
-et-xmlfile==1.1.0
-    # via openpyxl
 executing==2.1.0
     # via stack-data
 factory-boy==3.3.1
@@ -342,8 +319,6 @@ filelock==3.15.4
     # via tox
     # via transformers
     # via virtualenv
-filetype==1.2.0
-    # via unstructured
 flake8==7.1.1
 flatbuffers==24.3.25
     # via onnxruntime
@@ -381,7 +356,6 @@ google-ai-generativelanguage==0.6.6
 google-api-core==2.19.2
     # via google-ai-generativelanguage
     # via google-api-python-client
-    # via google-cloud-vision
     # via google-generativeai
 google-api-python-client==2.143.0
     # via google-generativeai
@@ -391,7 +365,6 @@ google-auth==2.34.0
     # via google-api-python-client
     # via google-auth-httplib2
     # via google-auth-oauthlib
-    # via google-cloud-vision
     # via google-generativeai
     # via kubernetes
     # via sandbox-agent
@@ -399,8 +372,6 @@ google-auth-httplib2==0.2.0
     # via google-api-python-client
 google-auth-oauthlib==1.2.1
     # via sandbox-agent
-google-cloud-vision==3.7.4
-    # via unstructured
 google-generativeai==0.7.2
     # via langchain-google-genai
 googleapis-common-protos==1.65.0
@@ -459,7 +430,6 @@ httpx==0.27.2
     # via pytest-httpx
     # via respx
     # via sandbox-agent
-    # via unstructured-client
 huggingface-hub==0.24.6
     # via datasets
     # via sandbox-agent
@@ -467,7 +437,6 @@ huggingface-hub==0.24.6
     # via timm
     # via tokenizers
     # via transformers
-    # via unstructured-inference
 humanfriendly==10.0
     # via coloredlogs
 humanize==4.10.0
@@ -483,7 +452,6 @@ idna==3.8
     # via httpx
     # via jsonschema
     # via requests
-    # via unstructured-client
     # via yarl
 imageio==2.35.1
     # via moviepy
@@ -498,8 +466,6 @@ imutils==0.5.4
     # via sandbox-agent
 iniconfig==2.0.0
     # via pytest
-iopath==0.1.10
-    # via layoutparser
 ipykernel==6.29.5
     # via jupyterlab
     # via mkdocs-jupyter
@@ -543,7 +509,6 @@ jiter==0.5.0
     # via anthropic
     # via openai
 joblib==1.4.2
-    # via nltk
     # via scikit-learn
 jq==1.8.0
     # via sandbox-agent
@@ -553,8 +518,6 @@ json5==0.9.25
     # via jupyterlab-server
 jsonpatch==1.33
     # via langchain-core
-jsonpath-python==1.0.6
-    # via unstructured-client
 jsonpickle==3.3.0
     # via gutter
 jsonpointer==3.0.0
@@ -645,8 +608,6 @@ langchain-text-splitters==0.2.2
     # via langchain
 langchainhub==0.1.21
     # via sandbox-agent
-langdetect==1.0.9
-    # via unstructured
 langgraph==0.2.16
     # via sandbox-agent
 langgraph-checkpoint==1.0.8
@@ -657,8 +618,6 @@ langsmith==0.1.108
     # via langchain
     # via langchain-community
     # via langchain-core
-layoutparser==0.3.4
-    # via unstructured-inference
 lazy-object-proxy==1.10.0
     # via sandbox-agent
 levenshtein==0.25.1
@@ -680,12 +639,9 @@ lsprotocol==2023.0.1
     # via jedi-language-server
     # via pygls
 lxml==5.3.0
-    # via pikepdf
     # via pypi-command-line
     # via python-docx
-    # via python-pptx
     # via sandbox-agent
-    # via unstructured
     # via yfinance
 lz4==4.3.3
     # via pinecone-client
@@ -702,7 +658,6 @@ markdown==3.7
     # via pymdown-extensions
     # via sandbox-agent
     # via tensorboard
-    # via unstructured
 markdown-it-py==3.0.0
     # via jupytext
     # via mdformat
@@ -721,11 +676,8 @@ markupsafe==2.1.5
     # via werkzeug
 marshmallow==3.22.0
     # via dataclasses-json
-    # via unstructured-client
 matplotlib==3.9.2
-    # via pycocotools
     # via sandbox-agent
-    # via unstructured-inference
 matplotlib-inline==0.1.7
     # via ipykernel
     # via ipython
@@ -837,7 +789,6 @@ mypy-extensions==1.0.0
     # via monkeytype
     # via mypy
     # via typing-inspect
-    # via unstructured-client
 narwhals==1.6.0
     # via altair
 nbclient==0.10.0
@@ -855,12 +806,8 @@ nbqa==1.9.0
     # via sandbox-agent
 nest-asyncio==1.6.0
     # via ipykernel
-    # via unstructured-client
 networkx==3.3
     # via torch
-    # via unstructured
-nltk==3.9.1
-    # via unstructured
 nodeenv==1.9.1
     # via pre-commit
     # via pyright
@@ -881,17 +828,14 @@ numpy==1.26.4
     # via langchain-community
     # via langchain-pinecone
     # via langchain-postgres
-    # via layoutparser
     # via matplotlib
     # via moviepy
-    # via onnx
     # via onnxruntime
     # via opencv-python
     # via pandas
     # via pandas-stubs
     # via pgvector
     # via pyarrow
-    # via pycocotools
     # via pydeck
     # via pyinspect
     # via rank-bm25
@@ -909,31 +853,18 @@ numpy==1.26.4
     # via tensorboardx
     # via torchvision
     # via transformers
-    # via unstructured
     # via yfinance
 oauthlib==3.2.2
     # via kubernetes
     # via requests-oauthlib
-olefile==0.47
-    # via python-oxmsg
-omegaconf==2.3.0
-    # via effdet
-onnx==1.16.2
-    # via unstructured
-    # via unstructured-inference
 onnxruntime==1.19.0
     # via chromadb
     # via rapidocr-onnxruntime
-    # via unstructured-inference
 openai==1.43.0
     # via langchain-openai
 opencv-python==4.10.0.84
-    # via layoutparser
     # via rapidocr-onnxruntime
     # via scenedetect
-    # via unstructured-inference
-openpyxl==3.1.5
-    # via unstructured
 opentelemetry-api==1.27.0
     # via chromadb
     # via opentelemetry-distro
@@ -971,8 +902,6 @@ opentelemetry-semantic-conventions==0.48b0
 opentelemetry-util-http==0.48b0
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
-orderly-set==5.2.2
-    # via deepdiff
 orjson==3.10.7
     # via aioprometheus
     # via chromadb
@@ -1003,7 +932,6 @@ packaging==24.1
     # via mkdocs
     # via nbconvert
     # via onnxruntime
-    # via pikepdf
     # via pypi-command-line
     # via pyproject-api
     # via pytesseract
@@ -1015,18 +943,14 @@ packaging==24.1
     # via tox
     # via transformers
     # via typepy
-    # via unstructured-client
-    # via unstructured-pytesseract
     # via validate-pyproject
 paginate==0.5.7
     # via mkdocs-material
 pandas==2.2.2
     # via datasets
-    # via layoutparser
     # via sandbox-agent
     # via simpletransformers
     # via streamlit
-    # via unstructured
     # via yfinance
 pandas-stubs==2.2.2.240807
 pandocfilters==1.5.1
@@ -1046,42 +970,25 @@ pathspec==0.12.1
 pathvalidate==3.2.1
     # via pytablewriter
 pdf2image==1.17.0
-    # via layoutparser
     # via sandbox-agent
-    # via unstructured
-pdfminer-six==20240706
-    # via pdfplumber
-    # via unstructured
-pdfplumber==0.5.3
-    # via layoutparser
 peewee==3.17.6
     # via yfinance
 pexpect==4.9.0
     # via ipython
 pgvector==0.2.5
     # via langchain-postgres
-pi-heif==0.18.0
-    # via unstructured
 pickledb==0.9.2
     # via sandbox-agent
-pikepdf==9.2.1
-    # via unstructured
 pillow==10.4.0
     # via imageio
-    # via layoutparser
     # via matplotlib
     # via pdf2image
-    # via pdfplumber
-    # via pi-heif
-    # via pikepdf
     # via pytesseract
-    # via python-pptx
     # via rapidocr-onnxruntime
     # via sandbox-agent
     # via sentence-transformers
     # via streamlit
     # via torchvision
-    # via unstructured-pytesseract
     # via weasyprint
 pinecone-client==5.0.1
     # via langchain-pinecone
@@ -1107,8 +1014,6 @@ platformdirs==4.2.2
 pluggy==1.5.0
     # via pytest
     # via tox
-portalocker==2.10.1
-    # via iopath
 posthog==3.6.0
     # via chromadb
 pprintpp==0.4.0
@@ -1130,15 +1035,12 @@ prompt-toolkit==3.0.36
 proto-plus==1.24.0
     # via google-ai-generativelanguage
     # via google-api-core
-    # via google-cloud-vision
 protobuf==4.25.4
     # via google-ai-generativelanguage
     # via google-api-core
-    # via google-cloud-vision
     # via google-generativeai
     # via googleapis-common-protos
     # via grpcio-status
-    # via onnx
     # via onnxruntime
     # via opentelemetry-proto
     # via pinecone-client
@@ -1153,7 +1055,6 @@ protoc-gen-openapiv2==0.0.1
 psutil==6.0.0
     # via ipykernel
     # via memory-profiler
-    # via unstructured
     # via wandb
 psycopg==3.2.1
     # via langchain-postgres
@@ -1176,15 +1077,11 @@ pycares==4.4.0
     # via aiodns
 pyclipper==1.3.0.post5
     # via rapidocr-onnxruntime
-pycocotools==2.0.8
-    # via effdet
 pycodestyle==2.12.1
     # via autopep8
     # via flake8
 pycparser==2.22
     # via cffi
-pycrypto==2.6.1
-    # via pdfplumber
 pycryptodome==3.20.0
     # via sandbox-agent
 pydantic==2.8.2
@@ -1247,16 +1144,12 @@ pymupdfb==1.24.10
     # via pymupdf
 pyowm==3.3.0
     # via sandbox-agent
-pypandoc==1.13
-    # via unstructured
 pyparsing==3.1.4
     # via grandalf
     # via httplib2
     # via matplotlib
 pypdf==4.3.1
     # via sandbox-agent
-    # via unstructured
-    # via unstructured-client
 pypdf2==3.0.1
     # via sandbox-agent
 pyphen==0.16.0
@@ -1318,32 +1211,21 @@ python-dateutil==2.9.0.post0
     # via pandas
     # via posthog
     # via typepy
-    # via unstructured-client
 python-decouple==3.8
     # via sandbox-agent
 python-docx==1.1.2
     # via sandbox-agent
-    # via unstructured
 python-dotenv==1.0.1
     # via pydantic-settings
     # via sandbox-agent
     # via uvicorn
-python-iso639==2024.4.27
-    # via unstructured
 python-json-logger==2.0.7
     # via jupyter-events
     # via sandbox-agent
 python-levenshtein==0.25.1
     # via sandbox-agent
-python-magic==0.4.27
-    # via unstructured
 python-multipart==0.0.9
     # via fastapi
-    # via unstructured-inference
-python-oxmsg==0.0.1
-    # via unstructured
-python-pptx==1.0.2
-    # via unstructured
 python-slugify==8.0.4
     # via sandbox-agent
 pytz==2024.1
@@ -1368,11 +1250,9 @@ pyyaml==6.0.2
     # via langchain
     # via langchain-community
     # via langchain-core
-    # via layoutparser
     # via libcst
     # via mkdocs
     # via mkdocs-get-deps
-    # via omegaconf
     # via pre-commit
     # via pymdown-extensions
     # via pyyaml-env-tag
@@ -1402,8 +1282,6 @@ rapidfuzz==3.9.7
     # via pypi-command-line
     # via sandbox-agent
     # via thefuzz
-    # via unstructured
-    # via unstructured-inference
 rapidocr-onnxruntime==1.3.24
     # via sandbox-agent
 redis==5.0.8
@@ -1415,7 +1293,6 @@ referencing==0.35.1
     # via types-jsonschema
 regex==2024.7.24
     # via mkdocs-material
-    # via nltk
     # via simpletransformers
     # via tiktoken
     # via transformers
@@ -1448,8 +1325,6 @@ requests==2.32.3
     # via streamlit
     # via tiktoken
     # via transformers
-    # via unstructured
-    # via unstructured-client
     # via wandb
     # via wikipedia
     # via yfinance
@@ -1462,7 +1337,6 @@ requests-oauthlib==2.0.0
     # via kubernetes
 requests-toolbelt==1.0.0
     # via sandbox-agent
-    # via unstructured-client
 respx==0.21.1
 rfc3339-validator==0.1.4
     # via jsonschema
@@ -1508,7 +1382,6 @@ scikit-learn==1.5.1
     # via seqeval
     # via simpletransformers
 scipy==1.14.1
-    # via layoutparser
     # via scikit-learn
     # via sentence-transformers
     # via simpletransformers
@@ -1552,13 +1425,11 @@ six==1.16.0
     # via html5lib
     # via jsbeautifier
     # via kubernetes
-    # via langdetect
     # via posthog
     # via python-dateutil
     # via rapidocr-onnxruntime
     # via rfc3339-validator
     # via tensorboard
-    # via unstructured-client
     # via url-normalize
 smmap==5.0.1
     # via gitdb
@@ -1596,8 +1467,6 @@ sympy==1.13.2
     # via torch
 tabledata==1.3.3
     # via pytablewriter
-tabulate==0.9.0
-    # via unstructured
 tcolorpy==0.1.6
     # via pytablewriter
 telnetlib3==2.0.4
@@ -1634,9 +1503,7 @@ threadpoolctl==3.5.0
 tiktoken==0.7.0
     # via langchain-openai
 timm==1.0.9
-    # via effdet
     # via sandbox-agent
-    # via unstructured-inference
 tinycss2==1.3.0
     # via cssselect2
     # via nbconvert
@@ -1665,14 +1532,11 @@ toolz==0.12.1
     # via dask
     # via partd
 torch==2.4.0
-    # via effdet
     # via sandbox-agent
     # via sentence-transformers
     # via timm
     # via torchvision
-    # via unstructured-inference
 torchvision==0.19.0
-    # via effdet
     # via sandbox-agent
     # via timm
 tornado==6.4.1
@@ -1690,9 +1554,7 @@ tqdm==4.66.5
     # via datasets
     # via google-generativeai
     # via huggingface-hub
-    # via iopath
     # via moviepy
-    # via nltk
     # via openai
     # via pinecone-client
     # via proglog
@@ -1701,7 +1563,6 @@ tqdm==4.66.5
     # via sentence-transformers
     # via simpletransformers
     # via transformers
-    # via unstructured
 trafaret==2.1.1
     # via aiomonitor
 traitlets==5.14.3
@@ -1722,7 +1583,6 @@ transformers==4.44.2
     # via sandbox-agent
     # via sentence-transformers
     # via simpletransformers
-    # via unstructured-inference
 trove-classifiers==2024.7.2
     # via validate-pyproject
 typepy==1.3.2
@@ -1782,12 +1642,10 @@ typing-extensions==4.12.2
     # via application-properties
     # via bump-pydantic
     # via chromadb
-    # via emoji
     # via fastapi
     # via google-generativeai
     # via groq
     # via huggingface-hub
-    # via iopath
     # via janus
     # via langchain-core
     # via mypy
@@ -1800,8 +1658,6 @@ typing-extensions==4.12.2
     # via pydantic-core
     # via pymarkdownlnt
     # via python-docx
-    # via python-oxmsg
-    # via python-pptx
     # via rich-click
     # via sqlalchemy
     # via streamlit
@@ -1809,11 +1665,8 @@ typing-extensions==4.12.2
     # via torch
     # via typer
     # via typing-inspect
-    # via unstructured
-    # via unstructured-client
 typing-inspect==0.9.0
     # via dataclasses-json
-    # via unstructured-client
 tzdata==2024.1
     # via pandas
 uc-micro-py==1.0.3
@@ -1821,16 +1674,6 @@ uc-micro-py==1.0.3
 ujson==5.10.0
     # via fastapi
     # via pypi-command-line
-unicodecsv==0.14.1
-    # via pdfplumber
-unstructured==0.15.8
-    # via sandbox-agent
-unstructured-client==0.25.6
-    # via unstructured
-unstructured-inference==0.7.36
-    # via unstructured
-unstructured-pytesseract==0.3.13
-    # via unstructured
 untokenize==0.1.1
     # via docformatter
 uri-template==1.3.0
@@ -1849,7 +1692,6 @@ urllib3==2.2.2
     # via requests-cache
     # via sentry-sdk
     # via types-requests
-    # via unstructured-client
 uvicorn==0.30.6
     # via chromadb
     # via fastapi
@@ -1868,8 +1710,6 @@ vcrpy==6.0.1
 virtualenv==20.26.3
     # via pre-commit
     # via tox
-wand==0.6.13
-    # via pdfplumber
 wandb==0.17.8
     # via simpletransformers
 watchdog==5.0.1
@@ -1917,12 +1757,7 @@ wikipedia==1.4.0
 wrapt==1.16.0
     # via deprecated
     # via opentelemetry-instrumentation
-    # via unstructured
     # via vcrpy
-xlrd==2.0.1
-    # via unstructured
-xlsxwriter==3.2.0
-    # via python-pptx
 xxhash==3.5.0
     # via datasets
 yamlfix==1.17.0

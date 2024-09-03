@@ -252,6 +252,7 @@ dev-dependencies = [
     "yamllint>=1.35.1",
     "tox>=4.18.0",
     "vcrpy>=6.0.1",
+    "langsmith>=0.1.108",
 ]
 
 [tool.hatch.metadata]

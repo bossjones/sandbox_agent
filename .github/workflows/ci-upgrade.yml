@@ -105,7 +105,7 @@ jobs:
           curl -fsSL https://github.com/tamasfe/taplo/releases/latest/download/taplo-full-linux-x86_64.gz | gzip -d - | sudo install -m 755 /dev/stdin /usr/local/bin/taplo
       - name: install tesseract and ffmpeg
         run: |
-          sudo apt-get install -y tesseract-ocr tesseract-ocr-por libyaml-dev poppler-utils
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-por libyaml-dev poppler-utils libomp-dev
           sudo apt install ffmpeg -y
           sudo apt-get install autoconf automake build-essential libtool python3-dev libsqlite3-dev -y
           echo "install deps for llm_aided_ocr"

@@ -1,6 +1,13 @@
+"""sandbox_agent: A Python package for gooby things."""
+
 from __future__ import annotations
 
+import logging
 
-def main() -> int:
-    print("Hello from sandbox-agent!")
-    return 0
+from sandbox_agent.__version__ import __version__
+
+
+logging.getLogger("asyncio").setLevel(logging.DEBUG)
+logging.getLogger("httpx").setLevel(logging.DEBUG)
+logging.getLogger("faker").setLevel(logging.DEBUG)
+logging.getLogger("sentry_sdk").setLevel(logging.WARNING)

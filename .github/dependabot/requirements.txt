@@ -148,9 +148,9 @@ chardet==5.2.0
     # via sandbox-agent
 charset-normalizer==3.3.2
     # via requests
-chroma-hnswlib==0.7.3
+chroma-hnswlib==0.7.6
     # via chromadb
-chromadb==0.5.3
+chromadb==0.5.5
     # via langchain-chroma
     # via sandbox-agent
 click==8.1.7
@@ -484,7 +484,7 @@ langchain==0.2.15
     # via sandbox-agent
 langchain-anthropic==0.1.23
     # via sandbox-agent
-langchain-chroma==0.1.3
+langchain-chroma==0.1.2
     # via sandbox-agent
 langchain-community==0.2.15
     # via sandbox-agent
@@ -1001,7 +1001,6 @@ regex==2024.7.24
     # via tiktoken
     # via transformers
 requests==2.32.3
-    # via chromadb
     # via datasets
     # via gallery-dl
     # via google-api-core

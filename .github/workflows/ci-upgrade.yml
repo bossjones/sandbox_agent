@@ -99,6 +99,8 @@ jobs:
           # wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
           # echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/prebuilt-mpr.list
           sudo apt update
+          sudo apt-get -y install --no-install-recommends  python3-dev python3 ca-certificates python3-numpy python3-setuptools python3-wheel python3-pip g++ gcc ninja-build cmake
+          sudo apt-get install -y --no-install-recommends aria2 aria2
           sudo apt-get update --fix-missing && sudo apt-get install -y --fix-missing build-essential gcc g++ cmake autoconf
           sudo apt-get install -y libmagic-dev poppler-utils libreoffice
           sudo apt-get install -y tesseract-ocr tesseract-ocr-por

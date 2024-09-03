@@ -32,15 +32,11 @@ def find_urls(text: str):
     - List[str]: A list of URLs extracted from the input text.
 
     """
-    url_pattern = (
-        r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-    )
+    url_pattern = r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
     return re.findall(url_pattern, text)
 
 
-def split_and_cluster_strings(
-    input_string: str, max_cluster_size: int, split_substring: str, length=len
-) -> list[str]:
+def split_and_cluster_strings(input_string: str, max_cluster_size: int, split_substring: str, length=len) -> list[str]:
     """
     Split up the input_string by the split_substring
     and group the resulting substrings into
@@ -151,9 +147,7 @@ def prioritized_string_split(
         new_splits = []
 
         for cluster in current_clusters:
-            result_clusters = split_and_cluster_strings(
-                cluster, max_len, split_substring, length=length
-            )
+            result_clusters = split_and_cluster_strings(cluster, max_len, split_substring, length=length)
             new_splits.extend(result_clusters)
         # for c_num, cluster in enumerate(new_splits):
         #    print(f"Pass {e},  Cluster {c_num + 1}: {len(cluster)}, {len(cluster)}")
@@ -222,9 +216,7 @@ def replace_working_directory(text: str):
         sites = os.path.dirname(rawsite)
         replaced_string = re.sub(re.escape(sites), "site", text, flags=re.IGNORECASE)
 
-    replaced_string = re.sub(
-        re.escape(parent_dir), "..", replaced_string, flags=re.IGNORECASE
-    )
+    replaced_string = re.sub(re.escape(parent_dir), "..", replaced_string, flags=re.IGNORECASE)
 
     return escape_markdown(replaced_string)
 
@@ -378,9 +370,7 @@ def extract_timestamp(timestamp: str):
         # timestamp_adjusted=timestamp_adjusted
     if not timestamp_adjusted.endswith("Z"):
         timestamp_adjusted += "Z"
-    return datetime.strptime(timestamp_adjusted, format_string).replace(
-        tzinfo=timezone.utc
-    )
+    return datetime.strptime(timestamp_adjusted, format_string).replace(tzinfo=timezone.utc)
 
 
 def human_format(num):

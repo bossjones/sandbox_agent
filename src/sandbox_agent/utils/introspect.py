@@ -8,7 +8,6 @@ Defines built in sandbox_agent functions to aid in introspection
 # from __future__ import absolute_import
 from __future__ import annotations
 
-
 from types import MethodType
 
 
@@ -19,9 +18,7 @@ def is_method(function):
 
 def is_coroutine(function):
     """Returns True if the passed in function is a coroutine"""
-    return function.__code__.co_flags & 0x0080 or getattr(
-        function, "_is_coroutine", False
-    )
+    return function.__code__.co_flags & 0x0080 or getattr(function, "_is_coroutine", False)
 
 
 def name(function):
@@ -34,9 +31,7 @@ def arguments(function, extra_arguments=0):
     if not hasattr(function, "__code__"):
         return ()
 
-    return function.__code__.co_varnames[
-        : function.__code__.co_argcount + extra_arguments
-    ]
+    return function.__code__.co_varnames[: function.__code__.co_argcount + extra_arguments]
 
 
 def takes_kwargs(function):
@@ -75,11 +70,7 @@ def generate_accepted_kwargs(function, *named_arguments):
         if function_takes_kwargs:
             return kwargs
         elif function_takes_arguments:
-            return {
-                key: value
-                for key, value in kwargs.items()
-                if key in function_takes_arguments
-            }
+            return {key: value for key, value in kwargs.items() if key in function_takes_arguments}
         return {}
 
     return accepted_kwargs

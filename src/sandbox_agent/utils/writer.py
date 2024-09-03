@@ -3,7 +3,6 @@
 # https://github.com/hackersandslackers/asyncio-tutorial/blob/0f4c99776b61ca3eafd850c43202bc7c52349552/asyncio_tutorial/part_II_aiohttp_aiofiles/writer.py
 from __future__ import annotations
 
-
 import aiofiles
 
 from loguru import logger as LOGGER

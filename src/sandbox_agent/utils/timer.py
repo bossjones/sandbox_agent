@@ -139,6 +139,4 @@ class TimerCollection:
 
     def __str__(self) -> str:
         """Print each timer to the nearest microsecond."""
-        return "\n".join(
-            [f"{name}: {timer.duration():.6f}s" for name, timer in self._timers.items()]
-        )
+        return "\n".join([f"{name}: {timer.duration():.6f}s" for name, timer in self._timers.items()])

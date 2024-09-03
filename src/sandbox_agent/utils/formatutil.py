@@ -83,9 +83,7 @@ def extract_url(s: str):
     - List[str]: A list of URLs extracted from the input string.
 
     """
-    url_pattern = re.compile(
-        r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-    )
+    url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
     return re.findall(url_pattern, s)
 
 
@@ -166,7 +164,5 @@ def get_text_chunks(text: str):
     - List[str]: A list of text chunks split based on the specified parameters.
 
     """
-    text_splitter = CharacterTextSplitter(
-        separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len
-    )
+    text_splitter = CharacterTextSplitter(separator="\n", chunk_size=1000, chunk_overlap=200, length_function=len)
     return text_splitter.split_text(text)

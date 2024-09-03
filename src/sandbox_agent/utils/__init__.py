@@ -17,30 +17,11 @@ import warnings
 
 from asyncio import Semaphore, as_completed
 from asyncio.futures import isfuture
-from collections.abc import (
-    AsyncIterable,
-    AsyncIterator,
-    Awaitable,
-    Coroutine,
-    Generator,
-    Iterable,
-    Iterator,
-)
+from collections.abc import AsyncIterable, AsyncIterator, Awaitable, Coroutine, Generator, Iterable, Iterator
 from importlib.util import find_spec
 from itertools import chain
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    List,
-    NoReturn,
-    Optional,
-    Tuple,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Tuple, TypeVar, Union
 
 from discord.utils import maybe_coroutine
 from loguru import logger as LOGGER
@@ -210,9 +191,7 @@ class AsyncFilter(AsyncIterator[_T], Awaitable[list[_T]]):  # pylint: disable=du
         elif asyncio.iscoroutinefunction(func):
             self.__generator_instance = self.__sync_generator_async_pred()
         else:
-            raise TypeError(
-                "Must be either an async predicate, an async iterable, or both."
-            )
+            raise TypeError("Must be either an async predicate, an async iterable, or both.")
 
     async def __sync_generator_async_pred(self) -> AsyncIterator[_T]:
         for item in self.__iterable:
@@ -276,9 +255,7 @@ def async_filter(
     return AsyncFilter(func, iterable)
 
 
-async def async_enumerate(
-    async_iterable: AsyncIterable[_T], start: int = 0
-) -> AsyncIterator[tuple[int, _T]]:
+async def async_enumerate(async_iterable: AsyncIterable[_T], start: int = 0) -> AsyncIterator[tuple[int, _T]]:
     """
     Async iterable version of `enumerate`.
 
@@ -420,9 +397,7 @@ class AsyncIter(AsyncIterator[_T], Awaitable[list[_T]]):  # pylint: disable=dupl
 
     """
 
-    def __init__(
-        self, iterable: Iterable[_T], delay: Union[float, int] = 0, steps: int = 1
-    ) -> None:
+    def __init__(self, iterable: Iterable[_T], delay: Union[float, int] = 0, steps: int = 1) -> None:
         if steps < 1:
             raise ValueError("Steps must be higher than or equals to 1")
         self._delay = delay
@@ -505,9 +480,7 @@ class AsyncIter(AsyncIterator[_T], Awaitable[list[_T]]):  # pylint: disable=dupl
         """
         return [item async for item in self]
 
-    def filter(
-        self, function: Callable[[_T], Union[bool, Awaitable[bool]]]
-    ) -> AsyncFilter[_T]:
+    def filter(self, function: Callable[[_T], Union[bool, Awaitable[bool]]]) -> AsyncFilter[_T]:
         """
         Filter the iterable with an (optionally async) predicate.
 
@@ -695,9 +668,7 @@ def get_end_user_data_statement(file: Union[Path, str]) -> Optional[str]:
     except FileNotFoundError:
         LOGGER.critical("'%s' does not exist.", str(info_json))
     except KeyError:
-        LOGGER.critical(
-            "'%s' is missing an entry for 'end_user_data_statement'", str(info_json)
-        )
+        LOGGER.critical("'%s' is missing an entry for 'end_user_data_statement'", str(info_json))
     except json.JSONDecodeError as exc:
         LOGGER.critical("'%s' is not a valid JSON file.", str(info_json), exc_info=exc)
     except UnicodeError as exc:
@@ -754,9 +725,7 @@ def get_end_user_data_statement_or_raise(file: Union[Path, str]) -> str:
 
 # SOURCE: https://github.com/makupi/cookiecutter-discord.py-postgres/blob/master/%7B%7Bcookiecutter.bot_slug%7D%7D/bot/utils/__init__.py
 def get_guild_prefix(_bot, guild_id):
-    LOGGER.info(
-        f"get_guild_prefix(_bot, guild_id) - > get_guild_prefix({_bot}, {guild_id})"
-    )
+    LOGGER.info(f"get_guild_prefix(_bot, guild_id) - > get_guild_prefix({_bot}, {guild_id})")
     prefix = aiosettings.prefix
     guild_data = _bot.guild_data.get(guild_id, None)
     if guild_data is not None:
@@ -764,7 +733,5 @@ def get_guild_prefix(_bot, guild_id):
         if _prefix is not None:
             prefix = _prefix
 
-    LOGGER.info(
-        f"inside get_guild_prefix(_bot, guild_id) - > get_guild_prefix({_bot}, {guild_id})"
-    )
+    LOGGER.info(f"inside get_guild_prefix(_bot, guild_id) - > get_guild_prefix({_bot}, {guild_id})")
     return prefix

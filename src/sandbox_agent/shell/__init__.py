@@ -23,9 +23,7 @@ from codetiming import Timer
 HOME_PATH = os.environ.get("HOME")
 
 
-async def _aio_run_process_and_communicate(
-    cmd: list[str], cwd: Union[str, None] = None
-):
+async def _aio_run_process_and_communicate(cmd: list[str], cwd: Union[str, None] = None):
     """
     _summary_
 
@@ -39,9 +37,7 @@ async def _aio_run_process_and_communicate(
 
     """
     program = cmd
-    process: Process = await asyncio.create_subprocess_exec(
-        *program, stdout=asyncio.subprocess.PIPE, cwd=cwd
-    )
+    process: Process = await asyncio.create_subprocess_exec(*program, stdout=asyncio.subprocess.PIPE, cwd=cwd)
     print(f"Process pid is: {process.pid}")
     stdout, stderr = await process.communicate()
     return stdout.decode("utf-8").strip()
@@ -94,9 +90,7 @@ def _popen(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] = None):
     if env is None:
         env = {}
     with open("/dev/null") as devnull:
-        cmd = subprocess.Popen(
-            cmd_arg, stdout=subprocess.PIPE, stderr=devnull, env=env, cwd=cwd
-        )
+        cmd = subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=devnull, env=env, cwd=cwd)
         retval = cmd.stdout.read().strip()
         err = cmd.wait()
         cmd.stdout.close()
@@ -127,9 +121,7 @@ def _popen_communicate(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] =
     if env is None:
         env = {}
     devnull = open("/dev/null")
-    cmd = subprocess.Popen(
-        cmd_arg, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env, cwd=cwd
-    )
+    cmd = subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env, cwd=cwd)
 
     try:
         time.sleep(0.2)
@@ -208,9 +200,7 @@ def pquery(command: Union[str, list], stdin: bool = None, **kwargs):
         command = command.split(" ")
         print(f"cmd: {command}")
     try:
-        proc = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs
-        )
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)
         stdout, _ = proc.communicate(stdin)
     except Exception:
         print("[fail] cmd={command}, ret={proc.returncode}")
@@ -284,9 +274,7 @@ def _popen_stdout_lock(cmd_arg: str, cwd: Union[str, None] = None):
         subprocess.CompletedProcess(args=cmd_arg, returncode=0)
 
 
-async def run_coroutine_subprocess(
-    cmd: str, uri: str, working_dir: str = f"{pathlib.Path('./').absolute()}"
-):
+async def run_coroutine_subprocess(cmd: str, uri: str, working_dir: str = f"{pathlib.Path('./').absolute()}"):
     """
     _summary_
 

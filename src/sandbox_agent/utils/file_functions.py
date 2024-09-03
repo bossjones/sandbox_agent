@@ -165,9 +165,7 @@ def get_all_media_files_to_upload(tmpdirname: str) -> list[str]:
     rich.print(tree_list)
 
     file_to_upload_list = [f"{p}" for p in tree_list]
-    LOGGER.debug(
-        f"get_all_media_files_to_upload -> file_to_upload_list = {file_to_upload_list}"
-    )
+    LOGGER.debug(f"get_all_media_files_to_upload -> file_to_upload_list = {file_to_upload_list}")
     rich.print(file_to_upload_list)
 
     return filter_media(file_to_upload_list)
@@ -189,8 +187,7 @@ def filter_pth(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in TORCH_MODEL_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in TORCH_MODEL_EXTENSIONS
     ]
 
 
@@ -210,8 +207,7 @@ def filter_json(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in JSON_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in JSON_EXTENSIONS
     ]
 
 
@@ -255,8 +251,7 @@ def filter_videos(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in VIDEO_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in VIDEO_EXTENSIONS
     ]
 
 
@@ -276,8 +271,7 @@ def filter_audio(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in AUDIO_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in AUDIO_EXTENSIONS
     ]
 
 
@@ -297,8 +291,7 @@ def filter_gif(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in GIF_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in GIF_EXTENSIONS
     ]
 
 
@@ -318,8 +311,7 @@ def filter_mkv(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in MKV_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in MKV_EXTENSIONS
     ]
 
 
@@ -339,8 +331,7 @@ def filter_m3u8(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in M3U8_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in M3U8_EXTENSIONS
     ]
 
 
@@ -360,8 +351,7 @@ def filter_webm(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in WEBM_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in WEBM_EXTENSIONS
     ]
 
 
@@ -381,8 +371,7 @@ def filter_images(working_dir: list[str]) -> list[str]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in IMAGE_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in IMAGE_EXTENSIONS
     ]
 
 
@@ -402,8 +391,7 @@ def filter_pdfs(working_dir: list[str]) -> list[pathlib.PosixPath]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in PDF_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in PDF_EXTENSIONS
     ]
 
 
@@ -423,8 +411,7 @@ def filter_txts(working_dir: list[str]) -> list[pathlib.PosixPath]:
     return [
         f
         for f in working_dir
-        if (pathlib.Path(f"{f}").is_file())
-        and pathlib.Path(f"{f}").suffix.lower() in TXT_EXTENSIONS
+        if (pathlib.Path(f"{f}").is_file()) and pathlib.Path(f"{f}").suffix.lower() in TXT_EXTENSIONS
     ]
 
 
@@ -462,9 +449,7 @@ def filter_pdf(working_dir: list[str]) -> list[pathlib.PosixPath]:
     return filter_pdfs(working_dir)
 
 
-def get_dataframe_from_csv(
-    filename: str, return_parent_folder_name: bool = False
-) -> DataFrame | tuple[DataFrame, str]:
+def get_dataframe_from_csv(filename: str, return_parent_folder_name: bool = False) -> DataFrame | tuple[DataFrame, str]:
     """
     Open a CSV file and return a DataFrame.
 
@@ -492,9 +477,7 @@ def get_dataframe_from_csv(
     return (df, f"{src.parent.stem}") if return_parent_folder_name else df
 
 
-def sort_dataframe(
-    df: DataFrame, columns: list[str] | None = None, ascending: tuple[bool, ...] = ()
-) -> DataFrame:
+def sort_dataframe(df: DataFrame, columns: list[str] | None = None, ascending: tuple[bool, ...] = ()) -> DataFrame:
     """
     Sort a DataFrame by specified columns.
 
@@ -707,9 +690,7 @@ def rich_display_popstars_analytics(df: DataFrame) -> None:  # noqa
 # # >>> json_files
 
 
-def glob_file_by_extension(
-    working_dir: str, extension: str = "*.mp4", recursive: bool = False
-) -> list[str]:
+def glob_file_by_extension(working_dir: str, extension: str = "*.mp4", recursive: bool = False) -> list[str]:
     """
     Find files by extension using glob.
 
@@ -734,9 +715,7 @@ def glob_file_by_extension(
     return glob.glob(expression, recursive=recursive)
 
 
-def print_and_append(
-    dir_listing: list[str], tree_str: str, silent: bool = False
-) -> None:
+def print_and_append(dir_listing: list[str], tree_str: str, silent: bool = False) -> None:
     """
     Print and append directory listing.
 
@@ -818,9 +797,7 @@ def format_size(a_file: int) -> str:
         return f"{a_file:.0f} B"
 
 
-async def aiowrite_file(
-    data: str, dl_dir: str = "./", fname: str = "", ext: str = ""
-) -> None:
+async def aiowrite_file(data: str, dl_dir: str = "./", fname: str = "", ext: str = "") -> None:
     """
     Write data to a file asynchronously.
 
@@ -842,9 +819,7 @@ async def aiowrite_file(
     await LOGGER.complete()
 
 
-async def aioread_file(
-    data: str, dl_dir: str = "./", fname: str = "", ext: str = ""
-) -> None:
+async def aioread_file(data: str, dl_dir: str = "./", fname: str = "", ext: str = "") -> None:
     """
     Read data from a file asynchronously.
 
@@ -881,9 +856,7 @@ def check_file_size(a_file: str) -> tuple[bool, str]:
     """
     p = pathlib.Path(a_file)
     file_size = p.stat().st_size
-    LOGGER.debug(
-        f"File: {p} | Size(bytes): {file_size} | Size(type): {type(file_size)}"
-    )
+    LOGGER.debug(f"File: {p} | Size(bytes): {file_size} | Size(type): {type(file_size)}")
     check = file_size > MAX_BYTES_UPLOAD_DISCORD
     msg = f"Is file size greater than {MAX_BYTES_UPLOAD_DISCORD}: {check}"
     LOGGER.debug(msg)
@@ -1012,9 +985,7 @@ def tilda(obj: str | list[str]) -> str | list[str]:
         _type_: _description_
     """
     if isinstance(obj, list):
-        return [
-            str(pathlib.Path(o).expanduser()) if isinstance(o, str) else o for o in obj
-        ]
+        return [str(pathlib.Path(o).expanduser()) if isinstance(o, str) else o for o in obj]
     elif isinstance(obj, str):
         return str(pathlib.Path(obj).expanduser())
     else:

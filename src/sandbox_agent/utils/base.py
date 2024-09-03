@@ -148,9 +148,7 @@ def create_dict_from_filter(d: dict[Any, Any], white_list: list[Any]) -> dict[An
 
 # NAME: Python filter nested dict given list of key names
 # https://stackoverflow.com/questions/23230947/python-filter-nested-dict-given-list-of-key-names
-def fltr(
-    node: Union[dict[Any, Any], list[Any]], whitelist: list[Any]
-) -> Union[dict[Any, Any], list[Any], None]:
+def fltr(node: Union[dict[Any, Any], list[Any]], whitelist: list[Any]) -> Union[dict[Any, Any], list[Any], None]:
     """
     Filter a nested dictionary or list based on a white list of keys.
 
@@ -196,9 +194,7 @@ def fltr(
 
 # from unittest import TestCase
 # SOURCE: https://gist.github.com/angstwad/bf22d1822c38a92ec0a9
-def dict_merge(
-    dct: dict[Any, Any], merge_dct: dict[Any, Any], add_keys: bool = True
-) -> dict[Any, Any]:
+def dict_merge(dct: dict[Any, Any], merge_dct: dict[Any, Any], add_keys: bool = True) -> dict[Any, Any]:
     """
     Recursively merge two dictionaries.
 
@@ -226,11 +222,7 @@ def dict_merge(
         merge_dct = {k: merge_dct[k] for k in set(dct).intersection(set(merge_dct))}
 
     for k, v in merge_dct.items():
-        if (
-            k in dct
-            and isinstance(dct[k], dict)
-            and isinstance(merge_dct[k], collections.abc.Mapping)
-        ):
+        if k in dct and isinstance(dct[k], dict) and isinstance(merge_dct[k], collections.abc.Mapping):
             dct[k] = dict_merge(dct[k], merge_dct[k], add_keys=add_keys)
         else:
             dct[k] = merge_dct[k]

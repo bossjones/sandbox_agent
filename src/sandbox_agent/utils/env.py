@@ -7,9 +7,7 @@ def environ_get(key, default=None):
     retval = os.environ.get(key, default=default)
 
     if key not in os.environ:
-        print(
-            f"environ_get: Env Var not defined! Using default! Attempted={key}, default={default}"
-        )
+        print(f"environ_get: Env Var not defined! Using default! Attempted={key}, default={default}")
 
     return retval
 

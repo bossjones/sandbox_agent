@@ -3,16 +3,7 @@ from __future__ import annotations
 import io
 
 from collections.abc import Iterable
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Generic,
-    Optional,
-    Protocol,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Generic, Optional, Protocol, TypeVar, Union
 
 import discord
 
@@ -77,9 +68,7 @@ class ConfirmationView(discord.ui.View):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user and interaction.user.id == self.author_id:
             return True
-        await interaction.response.send_message(
-            "This confirmation dialog is not for you.", ephemeral=True
-        )
+        await interaction.response.send_message("This confirmation dialog is not for you.", ephemeral=True)
         return False
 
     async def on_timeout(self) -> None:
@@ -87,9 +76,7 @@ class ConfirmationView(discord.ui.View):
             await self.message.delete()
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
-    async def confirm(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ):
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.value = True
         await interaction.response.defer()
         if self.delete_after:
@@ -132,9 +119,7 @@ class DisambiguatorView(discord.ui.View, Generic[T]):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.ctx.author.id:
-            await interaction.response.send_message(
-                "This select menu is not meant for you, sorry.", ephemeral=True
-            )
+            await interaction.response.send_message("This select menu is not meant for you, sorry.", ephemeral=True)
             return False
         return True
 
@@ -149,9 +134,7 @@ class DisambiguatorView(discord.ui.View, Generic[T]):
 
 
 class Context(commands.Context):
-    channel: Union[
-        discord.VoiceChannel, discord.TextChannel, discord.Thread, discord.DMChannel
-    ]
+    channel: Union[discord.VoiceChannel, discord.TextChannel, discord.Thread, discord.DMChannel]
     prefix: str
     command: commands.Command[Any, ..., Any]
     bot: AsyncGoobBot
@@ -196,9 +179,7 @@ class Context(commands.Context):
             return ref.resolved
         return None
 
-    async def disambiguate(
-        self, matches: list[T], entry: Callable[[T], Any], *, ephemeral: bool = False
-    ) -> T:
+    async def disambiguate(self, matches: list[T], entry: Callable[[T], Any], *, ephemeral: bool = False) -> T:
         if not matches:
             raise ValueError("No results found.")
 
@@ -282,9 +263,7 @@ class Context(commands.Context):
         command = command or self.command.qualified_name
         await self.invoke(cmd, command=command)
 
-    async def safe_send(
-        self, content: str, *, escape_mentions: bool = True, **kwargs
-    ) -> discord.Message:
+    async def safe_send(self, content: str, *, escape_mentions: bool = True, **kwargs) -> discord.Message:
         """
         Same as send except with some safe guards.
 
@@ -298,9 +277,7 @@ class Context(commands.Context):
             return await self.send(content)
         fp = io.BytesIO(content.encode())
         kwargs.pop("file", None)
-        return await self.send(
-            file=discord.File(fp, filename="message_too_long.txt"), **kwargs
-        )
+        return await self.send(file=discord.File(fp, filename="message_too_long.txt"), **kwargs)
 
 
 class GuildContext(Context):

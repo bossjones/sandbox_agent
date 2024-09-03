@@ -17,7 +17,6 @@ import traceback
 
 from pathlib import Path
 
-
 from loguru import logger as LOGGER
 
 from sandbox_agent import shell
@@ -266,9 +265,7 @@ async def aio_compress_video(tmpdirname: str, file_to_compress: str) -> bool:
         loop = asyncio.get_running_loop()
 
         try:
-            _ = await shell._aio_run_process_and_communicate(
-                compress_command, cwd=f"{tmpdirname}"
-            )
+            _ = await shell._aio_run_process_and_communicate(compress_command, cwd=f"{tmpdirname}")
 
             LOGGER.debug(
                 f"compress_video: new file size for {file_to_compress} = {pathlib.Path(file_to_compress).stat().st_size}"

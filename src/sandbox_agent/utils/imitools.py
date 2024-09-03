@@ -76,9 +76,7 @@ def download_image(img_url: str) -> Image.Image | None:
 
 
 # based on https://gist.github.com/sigilioso/2957026
-def image_crop(
-    img: Image.Image, size: tuple[int, int], crop_type: str = "middle"
-) -> Image.Image:
+def image_crop(img: Image.Image, size: tuple[int, int], crop_type: str = "middle") -> Image.Image:
     """
     Crop an image to the specified size.
 
@@ -155,9 +153,7 @@ def image_crop(
     return img
 
 
-def thread_loop(
-    fn: Callable[[Any], Any], input_array: list[Any], n_workers: int = N_WORKERS
-) -> list[Any]:
+def thread_loop(fn: Callable[[Any], Any], input_array: list[Any], n_workers: int = N_WORKERS) -> list[Any]:
     return_data = []
 
     with ThreadPoolExecutor(n_workers) as executor:
@@ -268,9 +264,7 @@ class ImageWrapper:
         new_images = [im.resize(i_size, **kwargs) for im in ref.data]
         return ImageWrapper(new_images, "pil")
 
-    def crop(
-        self, size: tuple[int, int] = (256, 256), crop_type: str = "middle"
-    ) -> ImageWrapper:
+    def crop(self, size: tuple[int, int] = (256, 256), crop_type: str = "middle") -> ImageWrapper:
         """
         Crop the images to the specified size.
 
@@ -489,8 +483,7 @@ class ImageWrapper:
             images = self.data[:max_count]
             image_count = max_count
 
-        if image_count < cols:
-            cols = image_count
+        cols = min(image_count, cols)
 
         rows = math.ceil(image_count / cols)
 
@@ -500,11 +493,7 @@ class ImageWrapper:
         _, ax = plt.subplots(rows, cols, figsize=figsize)
         if rows == 1:
             for i in range(image_count):
-                image = (
-                    images[i]
-                    if self.image_type == "pil"
-                    else images[i].permute(1, 2, 0)
-                )  # type: ignore
+                image = images[i] if self.image_type == "pil" else images[i].permute(1, 2, 0)  # type: ignore
                 ax[i].imshow(image, cmap=cmap)
                 ax[i].axis("off")
                 if captions:
@@ -514,11 +503,7 @@ class ImageWrapper:
                 for col in range(cols):
                     i = row * cols + col
                     if i < image_count:
-                        image = (
-                            images[i]
-                            if self.image_type == "pil"
-                            else images[i].permute(1, 2, 0)
-                        )  # type: ignore
+                        image = images[i] if self.image_type == "pil" else images[i].permute(1, 2, 0)  # type: ignore
                         ax[row][col].imshow(image, cmap=cmap)
                         ax[row][col].axis("off")
                         if captions:
@@ -526,9 +511,7 @@ class ImageWrapper:
                     else:
                         ax[row][col].axis("off")
 
-    def to_dir(
-        self, output_dir: str, prefix: str = "image", max_workers: int = N_WORKERS
-    ) -> None:
+    def to_dir(self, output_dir: str, prefix: str = "image", max_workers: int = N_WORKERS) -> None:
         """
         Save images to a specified directory.
 
@@ -573,9 +556,7 @@ class ImageWrapper:
 
         thread_loop(save_image, range(len(images)))  # type: ignore
 
-    def to_video(
-        self, out_path: PathLike | str | None = None, frame_rate: int = 12
-    ) -> VideoWrapper:
+    def to_video(self, out_path: PathLike | str | None = None, frame_rate: int = 12) -> VideoWrapper:
         """
         Convert a sequence of images to a video.
 

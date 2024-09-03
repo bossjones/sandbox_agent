@@ -142,9 +142,7 @@ def check_loop() -> None:
 
     # Did not source from integration? Hard error.
     if found_frame is None:
-        raise RuntimeError(
-            "Detected I/O inside the event loop. This is causing stability issues. Please report issue"
-        )
+        raise RuntimeError("Detected I/O inside the event loop. This is causing stability issues. Please report issue")
 
     start = index + len(path)
     end = found_frame.filename.index("/", start)
@@ -182,9 +180,7 @@ def protect_loop(func: Callable) -> Callable:
     return protected_loop_func
 
 
-async def gather_with_concurrency(
-    limit: int, *tasks: Any, return_exceptions: bool = False
-) -> Any:
+async def gather_with_concurrency(limit: int, *tasks: Any, return_exceptions: bool = False) -> Any:
     """
     Wrap asyncio.gather to limit the number of concurrent tasks.
 
@@ -196,9 +192,7 @@ async def gather_with_concurrency(
         async with semaphore:
             return await task
 
-    return await gather(
-        *(sem_task(task) for task in tasks), return_exceptions=return_exceptions
-    )
+    return await gather(*(sem_task(task) for task in tasks), return_exceptions=return_exceptions)
 
 
 def shutdown_run_callback_threadsafe(loop: AbstractEventLoop) -> None:

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-
 from typing import TYPE_CHECKING
 
 import discord
@@ -46,9 +45,7 @@ def aio_create_thumbnail_attachment(tmpdirname: str, recursive: bool = False):
     #######################################################
     # add event to system channel
     #######################################################
-    jpg_file_list = glob_file_by_extension(
-        f"{tmpdirname}", extension="*.jpg", recursive=recursive
-    )
+    jpg_file_list = glob_file_by_extension(f"{tmpdirname}", extension="*.jpg", recursive=recursive)
 
     jpg_file = f"{jpg_file_list[0]}"
     LOGGER.debug(f"jpg_file = {jpg_file}")

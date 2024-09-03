@@ -109,9 +109,7 @@ def magic_imread(filenames, *, use_dask=None, stack=True):
     for filename in filenames:
         # zarr files are folders, but should be read as 1 file
         if os.path.isdir(filename):
-            dir_contents = sorted(
-                glob(os.path.join(filename, "*.*")), key=_alphanumeric_key
-            )
+            dir_contents = sorted(glob(os.path.join(filename, "*.*")), key=_alphanumeric_key)
             # remove subdirectories
             dir_contents_files = filter(lambda f: not os.path.isdir(f), dir_contents)
             filenames_expanded.extend(dir_contents_files)
@@ -261,9 +259,7 @@ def guess_layer_type_from_column_names(
         Layer type if recognized, otherwise None.
 
     """
-    if {"index", "shape-type", "vertex-index", "axis-0", "axis-1"}.issubset(
-        column_names
-    ):
+    if {"index", "shape-type", "vertex-index", "axis-0", "axis-1"}.issubset(column_names):
         return "shapes"
     elif {"axis-0", "axis-1"}.issubset(column_names):
         return "points"
@@ -271,9 +267,7 @@ def guess_layer_type_from_column_names(
         return None
 
 
-def read_csv(
-    filename: str, require_type: str = None
-) -> tuple[np.array, list[str], Optional[str]]:
+def read_csv(filename: str, require_type: str = None) -> tuple[np.array, list[str], Optional[str]]:
     """
     Return CSV data only if column names match format for ``require_type``.
 
@@ -315,13 +309,9 @@ def read_csv(
         layer_type = guess_layer_type_from_column_names(column_names)
         if require_type:
             if not layer_type:
-                raise ValueError(
-                    f'File "{filename}" not recognized as valid Layer data'
-                )
+                raise ValueError(f'File "{filename}" not recognized as valid Layer data')
             elif layer_type != require_type and require_type.lower() != "any":
-                raise ValueError(
-                    f'File "{filename}" not recognized as {require_type} data'
-                )
+                raise ValueError(f'File "{filename}" not recognized as {require_type} data')
 
         data = np.array(list(reader))
     return data, column_names, layer_type

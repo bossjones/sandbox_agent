@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import json
 
-
 import langsmith
-
 
 
 # Load the example inputs from q_a.json

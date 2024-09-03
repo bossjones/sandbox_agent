@@ -101,9 +101,7 @@ def running_as_bundled_app() -> bool:
 
 def bundle_bin_dir() -> Optional[str]:
     """Return path to briefcase app_packages/bin if it exists."""
-    path_to_bin: builtins.str = os_path.join(
-        os_path.dirname(sys.exec_prefix), "app_packages", "bin"
-    )
+    path_to_bin: builtins.str = os_path.join(os_path.dirname(sys.exec_prefix), "app_packages", "bin")
     if path.isdir(path_to_bin):
         return f"{path_to_bin}"
 
@@ -336,9 +334,7 @@ def all_subclasses(cls: type) -> set:
         the set of all classes that are subclassed from ``cls``
 
     """
-    return set(cls.__subclasses__()).union(
-        [s for c in cls.__subclasses__() for s in all_subclasses(c)]
-    )
+    return set(cls.__subclasses__()).union([s for c in cls.__subclasses__() for s in all_subclasses(c)])
 
 
 def ensure_n_tuple(val, n, fill=0):

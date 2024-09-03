@@ -275,5 +275,8 @@ brew-deps:
 db-create:
 	rye run psql -d langchain -c 'CREATE EXTENSION vector'
 
+# install aicommits and configure it
 init-aicommits:
+	npm install -g aicommits
 	aicommits config set OPENAI_KEY=$OCO_OPENAI_API_KEY type=conventional model=gpt-4o-mini
+	aicommits hook install

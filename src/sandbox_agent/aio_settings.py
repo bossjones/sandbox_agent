@@ -1,6 +1,8 @@
 """aio_settings"""
-# pylint: disable=no-name-in-module
 
+# pylint: disable=no-name-in-module
+# pyright: reportInvalidTypeForm=false
+# pyright: reportUndefinedVariable=false
 from __future__ import annotations
 
 import enum
@@ -21,12 +23,15 @@ from pydantic import (
     RedisDsn,
     SecretBytes,
     SecretStr,
+    ValidationError,
     field_serializer,
+    model_validator,
+    root_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from rich.console import Console
 from rich.table import Table
-from typing_extensions import TypedDict
+from typing_extensions import Self, TypedDict
 from yarl import URL
 
 from sandbox_agent import __version__
@@ -43,6 +48,215 @@ os.environ["USER_AGENT"] = goob_user_agent()
 
 
 TEMP_DIR = Path(gettempdir())
+# SOURCE: https://github.com/taikinman/langrila/blob/main/src/langrila/openai/model_config.py
+# SOURCE: https://github.com/taikinman/langrila/blob/main/src/langrila/openai/model_config.py
+# TODO: Look at this https://github.com/h2oai/h2ogpt/blob/542543dc23aa9eb7d4ce7fe6b9af1204a047b50f/src/enums.py#L386 and see if we can add some more models
+_TOKENS_PER_TILE = 170
+_TILE_SIZE = 512
+
+_OLDER_MODEL_CONFIG = {
+    "gpt-4-0613": {
+        "max_tokens": 8192,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00003,
+        "completion_cost_per_token": 0.00006,
+    },
+    "gpt-4-32k-0314": {
+        "max_tokens": 32768,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00006,
+        "completion_cost_per_token": 0.00012,
+    },
+    "gpt-4-32k-0613": {
+        "max_tokens": 32768,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00006,
+        "completion_cost_per_token": 0.00012,
+    },
+    "gpt-3.5-turbo-0301": {
+        "max_tokens": 4096,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.0000015,
+        "completion_cost_per_token": 0.000002,
+    },
+    "gpt-3.5-turbo-0613": {
+        "max_tokens": 4096,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.0000015,
+        "completion_cost_per_token": 0.000002,
+    },
+    "gpt-3.5-turbo-16k-0613": {
+        "max_tokens": 16384,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.000003,
+        "completion_cost_per_token": 0.000004,
+    },
+    "gpt-3.5-turbo-instruct": {
+        "max_tokens": 4096,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.0000015,
+        "completion_cost_per_token": 0.000002,
+    },
+}
+
+# "claude-instant-1.2": 100000,
+# "claude-3-opus-20240229": 200000,
+# "claude-3-sonnet-20240229": 200000,
+# "claude-3-5-sonnet-20240620": 200000,
+# "claude-3-haiku-20240307": 200000,
+
+_NEWER_MODEL_CONFIG = {
+    "claude-3-5-sonnet-20240620": {
+        "max_tokens": 2048,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.0000025,
+        "completion_cost_per_token": 0.00001,
+    },
+    "claude-3-opus-20240229": {
+        "max_tokens": 2048,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.0000025,
+        "completion_cost_per_token": 0.00001,
+    },
+    "claude-3-sonnet-20240229": {
+        "max_tokens": 2048,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.0000025,
+        "completion_cost_per_token": 0.00001,
+    },
+    "claude-3-haiku-20240307": {
+        "max_tokens": 2048,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.0000025,
+        "completion_cost_per_token": 0.00001,
+    },
+    "gpt-4o-2024-08-06": {
+        "max_tokens": 128000,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.0000025,
+        "completion_cost_per_token": 0.00001,
+    },
+    "gpt-4o-mini-2024-07-18": {
+        # "max_tokens": 128000,
+        "max_tokens": 900,
+        "max_output_tokens": 16384,
+        "prompt_cost_per_token": 0.000000150,
+        "completion_cost_per_token": 0.00000060,
+    },
+    "gpt-4o-2024-05-13": {
+        "max_tokens": 128000,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.000005,
+        "completion_cost_per_token": 0.000015,
+    },
+    "gpt-4-turbo-2024-04-09": {
+        "max_tokens": 128000,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00001,
+        "completion_cost_per_token": 0.00003,
+    },
+    "gpt-4-0125-preview": {
+        "max_tokens": 128000,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00001,
+        "completion_cost_per_token": 0.00003,
+    },
+    "gpt-4-1106-preview": {
+        "max_tokens": 128000,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00001,
+        "completion_cost_per_token": 0.00003,
+    },
+    "gpt-4-vision-preview": {
+        "max_tokens": 128000,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.00001,
+        "completion_cost_per_token": 0.00003,
+    },
+    "gpt-3.5-turbo-0125": {
+        "max_tokens": 16384,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.0000005,
+        "completion_cost_per_token": 0.0000015,
+    },
+    "gpt-3.5-turbo-1106": {
+        "max_tokens": 16384,
+        "max_output_tokens": 4096,
+        "prompt_cost_per_token": 0.000001,
+        "completion_cost_per_token": 0.000002,
+    },
+}
+
+_NEWER_EMBEDDING_CONFIG = {
+    "text-embedding-3-small": {
+        "max_tokens": 8192,
+        "prompt_cost_per_token": 0.00000002,
+    },
+    "text-embedding-3-large": {
+        "max_tokens": 8192,
+        "prompt_cost_per_token": 0.00000013,
+    },
+}
+
+_OLDER_EMBEDDING_CONFIG = {
+    "text-embedding-ada-002": {
+        "max_tokens": 8192,
+        "prompt_cost_per_token": 0.0000001,
+    },
+}
+
+
+EMBEDDING_CONFIG = {}
+EMBEDDING_CONFIG.update(_OLDER_EMBEDDING_CONFIG)
+EMBEDDING_CONFIG.update(_NEWER_EMBEDDING_CONFIG)
+
+MODEL_CONFIG = {}
+MODEL_CONFIG.update(_OLDER_MODEL_CONFIG)
+MODEL_CONFIG.update(_NEWER_MODEL_CONFIG)
+
+MODEL_POINT = {
+    "gpt-4o-mini": "gpt-4o-mini-2024-07-18",
+    "gpt-4o": "gpt-4o-2024-08-06",
+    "gpt-4-turbo": "gpt-4-turbo-2024-04-09",
+    "gpt-4": "gpt-4-0613",
+    "gpt-4-32k": "gpt-4-32k-0613",
+    "gpt-4-vision": "gpt-4-vision-preview",
+    "gpt-3.5-turbo": "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo-16k": "gpt-3.5-turbo-16k-0613",
+    "claude-3-opus": "claude-3-opus-20240229",
+    "claude-3-sonnet": "claude-3-sonnet-20240229",
+    "claude-3-haiku": "claude-3-haiku-20240307",
+    "claude-3-5-sonnet": "claude-3-5-sonnet-20240620",
+}
+
+_MODEL_POINT_CONFIG = {
+    "gpt-4o-mini": MODEL_CONFIG[MODEL_POINT["gpt-4o-mini"]],
+    "gpt-4o": MODEL_CONFIG[MODEL_POINT["gpt-4o"]],
+    "gpt-4-turbo": MODEL_CONFIG[MODEL_POINT["gpt-4-turbo"]],
+    "gpt-4": MODEL_CONFIG[MODEL_POINT["gpt-4"]],
+    "gpt-4-32k": MODEL_CONFIG[MODEL_POINT["gpt-4-32k"]],
+    "gpt-4-vision": MODEL_CONFIG[MODEL_POINT["gpt-4-vision"]],
+    "gpt-3.5-turbo": MODEL_CONFIG[MODEL_POINT["gpt-3.5-turbo"]],
+    "gpt-3.5-turbo-16k": MODEL_CONFIG[MODEL_POINT["gpt-3.5-turbo-16k"]],
+    "claude-3-opus": MODEL_CONFIG[MODEL_POINT["claude-3-opus"]],
+    "claude-3-5-sonnet": MODEL_CONFIG[MODEL_POINT["claude-3-5-sonnet"]],
+    "claude-3-sonnet": MODEL_CONFIG[MODEL_POINT["claude-3-sonnet"]],
+    "claude-3-haiku": MODEL_CONFIG[MODEL_POINT["claude-3-haiku"]],
+}
+
+# contains all the models and embeddings info
+MODEL_CONFIG.update(_MODEL_POINT_CONFIG)
+
+# produces a list of all models and embeddings available
+MODEL_ZOO = set(MODEL_CONFIG.keys()) | set(EMBEDDING_CONFIG.keys())
+
+# SOURCE: https://github.com/JuliusHenke/autopentest/blob/ca822f723a356ec974d2dff332c2d92389a4c5e3/src/text_embeddings.py#L19
+# https://platform.openai.com/docs/guides/embeddings/embedding-models
+EMBEDDING_MODEL_DIMENSIONS_DATA = {
+    "text-embedding-ada-002": 1536,
+    "text-embedding-3-small": 512,
+    "text-embedding-3-large": 1024,
+}
 
 
 # NOTE: DIRTY HACK TO GET AROUND CIRCULAR IMPORTS
@@ -305,6 +519,126 @@ class AioSettings(BaseSettings):
     postgres_collection_name: Optional[str] = "langchain"
     postgres_user: Optional[str] = "langchain"
     enable_postgres: bool = True
+
+    # OpenAI model settings
+    openai_model_zoo: set[str] = Field(
+        env="OPENAI_MODEL_ZOO",
+        description="Set of all available models and embeddings",
+        default_factory=lambda: MODEL_ZOO,
+    )
+    openai_model_config: dict[str, dict[str, Union[int, float]]] = Field(
+        env="OPENAI_MODEL_CONFIG", description="Configuration for all models", default_factory=lambda: MODEL_CONFIG
+    )
+    openai_model_point: dict[str, str] = Field(
+        env="OPENAI_MODEL_POINT",
+        description="Mapping of model names to their latest version",
+        default_factory=lambda: MODEL_POINT,
+    )
+    openai_model_point_config: dict[str, dict[str, Union[int, float]]] = Field(
+        env="OPENAI_MODEL_POINT_CONFIG",
+        description="Configuration for the latest version of each model",
+        default_factory=lambda: _MODEL_POINT_CONFIG,
+    )
+    openai_embedding_model_dimensions_data: dict[str, int] = Field(
+        env="OPENAI_EMBEDDING_MODEL_DIMENSIONS_DATA",
+        description="Dimensions of each embedding model",
+        default_factory=lambda: EMBEDDING_MODEL_DIMENSIONS_DATA,
+    )
+
+    # Evaluation settings
+    eval_max_concurrency: int = Field(
+        env="EVAL_MAX_CONCURRENCY", description="Maximum number of concurrent evaluations", default=4
+    )
+    llm_model_name: str = Field(env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini")
+    provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
+    chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)
+    chunk_overlap: int = Field(env="CHUNK_OVERLAP", description="Overlap between text chunks", default=200)
+    add_start_index: bool = Field(
+        env="ADD_START_INDEX", description="Whether to add start index to text chunks", default=False
+    )
+    llm_embedding_model_name: str = Field(
+        env="LLM_EMBEDDING_MODEL_NAME",
+        description="Name of the embedding model to use",
+        default="text-embedding-3-large",
+    )
+    default_search_kwargs: dict[str, int] = Field(
+        env="DEFAULT_SEARCH_KWARGS",
+        description="Default arguments for similarity search",
+        default_factory=lambda: {"k": 2},
+    )
+    question_to_ask: str = Field(
+        env="QUESTION_TO_ASK",
+        description="Question to ask for evaluation",
+        default="What is the main cause of climate change?",
+    )
+    dataset_name: str = Field(
+        env="DATASET_NAME", description="Name of the dataset to use for evaluation", default="Climate Change Q&A"
+    )
+
+    # Model-specific settings
+    max_tokens: int = Field(env="MAX_TOKENS", description="Maximum number of tokens for the model")
+    max_output_tokens: int = Field(env="MAX_OUTPUT_TOKENS", description="Maximum number of output tokens for the model")
+    prompt_cost_per_token: float = Field(env="PROMPT_COST_PER_TOKEN", description="Cost per token for prompts")
+    completion_cost_per_token: float = Field(
+        env="COMPLETION_COST_PER_TOKEN", description="Cost per token for completions"
+    )
+    max_retries: int = Field(env="MAX_RETRIES", description="Maximum number of retries for API calls", default=9)
+
+    # Embedding settings
+    embedding_max_tokens: int = Field(env="EMBEDDING_MAX_TOKENS", description="Maximum number of tokens for embeddings")
+    embedding_model_dimensions: int = Field(
+        env="EMBEDDING_MODEL_DIMENSIONS", description="Dimensions of the embedding model"
+    )
+
+    # Evaluation feature flags
+    compare_models_feature_flag: bool = Field(
+        env="COMPARE_MODELS_FEATURE_FLAG", description="Enable comparing different models", default=False
+    )
+    rag_answer_v_reference_feature_flag: bool = Field(
+        env="RAG_ANSWER_V_REFERENCE_FEATURE_FLAG", description="Enable comparing RAG answer to reference", default=False
+    )
+    helpfulness_feature_flag: bool = Field(
+        env="HELPFULNESS_FEATURE_FLAG", description="Enable helpfulness evaluation", default=False
+    )
+    rag_answer_hallucination_feature_flag: bool = Field(
+        env="RAG_ANSWER_HALLUCINATION_FEATURE_FLAG",
+        description="Enable evaluating RAG answer hallucination",
+        default=False,
+    )
+    rag_doc_relevance_feature_flag: bool = Field(
+        env="RAG_DOC_RELEVANCE_FEATURE_FLAG", description="Enable evaluating RAG document relevance", default=False
+    )
+    rag_doc_relevance_and_hallucination_feature_flag: bool = Field(
+        env="RAG_DOC_RELEVANCE_AND_HALLUCINATION_FEATURE_FLAG",
+        description="Enable evaluating RAG document relevance and hallucination",
+        default=False,
+    )
+    rag_answer_accuracy_feature_flag: bool = Field(
+        env="RAG_ANSWER_ACCURACY_FEATURE_FLAG", description="Enable evaluating RAG answer accuracy", default=True
+    )
+    helpfulness_testing_feature_flag: bool = Field(
+        env="HELPFULNESS_TESTING_FEATURE_FLAG", description="Enable helpfulness testing", default=False
+    )
+    rag_string_embedding_distance_metrics_feature_flag: bool = Field(
+        env="RAG_STRING_EMBEDDING_DISTANCE_METRICS_FEATURE_FLAG",
+        description="Enable evaluating RAG string embedding distance metrics",
+        default=False,
+    )
+
+    @model_validator(mode="after")
+    def validate_model(self) -> Self:
+        """
+        Validate the model settings.
+
+        :param values: The values to validate.
+        :return: The validated values.
+        """
+        self.max_tokens = MODEL_CONFIG[self.llm_model_name]["max_tokens"]
+        self.max_output_tokens = MODEL_CONFIG[self.llm_model_name]["max_output_tokens"]
+        self.prompt_cost_per_token = MODEL_CONFIG[self.llm_model_name]["prompt_cost_per_token"]
+        self.completion_cost_per_token = MODEL_CONFIG[self.llm_model_name]["completion_cost_per_token"]
+        self.embedding_max_tokens = EMBEDDING_MODEL_DIMENSIONS_DATA[self.llm_embedding_model_name]
+        return self
 
     @property
     def postgres_url(self) -> URL:

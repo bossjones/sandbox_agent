@@ -290,7 +290,7 @@ gitpython==3.1.43
     # via wandb
 google==3.0.0
     # via pyinspect
-google-ai-generativelanguage==0.6.6
+google-ai-generativelanguage==0.6.9
     # via google-generativeai
 google-api-core==2.19.2
     # via google-ai-generativelanguage

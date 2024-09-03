@@ -344,6 +344,7 @@ repos:
         types:
           - dockerfile
         entry: hadolint
+        exclude: (.tasks|hack|.github)
   - repo: https://github.com/sirosen/texthooks
     rev: 0.6.7
     hooks:
@@ -397,6 +398,7 @@ repos:
     hooks:
       - id: check-dependabot
       - id: check-github-workflows
+        exclude: (.tasks|hack|.github/workflows/_python-vulnerability-scan.yml)
       - id: check-readthedocs
 
     # - repo: https://github.com/scientific-python/cookie

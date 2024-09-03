@@ -21,7 +21,7 @@ on:  # yamllint disable-line rule:truthy
         required: false
         default: false
 env:
-  PYTHON_VERSION: '3.10'
+  PYTHON_VERSION: '3.12'
 jobs:
   build-linux:
     name: goobai Release

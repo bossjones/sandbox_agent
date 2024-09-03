@@ -30,8 +30,8 @@ on:  # yamllint disable-line rule:truthy
         required: false
         default: false
 env:
-  python-version: '3.10'
-  MAIN_PYTHON_VERSION: '3.10'
+  python-version: '3.12'
+  MAIN_PYTHON_VERSION: '3.12'
 jobs:
   test:
     name: test
@@ -55,7 +55,7 @@ jobs:
     if: github.repository == 'bossjones/sandbox_agent'
     env:
       OS: ubuntu-22.04
-      PYTHON: '3.10'
+      PYTHON: '3.12'
       LANGCHAIN_ENDPOINT: https://api.smith.langchain.com
       LANGCHAIN_TRACING_V2: true
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -63,16 +63,13 @@ jobs:
       # Update with your API URL if using a hosted instance of Langsmith.
       LANGCHAIN_HUB_API_URL: https://api.hub.langchain.com
       LANGCHAIN_HUB_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-      LANGCHAIN_PROJECT: goob-ci
+      LANGCHAIN_PROJECT: sandbox_agent
       sandbox_agent_CONFIG_DISCORD_TOKEN: foo
       sandbox_agent_CONFIG_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }}
-          event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by
-          GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref_name }} and your repository
-          is ${{ github.repository }}."
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref_name }} and your repository is ${{ github.repository }}."
       - name: Set up Git repository
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -102,8 +99,7 @@ jobs:
         run: echo "Py${{ env.python-version }}"
       - name: Hash + Timestamp
         shell: bash  # use bash to run date command
-        run: echo "HASH=${{ runner.os }}-${{ runner.arch }}-Py${{ env.python-version
-          }}-$(date -u "+%Y%m")" >> $GITHUB_ENV
+        run: echo "HASH=${{ runner.os }}-${{ runner.arch }}-Py${{ env.python-version }}-$(date -u "+%Y%m")" >> $GITHUB_ENV
 
       #  # SOURCE: https://github.com/wakabame/study_pytorch/blob/327bee3de2c283e1592d806d9b909e8b4af6b9fe/.github/workflows/apply_lint_and_test.yaml#L24
       # - name: Load cached venv
@@ -124,7 +120,7 @@ jobs:
           curl -sSf https://rye.astral.sh/get | bash
           echo "$HOME/.rye/shims" >> $GITHUB_PATH
         env:
-          RYE_VERSION: 0.37.0
+          RYE_VERSION: 0.39.0
           RYE_INSTALL_OPTION: --yes
       - name: install tesseract and ffmpeg
         run: |
@@ -145,7 +141,7 @@ jobs:
           # Update with your API URL if using a hosted instance of Langsmith.
           LANGCHAIN_HUB_API_URL: https://api.hub.langchain.com
           LANGCHAIN_HUB_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-          LANGCHAIN_PROJECT: goob-ci
+          LANGCHAIN_PROJECT: sandbox_agent
           sandbox_agent_CONFIG_DISCORD_TOKEN: foo
           sandbox_agent_CONFIG_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
@@ -170,7 +166,7 @@ jobs:
           # Update with your API URL if using a hosted instance of Langsmith.
           LANGCHAIN_HUB_API_URL: https://api.hub.langchain.com
           LANGCHAIN_HUB_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
-          LANGCHAIN_PROJECT: goob-ci
+          LANGCHAIN_PROJECT: sandbox_agent
           sandbox_agent_CONFIG_DISCORD_TOKEN: foo
           sandbox_agent_CONFIG_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |

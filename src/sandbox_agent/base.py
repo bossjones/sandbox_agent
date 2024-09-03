@@ -149,14 +149,21 @@ class GoobPrompt:
             + [GoobMessage("System", "Now, you will work with the actual current conversation.").render()]
         )
 
-    def render_messages(self, bot_name: str) -> list[dict]:
+    def render_messages(self, bot_name: str) -> list[dict[str, str]]:
         """Renders the messages for the Goob AI.
 
+        This method converts the conversation messages into a format suitable for
+        AI model input, distinguishing between user and assistant messages.
+
         Args:
-            bot_name: The name of the bot.
+            bot_name: The name of the bot, used to identify assistant messages.
+
+        Returns:
+            A list of dictionaries, each representing a message with 'role',
+            'name', and 'content' keys. The 'role' is either 'user' or 'assistant'.
 
         Yields:
-            The rendered messages as dictionaries.
+            dict[str, str]: A dictionary representing each message in the conversation.
         """
         for message in self.convo.messages:
             if bot_name not in message.user:

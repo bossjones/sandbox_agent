@@ -52,14 +52,6 @@ FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
 print(f"HERE: {HERE}")
 
 
-# from sandbox_agent.gen_ai.vectorstore import PGVectorDatabase, PineconeDatabase
-# from sandbox_agent.models.vectorstores import (
-#     EmbeddingsProvider,
-#     PgvectorIntegration,
-#     PineconeIntegration,
-# )
-
-
 ########################################## vcr ##########################################
 @dataclass
 class TestContext:

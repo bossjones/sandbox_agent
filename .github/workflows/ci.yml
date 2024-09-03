@@ -35,7 +35,7 @@ env:
 jobs:
   test:
     name: test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     #  # Service containers to run with `runner-job`
     # services:
@@ -54,7 +54,7 @@ jobs:
     #       - 7600:7600
     if: github.repository == 'bossjones/sandbox_agent'
     env:
-      OS: ubuntu-22.04
+      OS: ubuntu-24.04
       PYTHON: '3.12'
       LANGCHAIN_ENDPOINT: https://api.smith.langchain.com
       LANGCHAIN_TRACING_V2: true

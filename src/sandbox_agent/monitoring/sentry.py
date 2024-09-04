@@ -1,3 +1,4 @@
+# pylint: disable=no-member
 """sandbox_agent sentry integration"""
 
 from __future__ import annotations
@@ -49,7 +50,7 @@ def sentry_init(**sentry_init_kwargs):
     kwargs.update(**sentry_init_kwargs)
     # pylint: disable=abstract-class-instantiated
     sentry_sdk_init(
-        dsn=aiosettings.sentry_dsn,
+        dsn=aiosettings.sentry_dsn.get_secret_value(),
         integrations=[
             ArgvIntegration(),
             StdlibIntegration(),

@@ -481,6 +481,9 @@ skip_covered = false
 
 # =========================[ PYTEST INI OPTIONS ]========================
 [tool.pytest.ini_options]
+filterwarnings = [
+    'ignore:configuration option "asyncio_default_fixture_loop_scope" is unset',
+]
 # retries = 5
 # retry_delay = 0.5
 # retry_delay = 30

@@ -13,6 +13,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Union, cast
 
+from loguru import logger as LOGGER
 from pydantic import (
     AliasChoices,
     AmqpDsn,
@@ -23,10 +24,8 @@ from pydantic import (
     RedisDsn,
     SecretBytes,
     SecretStr,
-    ValidationError,
     field_serializer,
     model_validator,
-    root_validator,
 )
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from rich.console import Console
@@ -35,6 +34,25 @@ from typing_extensions import Self, TypedDict
 from yarl import URL
 
 from sandbox_agent import __version__
+
+
+#     AliasChoices,
+#     AmqpDsn,
+#     BaseModel,
+#     Field,
+#     ImportString,
+#     PostgresDsn,
+#     RedisDsn,
+#     SecretBytes,
+#     SecretStr,
+#     ValidationError,
+#     field_serializer,
+#     model_validator,
+# "claude-instant-1.2": 100000,
+# "claude-3-opus-20240229": 200000,
+# "claude-3-sonnet-20240229": 200000,
+# "claude-3-5-sonnet-20240620": 200000,
+# "claude-3-haiku-20240307": 200000,
 
 
 def goob_user_agent() -> str:
@@ -99,11 +117,6 @@ _OLDER_MODEL_CONFIG = {
     },
 }
 
-# "claude-instant-1.2": 100000,
-# "claude-3-opus-20240229": 200000,
-# "claude-3-sonnet-20240229": 200000,
-# "claude-3-5-sonnet-20240620": 200000,
-# "claude-3-haiku-20240307": 200000,
 
 _NEWER_MODEL_CONFIG = {
     "claude-3-5-sonnet-20240620": {
@@ -336,8 +349,13 @@ class AioSettings(BaseSettings):
 
     # You can change the prefix for all environment variables by setting the env_prefix config setting, or via the _env_prefix keyword argument on instantiation:
 
+    # add a comment to each line in model_config explaining what it does
     model_config = SettingsConfigDict(
-        env_prefix="GOOB_AI_CONFIG_", env_file=(".env", ".envrc"), env_file_encoding="utf-8"
+        env_prefix="GOOB_AI_CONFIG_",
+        env_file=(".env", ".envrc"),
+        env_file_encoding="utf-8",
+        extra="allow",
+        arbitrary_types_allowed=True,
     )
 
     monitor_host: str = "localhost"
@@ -411,11 +429,12 @@ class AioSettings(BaseSettings):
     redis_host: str = "localhost"
     redis_port: int = 7600
     redis_user: Optional[str] = None
-    redis_pass: Optional[SecretStr] = None
+    redis_pass: SecretStr | None = None
     redis_base: Optional[int] = None
     enable_redis: bool = False
+    redis_url: URL | str | None = None
 
-    sentry_dsn: str = ""
+    sentry_dsn: SecretStr = ""
     enable_sentry: bool = False
 
     # Variables for ChromaDB
@@ -520,36 +539,38 @@ class AioSettings(BaseSettings):
     postgres_user: Optional[str] = "langchain"
     enable_postgres: bool = True
 
-    # OpenAI model settings
-    openai_model_zoo: set[str] = Field(
-        env="OPENAI_MODEL_ZOO",
-        description="Set of all available models and embeddings",
-        default_factory=lambda: MODEL_ZOO,
-    )
-    openai_model_config: dict[str, dict[str, Union[int, float]]] = Field(
-        env="OPENAI_MODEL_CONFIG", description="Configuration for all models", default_factory=lambda: MODEL_CONFIG
-    )
-    openai_model_point: dict[str, str] = Field(
-        env="OPENAI_MODEL_POINT",
-        description="Mapping of model names to their latest version",
-        default_factory=lambda: MODEL_POINT,
-    )
-    openai_model_point_config: dict[str, dict[str, Union[int, float]]] = Field(
-        env="OPENAI_MODEL_POINT_CONFIG",
-        description="Configuration for the latest version of each model",
-        default_factory=lambda: _MODEL_POINT_CONFIG,
-    )
-    openai_embedding_model_dimensions_data: dict[str, int] = Field(
-        env="OPENAI_EMBEDDING_MODEL_DIMENSIONS_DATA",
-        description="Dimensions of each embedding model",
-        default_factory=lambda: EMBEDDING_MODEL_DIMENSIONS_DATA,
-    )
+    # # OpenAI model settings
+    # openai_model_zoo: set[str] = Field(
+    #     env="OPENAI_MODEL_ZOO",
+    #     description="Set of all available models and embeddings",
+    #     default_factory=lambda: MODEL_ZOO,
+    # )
+    # openai_model_config: dict[str, dict[str, Union[int, float]]] = Field(
+    #     env="OPENAI_MODEL_CONFIG", description="Configuration for all models", default_factory=lambda: MODEL_CONFIG
+    # )
+    # openai_model_point: dict[str, str] = Field(
+    #     env="OPENAI_MODEL_POINT",
+    #     description="Mapping of model names to their latest version",
+    #     default_factory=lambda: MODEL_POINT,
+    # )
+    # openai_model_point_config: dict[str, dict[str, Union[int, float]]] = Field(
+    #     env="OPENAI_MODEL_POINT_CONFIG",
+    #     description="Configuration for the latest version of each model",
+    #     default_factory=lambda: _MODEL_POINT_CONFIG,
+    # )
+    # openai_embedding_model_dimensions_data: dict[str, int] = Field(
+    #     env="OPENAI_EMBEDDING_MODEL_DIMENSIONS_DATA",
+    #     description="Dimensions of each embedding model",
+    #     default_factory=lambda: EMBEDDING_MODEL_DIMENSIONS_DATA,
+    # )
 
     # Evaluation settings
     eval_max_concurrency: int = Field(
         env="EVAL_MAX_CONCURRENCY", description="Maximum number of concurrent evaluations", default=4
     )
-    llm_model_name: str = Field(env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini")
+    llm_model_name: str = Field(
+        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
+    )
     provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
     chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)
     chunk_overlap: int = Field(env="CHUNK_OVERLAP", description="Overlap between text chunks", default=200)
@@ -576,21 +597,10 @@ class AioSettings(BaseSettings):
     )
 
     # Model-specific settings
-    max_tokens: int = Field(env="MAX_TOKENS", description="Maximum number of tokens for the model")
-    max_output_tokens: int = Field(env="MAX_OUTPUT_TOKENS", description="Maximum number of output tokens for the model")
-    prompt_cost_per_token: float = Field(env="PROMPT_COST_PER_TOKEN", description="Cost per token for prompts")
-    completion_cost_per_token: float = Field(
-        env="COMPLETION_COST_PER_TOKEN", description="Cost per token for completions"
-    )
+    max_tokens: int = Field(env="MAX_TOKENS", description="Maximum number of tokens for the model", default=900)
     max_retries: int = Field(env="MAX_RETRIES", description="Maximum number of retries for API calls", default=9)
 
-    # Embedding settings
-    embedding_max_tokens: int = Field(env="EMBEDDING_MAX_TOKENS", description="Maximum number of tokens for embeddings")
-    embedding_model_dimensions: int = Field(
-        env="EMBEDDING_MODEL_DIMENSIONS", description="Dimensions of the embedding model"
-    )
-
-    # Evaluation feature flags
+    # # Evaluation feature flags
     compare_models_feature_flag: bool = Field(
         env="COMPARE_MODELS_FEATURE_FLAG", description="Enable comparing different models", default=False
     )
@@ -625,19 +635,60 @@ class AioSettings(BaseSettings):
         default=False,
     )
 
-    @model_validator(mode="after")
-    def validate_model(self) -> Self:
-        """
-        Validate the model settings.
+    @model_validator(mode="before")
+    @classmethod
+    def pre_update(cls, values: dict[str, Any]) -> dict[str, Any]:
+        llm_model_name = values.get("llm_model_name")
+        llm_embedding_model_name = values.get("llm_embedding_model_name")
+        LOGGER.info(f"llm_model_name: {llm_model_name}")
+        LOGGER.info(f"llm_embedding_model_name: {llm_embedding_model_name}")
+        if llm_model_name:
+            values["max_tokens"] = MODEL_CONFIG[llm_model_name]["max_tokens"]
+            values["max_output_tokens"] = MODEL_CONFIG[llm_model_name]["max_output_tokens"]
+            values["prompt_cost_per_token"] = MODEL_CONFIG[llm_model_name]["prompt_cost_per_token"]
+            values["completion_cost_per_token"] = MODEL_CONFIG[llm_model_name]["completion_cost_per_token"]
+            if llm_embedding_model_name:
+                values["embedding_max_tokens"] = EMBEDDING_MODEL_DIMENSIONS_DATA[llm_embedding_model_name]
+                values["embedding_model_dimensions"] = EMBEDDING_MODEL_DIMENSIONS_DATA[llm_embedding_model_name]
+        else:
+            llm_model_name = "gpt-4o-mini"
+            llm_embedding_model_name = "text-embedding-3-large"
+            LOGGER.info(f"setting default llm_model_name: {llm_model_name}")
+            LOGGER.info(f"setting default llm_embedding_model_name: {llm_embedding_model_name}")
+            values["max_tokens"] = MODEL_CONFIG[llm_model_name]["max_tokens"]
+            values["max_output_tokens"] = MODEL_CONFIG[llm_model_name]["max_output_tokens"]
+            values["prompt_cost_per_token"] = MODEL_CONFIG[llm_model_name]["prompt_cost_per_token"]
+            values["completion_cost_per_token"] = MODEL_CONFIG[llm_model_name]["completion_cost_per_token"]
+            values["embedding_max_tokens"] = EMBEDDING_MODEL_DIMENSIONS_DATA[llm_embedding_model_name]
+            values["embedding_model_dimensions"] = EMBEDDING_MODEL_DIMENSIONS_DATA[llm_embedding_model_name]
 
-        :param values: The values to validate.
-        :return: The validated values.
-        """
-        self.max_tokens = MODEL_CONFIG[self.llm_model_name]["max_tokens"]
-        self.max_output_tokens = MODEL_CONFIG[self.llm_model_name]["max_output_tokens"]
-        self.prompt_cost_per_token = MODEL_CONFIG[self.llm_model_name]["prompt_cost_per_token"]
-        self.completion_cost_per_token = MODEL_CONFIG[self.llm_model_name]["completion_cost_per_token"]
-        self.embedding_max_tokens = EMBEDDING_MODEL_DIMENSIONS_DATA[self.llm_embedding_model_name]
+        return values
+
+    @model_validator(mode="after")
+    def post_root(self) -> Self:
+        redis_path = f"/{self.redis_base}" if self.redis_base is not None else ""
+        redis_pass = self.redis_pass if self.redis_pass is not None else None
+        redis_user = self.redis_user if self.redis_user is not None else None
+        LOGGER.info(f"redis_path: {redis_path}")
+        LOGGER.info(f"redis_pass: {redis_pass}")
+        LOGGER.info(f"redis_user: {redis_user}")
+        if redis_pass is None and redis_user is None:
+            self.redis_url = URL.build(
+                scheme="redis",
+                host=self.redis_host,
+                port=self.redis_port,
+                path=redis_path,
+            )
+        else:
+            self.redis_url = URL.build(
+                scheme="redis",
+                host=self.redis_host,
+                port=self.redis_port,
+                path=redis_path,
+                user=redis_user,
+                password=redis_pass.get_secret_value(),
+            )
+
         return self
 
     @property
@@ -649,22 +700,22 @@ class AioSettings(BaseSettings):
         """
         return f"postgresql+{self.postgres_driver}://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database}"
 
-    @property
-    def redis_url(self) -> URL:
-        """
-        Assemble REDIS URL from settings.
+    # @property
+    # def redis_url(self) -> URL:
+    #     """
+    #     Assemble REDIS URL from settings.
 
-        :return: redis URL.
-        """
-        path = f"/{self.redis_base}" if self.redis_base is not None else ""
-        return URL.build(
-            scheme="redis",
-            host=self.redis_host,
-            port=self.redis_port,
-            user=self.redis_user,
-            password=self.redis_pass,
-            path=path,
-        )
+    #     :return: redis URL.
+    #     """
+    #     path = f"/{self.redis_base}" if self.redis_base is not None else ""
+    #     return URL.build(
+    #         scheme="redis",
+    #         host=self.redis_host,
+    #         port=self.redis_port,
+    #         user=self.redis_user,
+    #         password=self.redis_pass.get_secret_value(),
+    #         path=path,
+    #     )
 
     @field_serializer(
         "discord_token",

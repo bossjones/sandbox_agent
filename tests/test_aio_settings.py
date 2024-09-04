@@ -274,14 +274,14 @@ class TestSettings:
         assert test_settings.globals_internet_available == True
         assert test_settings.globals_log_tokenization == False
         assert test_settings.globals_try_patchmatch == True
-        assert test_settings.groq_api_key in ["**********", "", None]
+        assert test_settings.groq_api_key in ["**********", "", None, SecretStr("")]
         assert test_settings.helpfulness_feature_flag == False
         assert test_settings.helpfulness_testing_feature_flag == False
         assert test_settings.http_client_debug_enabled == False
-        assert test_settings.langchain_api_key in ["**********", "", None]
+        assert test_settings.langchain_api_key in ["**********", "", None, SecretStr("")]
         assert test_settings.langchain_debug_logs == False
         assert test_settings.langchain_endpoint == "https://api.smith.langchain.com"
-        assert test_settings.langchain_hub_api_key in ["**********", "", None]
+        assert test_settings.langchain_hub_api_key in ["**********", "", None, SecretStr("")]
         assert test_settings.langchain_hub_api_url == "https://api.hub.langchain.com"
         assert test_settings.langchain_project == "sandbox_agent"
         assert test_settings.langchain_tracing_v2 == True
@@ -319,7 +319,7 @@ class TestSettings:
         assert test_settings.question_to_ask == "What is the meaning of life?"
         assert test_settings.redis_base == 0
         assert test_settings.redis_host == "localhost"
-        assert test_settings.redis_pass in ["**********", "", None]
+        assert test_settings.redis_pass in ["**********", "", None, SecretStr("")]
         assert test_settings.redis_port == 7600
         assert test_settings.redis_url == "redis://localhost:7600"
         assert test_settings.redis_user is None
@@ -328,9 +328,9 @@ class TestSettings:
         assert test_settings.retry_wait_exponential_min == 1
         assert test_settings.retry_wait_exponential_multiplier == 2
         assert test_settings.retry_wait_fixed == 15
-        assert test_settings.sentry_dsn in ["**********", "", None]
-        assert test_settings.tavily_api_key in ["**********", "", None]
-        assert test_settings.unstructured_api_key in ["**********", "", None]
+        assert test_settings.sentry_dsn in ["**********", "", None, SecretStr("")]
+        assert test_settings.tavily_api_key in ["**********", "", None, SecretStr("")]
+        assert test_settings.unstructured_api_key in ["**********", "", None, SecretStr("")]
         assert test_settings.unstructured_api_url == "https://api.unstructured.io/v2/general"
         assert test_settings.vision_model == "gpt-4o"
 

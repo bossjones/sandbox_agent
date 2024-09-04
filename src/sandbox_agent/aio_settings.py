@@ -471,7 +471,11 @@ class AioSettings(BaseSettings):
     pinecone_index: str = Field(env="PINECONE_INDEX", description="pinecone index", default="")
 
     unstructured_api_key: SecretStr = Field(env="UNSTRUCTURED_API_KEY", description="unstructured api key", default="")
-    unstructured_api_url: str = Field(env="UNSTRUCTURED_API_URL", description="unstructured api url", default="")
+    unstructured_api_url: str = Field(
+        env="UNSTRUCTURED_API_URL",
+        description="unstructured api url",
+        default="https://api.unstructured.io/general/v0/general",
+    )
 
     anthropic_api_key: SecretStr = Field(env="ANTHROPIC_API_KEY", description="claude api key", default="")
     groq_api_key: SecretStr = Field(env="GROQ_API_KEY", description="groq api key", default="")

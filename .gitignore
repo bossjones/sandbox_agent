@@ -373,3 +373,7 @@ ruff_config.toml
 notebooks/e2e_evals.ipynb
 src/sandbox_agent/data/chroma/vectorstorage/
 file.out
+
+typingcov_cobertura/*
+typingcov_xml/*
+typingcov_txt

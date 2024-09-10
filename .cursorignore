@@ -323,7 +323,10 @@ deeplearning_data/**/*.webp
 *.pth
 *.zip
 
-# typingcov/
+!typingcov/*
+!typingcov_cobertura/*
+!typingcov_xml/*
+
 # diditwork.webp
 # temp/
 *.pdf
@@ -348,3 +351,4 @@ ruff_config.toml
 notebooks/e2e_evals.ipynb
 tests/services/cassettes/.*
 src/sandbox_agent/data/chroma/vectorstorage/
+typingcov_txt

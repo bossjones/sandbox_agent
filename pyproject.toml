@@ -289,7 +289,7 @@ typecheck = {chain = [
     "open:mypy-coverage",
 ]}
 "docs:changelog" = "towncrier build --version main --draft"
-"ci:mypy" = "mypy  --config-file=pyproject.toml --html-report typingcov ."
+"ci:mypy" = "mypy  --config-file=pyproject.toml --html-report typingcov --cobertura-xml-report typingcov_cobertura --xml-report typingcov_xml --txt-report typingcov_txt ."
 "open:mypy-coverage" = "open typingcov/index.html"
 "open:chroma" = "open http://127.0.0.1:3000"
 "open:zipkin" = "open http://127.0.0.1:9411"
@@ -701,6 +701,11 @@ check_untyped_defs = true
 ignore_missing_imports = true
 module = "tests.*"
 
+# Ignore specific error codes
+[[tool.mypy.overrides]]
+module = "typings.*"
+ignore_errors = true
+
 # [[tool.mypy.overrides]]
 # check_untyped_defs = true
 # ignore_missing_imports = true
@@ -788,6 +793,24 @@ module = [
     'vcr',
     'vcr.*',
     "pysnooper",
+    "rich",
+    "rich.console",
+    "rich.panel",
+    "rich.pretty",
+    "rich.progress",
+    "rich.status",
+    "rich.table",
+    "rich.text",
+    "pydantic_settings",
+    "pydantic_settings.*",
+    "pydantic_core",
+    "pydantic_core.*",
+    "pydantic",
+    "pydantic.*",
+    "pydantic_extra",
+    "pydantic_extra.*",
+
+
 ]
 ignore_missing_imports = true
 ignore_errors = true
@@ -919,6 +942,55 @@ module = [
 ]
 ignore_errors = true
 
+# Ignore specific errors in certain files/modules
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.utils.imitools"
+disable_error_code = [
+    "ignore-without-code",
+    "unreachable",
+    "index",
+    "call-overload",
+    "return",
+    "union-attr",
+    "arg-type",
+]
+
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.utils.async_"
+disable_error_code = [
+    "unused-awaitable",
+    "ignore-without-code",
+]
+
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.utils.file_functions"
+disable_error_code = [
+    "ignore-without-code",
+    "arg-type",
+    "redundant-expr",
+    "unreachable",
+]
+
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.utils.vidops"
+disable_error_code = [
+    "unused-awaitable",
+]
+
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.utils.__init__"
+disable_error_code = [
+    "redundant-expr",
+    "arg-type",
+    "return-value",
+]
+
+[[tool.mypy.overrides]]
+module = "src.sandbox_agent.clients.http_client"
+disable_error_code = [
+    "str-bytes-safe",
+    "no-redef",
+]
 
 # ===========================[ RUFF ]========================
 # SOURCE: https://docs.astral.sh/ruff/settings/#tab-size

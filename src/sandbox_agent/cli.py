@@ -56,14 +56,13 @@ import sandbox_agent
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
 from sandbox_agent.asynctyper import AsyncTyper
 from sandbox_agent.bot_logger import get_logger, global_log_config
-
-# from sandbox_agent.services.chroma_service import ChromaService
-# from sandbox_agent.services.screencrop_service import ImageService
 from sandbox_agent.utils import repo_typing
 from sandbox_agent.utils.base import print_line_seperator
 from sandbox_agent.utils.file_functions import fix_path
 
 
+# from sandbox_agent.services.chroma_service import ChromaService
+# from sandbox_agent.services.screencrop_service import ImageService
 # from sandbox_agent import db
 # from sandbox_agent.monitoring.sentry import sentry_init
 # from sandbox_agent.bot import AsyncGoobBot

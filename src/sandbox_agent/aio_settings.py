@@ -467,7 +467,7 @@ class AioSettings(BaseSettings):
     retry_wait_fixed: Union[int, float] = 15
 
     pinecone_api_key: SecretStr = Field(env="PINECONE_API_KEY", description="pinecone api key", default="")
-    pinecone_env: str = Field(env="PINECONE_ENV", description="pinecone env", default="")
+    pinecone_env: str = Field(env="PINECONE_ENV", description="pinecone env", default="local")
     pinecone_index: str = Field(env="PINECONE_INDEX", description="pinecone index", default="")
 
     unstructured_api_key: SecretStr = Field(env="UNSTRUCTURED_API_KEY", description="unstructured api key", default="")

@@ -1,11 +1,14 @@
 ---
 name: Sync labels
 on:  # yamllint disable-line rule:truthy
-    # You can run this with every type of event, but it's better to run it only when you actually need it.
+  # You can run this with every type of event, but it's better to run it only when you actually need it.
   workflow_dispatch:
   push:
-    branches: [main, master]
-    paths: [.github/labels.yml]
+    branches:
+      - main
+      - master
+    paths:
+      - .github/labels.yml
 jobs:
   build:
     runs-on: ubuntu-latest

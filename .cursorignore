@@ -177,7 +177,7 @@ docker/
 .tox/
 *,cover
 cov_annotate
-cov.xml
+!cov.xml
 coverage.xml
 htmlcov
 htmlcov/
@@ -270,7 +270,6 @@ database/messages.db
 dbdata
 
 
-cov.xml
 cov_annotate
 
 

@@ -59,9 +59,15 @@ select = [
 
 When working inside of pyproject.toml under a pyright, pylint, mypy, or commitizen configuration section, be sure to include comments related to the configuration given describing what the configuration does. For pylint use https://pylint.pycqa.org/en/latest/user_guide/checkers/features.html and https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html, for pyright use https://microsoft.github.io/pyright/#/configuration?id=main-configuration-options, for mypy use https://mypy.readthedocs.io/en/stable/config_file.html, and for commitizen use https://commitizen-tools.github.io/commitizen/configuration/.
 
-All tests should be fully annotated and should contain docstrings. Be sure to import  the following if TYPE_CHECKING:
+All tests should be fully annotated and should contain docstrings. Be sure to import  the following
+
+if TYPE_CHECKING:
     from _pytest.capture import CaptureFixture
     from _pytest.fixtures import FixtureRequest
     from _pytest.logging import LogCaptureFixture
     from _pytest.monkeypatch import MonkeyPatch
     from pytest_mock.plugin import MockerFixture
+
+
+
+Using the test coverage reports ./cov.xml and contents of source code and corresponding test files, suggest new test cases that would increase coverage of the source code.

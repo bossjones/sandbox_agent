@@ -883,7 +883,7 @@
 #     # Data model for grade
 #     class GradeAnswerScore(BaseModel):
 #         """A numerical score for answer accuracy."""
-#         score: int = Field(description="Answer matches the grond truth, score from 1 to 10")
+#         score: int = Field(description="Answer matches the ground truth, score from 1 to 10")
 
 #     # LLM with function call, use highest capacity model
 #     llm = ChatOpenAI(model="gpt-4-turbo", temperature=0,  max_tokens=MAX_TOKENS, name="ChatOpenAI-rag-document-relevance", max_retries=MAX_RETRIES)

@@ -499,7 +499,9 @@ class AioSettings(BaseSettings):
     langchain_hub_api_key: SecretStr = Field(
         env="LANGCHAIN_HUB_API_KEY", description="langchain hub api key for langsmith", default=""
     )
-    langchain_project: str = Field(env="LANGCHAIN_PROJECT", description="langsmith project name", default="")
+    langchain_project: str = Field(
+        env="LANGCHAIN_PROJECT", description="langsmith project name", default="sandbox_agent"
+    )
     debug_aider: bool = Field(env="DEBUG_AIDER", description="debug tests stuff written by aider", default=False)
 
     local_test_debug: bool = Field(env="LOCAL_TEST_DEBUG", description="enable local debug testing", default=False)

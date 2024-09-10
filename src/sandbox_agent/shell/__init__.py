@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-"""sandbox_agent.shell"""
-# pylint: disable=consider-using-with
+"""sandbox_agent.shell module containing utility functions for running shell commands."""
 
 from __future__ import annotations
 
@@ -23,18 +22,16 @@ from codetiming import Timer
 HOME_PATH = os.environ.get("HOME")
 
 
-async def _aio_run_process_and_communicate(cmd: list[str], cwd: Union[str, None] = None):
+async def _aio_run_process_and_communicate(cmd: list[str], cwd: Union[str, None] = None) -> str:
     """
-    _summary_
+    Run a command asynchronously using asyncio.create_subprocess_exec and communicate.
 
     Args:
-    ----
-        cmd (List[str]): _description_
+        cmd (List[str]): The command to run as a list of strings.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
 
     Returns:
-    -------
-        _type_: _description_
-
+        str: The decoded stdout output of the command.
     """
     program = cmd
     process: Process = await asyncio.create_subprocess_exec(*program, stdout=asyncio.subprocess.PIPE, cwd=cwd)
@@ -44,7 +41,17 @@ async def _aio_run_process_and_communicate(cmd: list[str], cwd: Union[str, None]
 
 
 def _stat_y_file(fname: str, env: dict = None, cwd: Union[str, None] = None) -> str:
-    # """Get the timestamp of a file."""
+    """
+    Get the timestamp of a file using the 'stat' command.
+
+    Args:
+        fname (str): The name of the file to get the timestamp for.
+        env (dict, optional): Environment variables to use when running the command. Defaults to None.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
+
+    Returns:
+        str: The timestamp of the file.
+    """
     if env is None:
         env = {}
     cmd_arg_without_str_fmt = f"""stat -c %y {fname}"""
@@ -68,74 +75,64 @@ def _stat_y_file(fname: str, env: dict = None, cwd: Union[str, None] = None) -> 
     return timestamp
 
 
-def _popen(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] = None):
+def _popen(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] = None) -> bytes:
     """
-    _summary_
+    Run a command using subprocess.Popen and read the stdout output.
 
     Args:
-    ----
-        cmd_arg (Tuple): _description_
-        env (dict, optional): _description_. Defaults to None.
-        cwd (Union[str, None], optional): _description_. Defaults to None.
+        cmd_arg (Tuple): The command to run as a tuple of arguments.
+        env (dict, optional): Environment variables to use when running the command. Defaults to None.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
 
     Raises:
-    ------
-        RuntimeError: _description_
+        RuntimeError: If there was an error closing the command stream.
 
     Returns:
-    -------
-        _type_: _description_
-
+        bytes: The stdout output of the command.
     """
     if env is None:
         env = {}
     with open("/dev/null") as devnull:
-        cmd = subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=devnull, env=env, cwd=cwd)
-        retval = cmd.stdout.read().strip()
-        err = cmd.wait()
-        cmd.stdout.close()
-    if err:
-        raise RuntimeError(f"Failed to close {cmd_arg} stream")
+        with subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=devnull, env=env, cwd=cwd) as cmd:
+            retval = cmd.stdout.read().strip()
+            err = cmd.wait()
+        if err:
+            raise RuntimeError(f"Failed to close {cmd_arg} stream")
     return retval
 
 
-def _popen_communicate(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] = None):
+def _popen_communicate(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] = None) -> bytes:
     """
-    _summary_
+    Run a command using subprocess.Popen, wait for it to finish, and read the stdout output.
 
     Args:
-    ----
-        cmd_arg (Tuple): _description_
-        env (dict, optional): _description_. Defaults to None.
-        cwd (Union[str, None], optional): _description_. Defaults to None.
+        cmd_arg (Tuple): The command to run as a tuple of arguments.
+        env (dict, optional): Environment variables to use when running the command. Defaults to None.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
 
     Raises:
-    ------
-        RuntimeError: _description_
+        RuntimeError: If there was an error closing the command stream.
 
     Returns:
-    -------
-        _type_: _description_
-
+        bytes: The stdout output of the command.
     """
     if env is None:
         env = {}
-    devnull = open("/dev/null")
-    cmd = subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env, cwd=cwd)
-
-    try:
-        time.sleep(0.2)
-        retval = cmd.stdout.read().strip()
-        err = cmd.wait()
-
-    finally:
-        cmd.terminate()
+    # devnull = open("/dev/null")
+    with subprocess.Popen(cmd_arg, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env, cwd=cwd) as cmd:
         try:
-            outs, _ = cmd.communicate(timeout=0.2)
-            print("== subprocess exited with rc =", cmd.returncode)
-            print(outs.decode("utf-8"))
-        except subprocess.TimeoutExpired:
-            print("subprocess did not terminate in time")
+            time.sleep(0.2)
+            retval = cmd.stdout.read().strip()
+            err = cmd.wait()
+
+        finally:
+            cmd.terminate()
+            try:
+                outs, _ = cmd.communicate(timeout=0.2)
+                print("== subprocess exited with rc =", cmd.returncode)
+                print(outs.decode("utf-8"))
+            except subprocess.TimeoutExpired:
+                print("subprocess did not terminate in time")
 
     if err:
         raise RuntimeError(f"Failed to close {cmd_arg} stream")
@@ -145,21 +142,22 @@ def _popen_communicate(cmd_arg: tuple, env: dict = None, cwd: Union[str, None] =
 # SOURCE: https://github.com/ARMmbed/mbed-cli/blob/f168237fabd0e32edcb48e214fc6ce2250046ab3/test/util.py
 # Process execution
 class ProcessException(Exception):
-    pass
+    """Exception raised when there is an error running a process."""
 
 
 class ShellConsole:  # pylint: disable=too-few-public-methods
+    """Utility class for printing messages to the console."""
+
     quiet = False
 
     @classmethod
-    def message(cls, str_format, *args):
+    def message(cls, str_format: str, *args: any) -> None:
         """
-        _summary_
+        Print a message to the console if quiet mode is not enabled.
 
         Args:
-        ----
-            str_format (_type_): _description_
-
+            str_format (str): The message format string.
+            *args (any): Arguments to substitute into the format string.
         """
         if cls.quiet:
             return
@@ -174,23 +172,20 @@ class ShellConsole:  # pylint: disable=too-few-public-methods
         sys.stdout.flush()
 
 
-def pquery(command: Union[str, list], stdin: bool = None, **kwargs):
+def pquery(command: Union[str, list], stdin: bool = None, **kwargs: any) -> str:
     """
-    _summary_
+    Run a command using subprocess.Popen and return the decoded stdout output.
 
     Args:
-    ----
-        command (Union[str, list]): _description_
-        stdin (bool, optional): _description_. Defaults to None.
+        command (Union[str, list]): The command to run as a string or list of arguments.
+        stdin (bool, optional): Whether to enable stdin for the process. Defaults to None.
+        **kwargs (any): Additional keyword arguments to pass to subprocess.Popen.
 
     Raises:
-    ------
-        ProcessException: _description_
+        ProcessException: If there was an error running the command.
 
     Returns:
-    -------
-        _type_: _description_
-
+        str: The decoded stdout output of the command.
     """
     # SOURCE: https://github.com/ARMmbed/mbed-cli/blob/f168237fabd0e32edcb48e214fc6ce2250046ab3/test/util.py
     # Example:
@@ -200,8 +195,8 @@ def pquery(command: Union[str, list], stdin: bool = None, **kwargs):
         command = command.split(" ")
         print(f"cmd: {command}")
     try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs)
-        stdout, _ = proc.communicate(stdin)
+        with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, **kwargs) as proc:
+            stdout, _ = proc.communicate(stdin)
     except Exception:
         print("[fail] cmd={command}, ret={proc.returncode}")
         raise
@@ -212,46 +207,42 @@ def pquery(command: Union[str, list], stdin: bool = None, **kwargs):
     return stdout.decode("utf-8")
 
 
-def _popen_stdout(cmd_arg: str, cwd: Union[str, None] = None):
+def _popen_stdout(cmd_arg: str, cwd: Union[str, None] = None) -> None:
     """
-    _summary_
+    Run a command using subprocess.Popen and print the stdout output line by line.
 
     Args:
-    ----
-        cmd_arg (str): _description_
-        cwd (Union[str, None], optional): _description_. Defaults to None.
-
+        cmd_arg (str): The command to run as a string.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
     """
     # if passing a single string, either shell mut be True or else the string must simply name the program to be executed without specifying any arguments
-    cmd = subprocess.Popen(
+    with subprocess.Popen(
         cmd_arg,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         cwd=cwd,
         bufsize=4096,
         shell=True,
-    )
-    ShellConsole.message(f"BEGIN: {cmd_arg}")
-    # output, err = cmd.communicate()
+    ) as cmd:
+        ShellConsole.message(f"BEGIN: {cmd_arg}")
+        # output, err = cmd.communicate()
 
-    for line in iter(cmd.stdout.readline, b""):
-        # Print line
-        _line = line.rstrip()
-        ShellConsole.message(f'>>> {_line.decode("utf-8")}')
+        for line in iter(cmd.stdout.readline, b""):
+            # Print line
+            _line = line.rstrip()
+            ShellConsole.message(f'>>> {_line.decode("utf-8")}')
 
-    ShellConsole.message(f"END: {cmd_arg}")
-    # subprocess.CompletedProcess(args=cmd_arg, returncode=0)
+        ShellConsole.message(f"END: {cmd_arg}")
+        # subprocess.CompletedProcess(args=cmd_arg, returncode=0)
 
 
-def _popen_stdout_lock(cmd_arg: str, cwd: Union[str, None] = None):
+def _popen_stdout_lock(cmd_arg: str, cwd: Union[str, None] = None) -> None:
     """
-    _summary_
+    Run a command using subprocess.Popen with a lock and print the stdout output line by line.
 
     Args:
-    ----
-        cmd_arg (str): _description_
-        cwd (Union[str, None], optional): _description_. Defaults to None.
-
+        cmd_arg (str): The command to run as a string.
+        cwd (Union[str, None], optional): The working directory to run the command in. Defaults to None.
     """
     # if passing a single string, either shell mut be True or else the string must simply name the program to be executed without specifying any arguments
     with subprocess.Popen(
@@ -274,21 +265,21 @@ def _popen_stdout_lock(cmd_arg: str, cwd: Union[str, None] = None):
         subprocess.CompletedProcess(args=cmd_arg, returncode=0)
 
 
-async def run_coroutine_subprocess(cmd: str, uri: str, working_dir: str = f"{pathlib.Path('./').absolute()}"):
+async def run_coroutine_subprocess(cmd: str, uri: str, working_dir: str | None = None) -> str:
     """
-    _summary_
+    Run a command as a coroutine subprocess using asyncio.create_subprocess_shell.
 
     Args:
-    ----
-        cmd (str): _description_
-        uri (str): _description_
-        working_dir (str, optional): _description_. Defaults to f"{pathlib.Path('./').absolute()}".
+        cmd (str): The command to run as a string.
+        uri (str): The URI associated with the command.
+        working_dir (str | None, optional): The working directory to run the command in. Defaults to the current directory.
 
     Returns:
-    -------
-        _type_: _description_
-
+        str: The decoded stdout output of the command.
     """
+    if working_dir is None:
+        working_dir = f"{pathlib.Path('./').absolute()}"
+
     await asyncio.sleep(0.05)
 
     timer = Timer(text=f"Task {__name__} elapsed time: {{:.1f}}")

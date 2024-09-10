@@ -283,7 +283,8 @@ typecheck = {chain = [
     "typecheck:mypy",
 ]}
 "typecheck:pyright" = "pyright -p pyproject.toml ."
-"typecheck:verify-types" = "pyright --verifytypes openai --ignoreexternal"
+# If the --verifytypes option is combined with --ignoreexternal, any incomplete types that are imported from other external packages are ignored. This allows library authors to focus on adding type annotations for the code that is directly under their control.
+"typecheck:verify-types" = "pyright --verifytypes sandbox_agent --ignoreexternal --verbose"
 "typecheck:mypy" = {chain = [
     "ci:mypy",
     "open:mypy-coverage",
@@ -592,15 +593,32 @@ target-version = ["py39", "py310", "py311", "py312"]
 # mypy also accepts per file configuration (comment starting with #mypy: ) https://mypy.readthedocs.io/en/stable/inline_config.html
 # Finally, adding `#type: ignore` after a line, disables mypy checking for that line
 [tool.mypy]
-exclude = [
-    "tasks/",
-    "typings",
-    ".venv",
-    "contrib",
-    "scripts",
-    "venv",
-]
-mypy_path = "typings"
+exclude = '''(?x)(
+    ^tasks/    # anything under tasks directory
+    | ^typings/? # typings directory or typings file
+    | ^\.venv/   # .venv directory
+    | ^contrib/  # contrib directory
+    | ^scripts/  # scripts directory
+    | ^venv/     # venv directory
+)'''
+# exclude = [
+#     "tasks/",
+#     "typings",
+#     "typings/",
+#     ".venv",
+#     "contrib",
+#     "scripts",
+#     "venv",
+
+#     "^tasks/",    # anything under tasks directory
+#     "^typings/?",  # typings directory or typings file
+#     "^.venv/",   # .venv directory
+#     "^contrib/ ",  # contrib directory
+#     "^scripts/ ",  # scripts directory
+#     "^venv/ ",     # venv directory
+# ]
+# Spec
+mypy_path = "src"
 # disable_error_code = import-untyped
 show_column_numbers = true
 disallow_subclassing_any = false

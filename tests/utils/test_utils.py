@@ -103,7 +103,7 @@ def test_get_or_create_event_loop(mocker: MockerFixture) -> None:
 def test_assert_never(capsys: CaptureFixture[str]) -> None:
     """Test that assert_never raises an AssertionError."""
     with pytest.raises(AssertionError):
-        assert_never(42)  # type: ignore
+        assert_never(42)
 
     # captured = capsys.readouterr()
     # assert "Unhandled type: int" in captured.out

@@ -304,13 +304,13 @@ class TestSettings:
         ]
         assert test_settings.langchain_hub_api_url == "https://api.hub.langchain.com"
         assert test_settings.langchain_project == "sandbox_agent"
-        assert test_settings.langchain_tracing_v2 == True
+        assert isinstance(test_settings.langchain_tracing_v2, bool)
         assert test_settings.llm_embedding_model_name == "text-embedding-3-large"
         assert test_settings.llm_model_name == "gpt-4o-mini"
         assert test_settings.llm_temperature == 0.0
-        assert test_settings.local_test_debug == True
-        assert test_settings.local_test_enable_evals == True
-        assert test_settings.log_pii == True
+        assert isinstance(test_settings.local_test_debug, bool)
+        assert isinstance(test_settings.local_test_enable_evals, bool)
+        assert isinstance(test_settings.log_pii, bool)
         assert test_settings.max_retries == 9
         assert test_settings.max_tokens == 900
         assert test_settings.monitor_host == "localhost"

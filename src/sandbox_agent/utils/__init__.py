@@ -91,24 +91,24 @@ def temp_env_update(env: dict[str, str]) -> Iterator[None]:
         os.environ |= old
 
 
-@contextlib.contextmanager
-def monkeypatch(obj: Any, attr: str, new: Any) -> Any:
-    """
-    Temporarily replace a method with a new funtion
+# @contextlib.contextmanager
+# def cxt_monkeypatch(obj: Any, attr: str, new: Any) -> Any:
+#     """
+#     Temporarily replace a method with a new funtion
 
-    The previously set method is passed as the first argument to the new function
-    """
+#     The previously set method is passed as the first argument to the new function
+#     """
 
-    def patched(*args: Any, **kwargs: Any) -> Any:
-        return new(old, *args, **kwargs)
+#     def patched(*args: Any, **kwargs: Any) -> Any:
+#         return new(old, *args, **kwargs)
 
-    old = getattr(obj, attr)
+#     old = getattr(obj, attr)
 
-    try:
-        setattr(obj, attr, patched)
-        yield
-    finally:
-        setattr(obj, attr, old)
+#     try:
+#         setattr(obj, attr, patched)
+#         yield
+#     finally:
+#         setattr(obj, attr, old)
 
 
 def get_or_create_event_loop() -> asyncio.AbstractEventLoop:

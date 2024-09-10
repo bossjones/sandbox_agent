@@ -492,7 +492,9 @@ class AioSettings(BaseSettings):
         env="LANGCHAIN_API_KEY", description="langchain api key for langsmith", default=""
     )
     langchain_hub_api_url: str = Field(
-        env="LANGCHAIN_HUB_API_URL", description="langchain hub api url for langsmith", default=""
+        env="LANGCHAIN_HUB_API_URL",
+        description="langchain hub api url for langsmith",
+        default="https://api.hub.langchain.com",
     )
     langchain_hub_api_key: SecretStr = Field(
         env="LANGCHAIN_HUB_API_KEY", description="langchain hub api key for langsmith", default=""

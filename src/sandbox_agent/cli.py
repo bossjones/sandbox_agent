@@ -221,7 +221,7 @@ def go() -> None:
     asyncio.run(run_bot())
 
 
-def handle_sigterm(signo, frame):
+def handle_sigterm(signo, frame):  # noqa: ARG001: unused argument
     sys.exit(128 + signo)  # this will raise SystemExit and cause atexit to be called
 
 

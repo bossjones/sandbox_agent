@@ -2,13 +2,24 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from typer.testing import CliRunner
 
 import pytest
 
-from sandbox_agent.cli import APP, ChromaChoices
+from sandbox_agent.cli import APP, ChromaChoices, entry, go, handle_sigterm, main, run_bot, run_pyright
 
 
+if TYPE_CHECKING:
+    from unittest.mock import AsyncMock, MagicMock, NonCallableMagicMock
+
+    from _pytest.capture import CaptureFixture
+    from _pytest.fixtures import FixtureRequest
+    from _pytest.logging import LogCaptureFixture
+    from _pytest.monkeypatch import MonkeyPatch
+
+    from pytest_mock.plugin import MockerFixture
 runner = CliRunner()
 
 
@@ -64,3 +75,48 @@ class TestApp:
 
         with pytest.raises(Exit):
             version_callback(True)
+
+    def test_show(self) -> None:
+        """Test the show command."""
+        result = runner.invoke(APP, ["show"])
+        assert result.exit_code == 0
+        assert "Show sandbox_agent" in result.stdout
+
+    def test_main(self) -> None:
+        """Test the main function."""
+        with pytest.raises(SystemExit):
+            main()
+
+    def test_entry(self) -> None:
+        """Test the entry function."""
+        with pytest.raises(SystemExit):
+            entry()
+
+    @pytest.mark.asyncio
+    async def test_run_bot(self) -> None:
+        """Test the run_bot function."""
+        await run_bot()
+        # Add assertions based on the expected behavior of run_bot
+
+    def test_run_pyright(self, mocker: MockerFixture) -> None:
+        """Test the run_pyright function."""
+        # Mock repo_typing.run_pyright
+        mock_run_pyright = mocker.patch("sandbox_agent.utils.repo_typing.run_pyright")
+
+        result = runner.invoke(APP, ["run-pyright"])
+        assert result.exit_code == 0
+        assert "Generating type stubs for GoobAI" in result.stdout
+
+        # Assert that repo_typing.run_pyright was called
+        mock_run_pyright.assert_called_once()
+
+    def test_go(self) -> None:
+        """Test the go function."""
+        result = runner.invoke(APP, ["go"])
+        assert result.exit_code == 0
+        assert "Starting up GoobAI Bot" in result.stdout
+
+    # def test_handle_sigterm(self) -> None:
+    #     """Test the handle_sigterm function."""
+    #     with pytest.raises(SystemExit):
+    #         handle_sigterm(signal.SIGTERM, None)

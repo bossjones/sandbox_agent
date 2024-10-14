@@ -28,7 +28,7 @@ class TestToolFactory:
     )
     def test_create_supported_tools(self, tool_name: str, expected_tool: type, mocker: MockerFixture) -> None:
         """Test that the factory creates the correct tool for supported tool names."""
-        mocker.patch.object(aiosettings, "brave_search_api_key", "dummy_api_key")
+        mocker.patch.object(aiosettings, "brave_search_api_key", SecretStr("dummy_api_key"))
         tool = ToolFactory.create(tool_name)
         assert isinstance(tool, expected_tool)
 

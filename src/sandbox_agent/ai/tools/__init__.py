@@ -13,7 +13,7 @@ class ToolFactory:
         if tool_name == "duckduckgo":
             return DuckDuckGoSearchRun()
         elif tool_name == "brave":
-            return BraveSearch(api_key=aiosettings.brave_search_api_key)
+            return BraveSearch(api_key=aiosettings.brave_search_api_key.get_secret_value())
         # Add more tools as needed
         else:
             raise ValueError(f"Unsupported tool: {tool_name}")

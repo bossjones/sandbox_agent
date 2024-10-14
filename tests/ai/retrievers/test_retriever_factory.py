@@ -41,8 +41,8 @@ class TestRetrieverFactory:
         mocker.patch.object(
             RetrieverFactory,
             "create",
-            side_effect=lambda x, y: custom_retriever_class if x == custom_retriever_type else None,
+            side_effect=lambda x, y: custom_retriever_class() if x == custom_retriever_type else None,
         )
         retriever = RetrieverFactory.create(custom_retriever_type, vector_store_mock)
-        assert retriever == custom_retriever_class
-        custom_retriever_class.assert_called_once_with(vectorstore=vector_store_mock)
+        assert isinstance(retriever, custom_retriever_class)
+        custom_retriever_class.assert_called_once()

@@ -42,6 +42,7 @@ class TestSerializerFactory:
 
     def test_as_dict_with_no_metadata(self) -> None:
         """Test that the as_dict method works correctly with no metadata."""
+
         @dataclasses.dataclass
         class NoMetadataClass(SerializerFactory):
             field1: str
@@ -57,6 +58,7 @@ class TestSerializerFactory:
 
     def test_as_dict_with_custom_coerce_to(self) -> None:
         """Test that the as_dict method works correctly with a custom coerce_to function."""
+
         def custom_coerce(value):
             return f"coerced_{value}"
 

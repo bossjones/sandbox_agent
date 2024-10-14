@@ -13,12 +13,16 @@ import asyncio
 import os
 import sys
 import traceback
+import re
+import aiohttp
 
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
+from io import BytesIO
 
 import discord
 import rich
+from PIL import Image
 
 from codetiming import Timer
 from discord.ext import commands

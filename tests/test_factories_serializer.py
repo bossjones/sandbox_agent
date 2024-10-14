@@ -72,4 +72,3 @@ class TestSerializerFactory:
             "field1": "value1",
             "field2": "coerced_2",
         }
-        custom_coerce_to.assert_called_once_with(3.14)

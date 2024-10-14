@@ -8,7 +8,7 @@ import dataclasses
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 from sandbox_agent.ai.chat_models import ChatModelFactory
 from sandbox_agent.ai.document_loaders import DocumentLoaderFactory
@@ -26,10 +26,11 @@ COERCE_TO = "coerce_to"
 @dataclass
 class SerializerFactory:
     def as_dict(self) -> dict:
-        d = dataclasses.asdict(self)
+        d: Dict[str, Any] = {}
         for f in dataclasses.fields(self):
-            if READ_ONLY in f.metadata.keys():
-                del d[f.name]
-            if COERCE_TO in f.metadata.keys():
-                d[f.name] = f.metadata[COERCE_TO](d[f.name])
+            value = getattr(self, f.name)
+            if READ_ONLY not in f.metadata:
+                if COERCE_TO in f.metadata:
+                    value = f.metadata[COERCE_TO](value)
+                d[f.name] = value
         return d

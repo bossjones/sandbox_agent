@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 @dataclasses.dataclass
-class TestDataclass:
+class TestDataclass(SerializerFactory):
     """A test dataclass for serialization."""
 
     field1: str
@@ -32,8 +32,7 @@ class TestSerializerFactory:
     def test_as_dict(self) -> None:
         """Test that the as_dict method serializes the dataclass correctly."""
         test_obj = TestDataclass("value1", 2, datetime(2023, 5, 1, 12, 0, 0), 3.14)
-        serializer = SerializerFactory()
-        serialized = serializer.as_dict()
+        serialized = test_obj.as_dict()
 
         assert serialized == {
             "field1": "value1",
@@ -41,30 +40,36 @@ class TestSerializerFactory:
             "field4": 3,
         }
 
-    def test_as_dict_with_no_metadata(self, mocker: MockerFixture) -> None:
+    def test_as_dict_with_no_metadata(self) -> None:
         """Test that the as_dict method works correctly with no metadata."""
-        test_obj = TestDataclass("value1", 2, datetime(2023, 5, 1, 12, 0, 0), 3.14)
-        mocker.patch.object(dataclasses, "fields", return_value=[mocker.Mock(metadata={})])
-        serializer = SerializerFactory()
-        serialized = serializer.as_dict()
+        @dataclasses.dataclass
+        class NoMetadataClass(SerializerFactory):
+            field1: str
+            field2: int
 
-        assert serialized == dataclasses.asdict(serializer)
-
-    def test_as_dict_with_custom_coerce_to(self, mocker: MockerFixture) -> None:
-        """Test that the as_dict method works correctly with a custom coerce_to function."""
-        test_obj = TestDataclass("value1", 2, datetime(2023, 5, 1, 12, 0, 0), 3.14)
-        custom_coerce_to = mocker.Mock(return_value="coerced_value")
-        mocker.patch.object(
-            dataclasses,
-            "fields",
-            return_value=[mocker.Mock(metadata={COERCE_TO: custom_coerce_to}, name="field4")],
-        )
-        serializer = SerializerFactory()
-        serialized = serializer.as_dict()
+        test_obj = NoMetadataClass("value1", 2)
+        serialized = test_obj.as_dict()
 
         assert serialized == {
             "field1": "value1",
             "field2": 2,
-            "field4": "coerced_value",
+        }
+
+    def test_as_dict_with_custom_coerce_to(self) -> None:
+        """Test that the as_dict method works correctly with a custom coerce_to function."""
+        def custom_coerce(value):
+            return f"coerced_{value}"
+
+        @dataclasses.dataclass
+        class CustomCoerceClass(SerializerFactory):
+            field1: str
+            field2: int = dataclasses.field(metadata={COERCE_TO: custom_coerce})
+
+        test_obj = CustomCoerceClass("value1", 2)
+        serialized = test_obj.as_dict()
+
+        assert serialized == {
+            "field1": "value1",
+            "field2": "coerced_2",
         }
         custom_coerce_to.assert_called_once_with(3.14)

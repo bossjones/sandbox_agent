@@ -2,6 +2,7 @@
 # pylint: disable=possibly-used-before-assignment
 # pyright: reportImportCycles=false
 # pyright: reportAttributeAccessIssue=false
+# pyright: reportInvalidTypeForm=false
 # mypy: disable-error-code="index"
 # mypy: disable-error-code="no-redef"
 
@@ -56,19 +57,31 @@ THREAD_DATA = defaultdict()
 
 class ProxyObject(discord.Object):
     def __init__(self, guild: Optional[discord.abc.Snowflake]):
+        """
+        Initialize a ProxyObject.
+
+        Args:
+            guild (Optional[discord.abc.Snowflake]): The guild associated with the object.
+        """
         super().__init__(id=0)
         self.guild: Optional[discord.abc.Snowflake] = guild
 
 
 class SandboxAgent(DiscordClient):
     def __init__(self):
+        """Initialize the SandboxAgent."""
         super().__init__()
         self.chat_model = ChatModelFactory.create()
         self.embedding_model = EmbeddingModelFactory.create()
         self.vector_store = VectorStoreFactory.create(aiosettings.vector_store_type)
 
     async def process_attachments(self, message: discord.Message) -> None:
-        """Process attachments in a Discord message."""
+        """
+        Process attachments in a Discord message.
+
+        Args:
+            message (discord.Message): The Discord message containing attachments.
+        """
         if len(message.attachments) <= 0:
             return
 
@@ -91,7 +104,15 @@ class SandboxAgent(DiscordClient):
             uploaded_file_paths.append(file_path)
 
     async def check_for_attachments(self, message: discord.Message) -> str:
-        """Check a Discord message for attachments and process image URLs."""
+        """
+        Check a Discord message for attachments and process image URLs.
+
+        Args:
+            message (discord.Message): The Discord message to check for attachments.
+
+        Returns:
+            str: The modified message content.
+        """
         message_content: str = message.content
         url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
 
@@ -120,7 +141,19 @@ class SandboxAgent(DiscordClient):
     def get_attachments(
         self, message: discord.Message
     ) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[str]]:
-        """Retrieve attachment data from a Discord message."""
+        """
+        Retrieve attachment data from a Discord message.
+
+        Args:
+            message (discord.Message): The Discord message containing attachments.
+
+        Returns:
+            Tuple[List[Dict[str, Any]], List[str], List[Dict[str, Any]], List[str]]:
+                - attachment_data_list_dicts: List of attachment data dictionaries.
+                - local_attachment_file_list: List of local attachment file paths.
+                - local_attachment_data_list_dicts: List of local attachment data dictionaries.
+                - media_filepaths: List of media file paths.
+        """
         attachment_data_list_dicts = []
         local_attachment_file_list = []
         local_attachment_data_list_dicts = []
@@ -133,7 +166,12 @@ class SandboxAgent(DiscordClient):
         return attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths
 
     async def write_attachments_to_disk(self, message: discord.Message) -> None:
-        """Save attachments from a Discord message to disk."""
+        """
+        Save attachments from a Discord message to disk.
+
+        Args:
+            message (discord.Message): The Discord message containing attachments.
+        """
         ctx = await self.get_context(message)
         attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths = (
             self.get_attachments(message)
@@ -183,7 +221,12 @@ class SandboxAgent(DiscordClient):
             await LOGGER.complete()
 
     async def on_message(self, message: discord.Message) -> None:
-        """Handle incoming messages and process commands."""
+        """
+        Handle incoming messages and process commands.
+
+        Args:
+            message (discord.Message): The incoming Discord message.
+        """
         LOGGER.info(f"message = {message}")
         LOGGER.info("ITS THIS ONE BOSS")
 
@@ -213,8 +256,14 @@ class SandboxAgent(DiscordClient):
         await super().start(aiosettings.discord_token.get_secret_value(), reconnect=True)
 
     @commands.command()
-    async def chat(self, ctx, *, message):
-        """Implement chat functionality."""
+    async def chat(self, ctx: commands.Context, *, message: str) -> None:
+        """
+        Implement chat functionality.
+
+        Args:
+            ctx (commands.Context): The command context.
+            message (str): The message to process.
+        """
         response = await self.chat_model.agenerate([message])
         await ctx.send(response.generations[0][0].text)
 

@@ -373,6 +373,7 @@ ci = {chain = [
 ]}
 ci-debug = {chain = [
     "unittests-debug",
+    "coverage-open",
 ]}
 ci-with-evals = {chain = [
     "coverage-pytest-debug",

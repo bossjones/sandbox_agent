@@ -36,9 +36,7 @@ Event driven and Network design patterns:
   - Throttling Pattern
   - Load Balancer Pattern
 
-
-
-Here are some more specifications.
+Here are some more specifications:
 
 Chat Framework:
 - I am using Rapptz/discord.py as my discord client
@@ -50,22 +48,16 @@ LLM Components:
 - Chat Models: Openai or Anthropic models for chat. grab the model name from aiosettings.vision_model and aiosettings.chat_model.
 - Embedding Models: The bot should be able to use Fake or OpenAIEmbeddings. grab the model name from aiosettings.llm_embedding_model_name.
 - Document Loaders: The app should support the following document loaders
-  - Web
-  - Sitemap
-  - RecursiveURL
   - PyPDF
   - PyMuPDF
   - DirectoryLoader
-  - CSVLoader
-  - JsonLoader
+
 
 - Vector Stores: The app should support the following vector stores
   - Chroma
   - Faiss
   - InMemoryVectorStore
   - PGVector
-  - Pinecone
-  - PineconeVectorStore
   - Redis
 
 - Retrievers: The app should be able to use something like an adaptor to change between vector store and retriever.
@@ -81,8 +73,6 @@ LLM Components:
 
 - Message History:
   - Redis Chat Message History
-
-
 
 Common libaries and clients: The app should also support common client usage for the following technologies
 - Redis

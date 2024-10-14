@@ -4,13 +4,19 @@ from __future__ import annotations
 
 import asyncio
 
+from loguru import logger as LOGGER
+
 from sandbox_agent.aio_settings import aiosettings
 from sandbox_agent.bot import SandboxAgent
 
 
 async def main():
-    bot = SandboxAgent()
-    await bot.start(aiosettings.discord_token.get_secret_value())
+    async with SandboxAgent() as bot:
+        # if aiosettings.enable_redis:
+        #     bot.pool = pool
+        await bot.start()
+
+    await LOGGER.complete()
 
 
 if __name__ == "__main__":

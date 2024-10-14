@@ -1,3 +1,8 @@
+# pylint: disable=no-member
+# mypy: disable-error-code="return"
+# mypy: disable-error-code="str-byte-safe"
+# mypy: disable-error-code="misc"
+
 """Configuration for the sandbox agent."""
 
 from __future__ import annotations

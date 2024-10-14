@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from langchain.storage import InMemoryStore, LocalFileStore, RedisStore
+from langchain.storage.file_system import LocalFileStore
+from langchain.storage.redis import RedisStore
+from langchain_core.stores import InMemoryStore
+
+from sandbox_agent.aio_settings import aiosettings
 
 
 class KeyValueStoreFactory:
@@ -13,7 +17,7 @@ class KeyValueStoreFactory:
         elif store_type == "in_memory":
             return InMemoryStore()
         elif store_type == "local_file":
-            return LocalFileStore()
+            return LocalFileStore(root_path=aiosettings.localfilestore_root_path)
         # Add more key-value stores as needed
         else:
             raise ValueError(f"Unsupported key-value store type: {store_type}")

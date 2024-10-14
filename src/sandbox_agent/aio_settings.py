@@ -408,6 +408,10 @@ class AioSettings(BaseSettings):
     enable_ai: bool = False
     http_client_debug_enabled: bool = False
 
+    localfilestore_root_path: str = Field(
+        env="LOCALFILESTORE_ROOT_PATH", description="root path for local file store", default="./local_file_store"
+    )
+
     # Try loading patchmatch
     globals_try_patchmatch: bool = True
 

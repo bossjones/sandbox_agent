@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain.tools import BraveSearch, DuckDuckGoSearchRun
+from langchain_community.tools import BraveSearch, DuckDuckGoSearchRun
 
 
 class ToolFactory:

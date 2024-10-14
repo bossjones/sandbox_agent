@@ -22,8 +22,8 @@ from typing import TYPE_CHECKING, Optional, TypeVar
 
 from _pytest.logging import LogCaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
-from langchain.document_loaders import TextLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.document_loaders import TextLoader
+from langchain_openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_openai.embeddings import OpenAIEmbeddings

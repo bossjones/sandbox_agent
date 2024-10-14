@@ -25,7 +25,6 @@ from src.sandbox_agent.utils import (
 )
 
 
-@pytest.mark.asyncio
 def test_async_run(mocker: MockerFixture) -> None:
     """Test that async_run executes a coroutine and returns the result."""
 
@@ -37,7 +36,6 @@ def test_async_run(mocker: MockerFixture) -> None:
     assert result == 42
 
 
-@pytest.mark.asyncio
 def test_is_coroutine(mocker: MockerFixture) -> None:
     """Test that is_coroutine correctly identifies coroutine functions."""
 

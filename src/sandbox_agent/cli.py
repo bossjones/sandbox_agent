@@ -3,6 +3,7 @@
 # pyright: reportMissingTypeStubs=false
 # pylint: disable=no-member
 # pylint: disable=no-value-for-parameter
+# pyright: ignore[reportAttributeAccessIssue]
 # SOURCE: https://github.com/tiangolo/typer/issues/88#issuecomment-1732469681
 from __future__ import annotations
 
@@ -38,7 +39,7 @@ import typer
 from langchain.globals import set_debug, set_verbose
 from langchain_chroma import Chroma as ChromaVectorStore
 from loguru import logger as LOGGER
-from pinecone import Pinecone, ServerlessSpec  # pyright: ignore[reportAttributeAccessIssue]
+from pinecone import Pinecone, ServerlessSpec
 from pinecone.core.openapi.data.model.describe_index_stats_response import DescribeIndexStatsResponse
 from pinecone.core.openapi.data.model.query_response import QueryResponse
 from pinecone.core.openapi.data.model.upsert_response import UpsertResponse
@@ -55,24 +56,12 @@ import sandbox_agent
 
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
 from sandbox_agent.asynctyper import AsyncTyper
+from sandbox_agent.bot import SandboxAgent
 from sandbox_agent.bot_logger import get_logger, global_log_config
 from sandbox_agent.utils import repo_typing
 from sandbox_agent.utils.base import print_line_seperator
 from sandbox_agent.utils.file_functions import fix_path
 
-
-# from sandbox_agent.services.chroma_service import ChromaService
-# from sandbox_agent.services.screencrop_service import ImageService
-# from sandbox_agent import db
-# from sandbox_agent.monitoring.sentry import sentry_init
-# from sandbox_agent.bot import AsyncGoobBot
-# from sentry_sdk.integrations.argv import ArgvIntegration
-# from sentry_sdk.integrations.atexit import AtexitIntegration
-# from sentry_sdk.integrations.dedupe import DedupeIntegration
-# from sentry_sdk.integrations.excepthook import ExcepthookIntegration
-# from sentry_sdk.integrations.modules import ModulesIntegration
-# from sentry_sdk.integrations.stdlib import StdlibIntegration
-# from sentry_sdk.integrations.threading import ThreadingIntegration
 
 # SOURCE: https://python.langchain.com/v0.2/docs/how_to/debugging/
 if aiosettings.debug_langchain:
@@ -80,20 +69,6 @@ if aiosettings.debug_langchain:
     set_debug(True)
     # Setting the verbose flag will print out inputs and outputs in a slightly more readable format and will skip logging certain raw outputs (like the token usage stats for an LLM call) so that you can focus on application logic.
     set_verbose(True)
-
-
-# if aiosettings.enable_sentry:
-#     sentry_init(
-#         # Set traces_sample_rate to 1.0 to capture 100%
-#         # of transactions for performance monitoring.
-#         traces_sample_rate=1.0,
-#         # Set profiles_sample_rate to 1.0 to profile 100%
-#         # of sampled transactions.
-#         # We recommend adjusting this value in production.
-#         profiles_sample_rate=1.0,
-#     )
-#     logging.getLogger("sentry_sdk").setLevel(logging.WARNING)
-
 
 global_log_config(
     log_level=logging.getLevelName("DEBUG"),
@@ -205,6 +180,28 @@ async def run_bot():
 #         await bot.start()
 
 #     await LOGGER.complete()
+
+
+async def run_bot_with_redis():
+    try:
+        bot = SandboxAgent()
+    except Exception as ex:
+        print(f"{ex}")
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print(f"Error Class: {ex.__class__}")
+        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
+        print(output)
+        print(f"exc_type: {exc_type}")
+        print(f"exc_value: {exc_value}")
+        traceback.print_tb(exc_traceback)
+        if aiosettings.dev_mode:
+            bpdb.pm()
+    async with SandboxAgent() as bot:
+        # if aiosettings.enable_redis:
+        #     bot.pool = pool
+        await bot.start()
+
+    await LOGGER.complete()
 
 
 @APP.command()

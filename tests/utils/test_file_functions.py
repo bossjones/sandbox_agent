@@ -31,6 +31,7 @@ from sandbox_agent.utils.file_functions import (
     filter_pth,
     filter_videos,
     filter_webm,
+    filter_txts,
     fix_path,
     format_size,
     get_all_media_files_to_upload,

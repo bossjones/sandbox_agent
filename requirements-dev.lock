@@ -12,6 +12,8 @@
 -e file:.
 absl-py==2.1.0
     # via tensorboard
+aider-chat==0.59.1
+    # via sandbox-agent
 aiocache==0.12.2
     # via sandbox-agent
 aioconsole==0.8.0
@@ -26,8 +28,10 @@ aiofiles==24.1.0
     # via aiopytesseract
     # via sandbox-agent
 aiohappyeyeballs==2.4.0
+    # via aider-chat
     # via aiohttp
 aiohttp==3.10.5
+    # via aider-chat
     # via aiomonitor
     # via datasets
     # via discord-py
@@ -35,6 +39,7 @@ aiohttp==3.10.5
     # via langchain
     # via langchain-community
     # via langchain-pinecone
+    # via litellm
     # via pytest-aiohttp
     # via sandbox-agent
 aiomonitor==0.7.0
@@ -44,6 +49,7 @@ aioprometheus==23.12.0
 aiopytesseract==0.14.0
     # via sandbox-agent
 aiosignal==1.3.1
+    # via aider-chat
     # via aiohttp
 aiosql==11.1
     # via sandbox-agent
@@ -52,10 +58,12 @@ aiosqlite==0.20.0
 altair==5.4.1
     # via streamlit
 annotated-types==0.7.0
+    # via aider-chat
     # via pydantic
 anthropic==0.34.1
     # via langchain-anthropic
-anyio==4.4.0
+anyio==4.6.0
+    # via aider-chat
     # via anthropic
     # via asyncer
     # via groq
@@ -69,14 +77,10 @@ application-properties==0.8.2
     # via pymarkdownlnt
 appnope==0.1.4
     # via ipykernel
-argcomplete==3.5.0
-    # via commitizen
 argon2-cffi==23.1.0
     # via jupyter-server
 argon2-cffi-bindings==21.2.0
     # via argon2-cffi
-arrow==1.3.0
-    # via isoduration
 asgiref==3.8.1
     # via opentelemetry-instrumentation-asgi
 astroid==3.2.4
@@ -90,6 +94,7 @@ asyncer==0.0.8
 asyncpg==0.29.0
     # via sandbox-agent
 attrs==24.2.0
+    # via aider-chat
     # via aiohttp
     # via aiomonitor
     # via aiopytesseract
@@ -106,11 +111,13 @@ babel==2.16.0
     # via mkdocs-material
     # via sandbox-agent
 backoff==2.2.1
+    # via aider-chat
     # via posthog
 bcrypt==4.2.0
     # via chromadb
     # via passlib
 beautifulsoup4==4.12.3
+    # via aider-chat
     # via bs4
     # via google
     # via mkdocs-mermaid2-plugin
@@ -153,16 +160,20 @@ cattrs==24.1.0
     # via pygls
     # via requests-cache
 certifi==2024.8.30
+    # via aider-chat
     # via httpcore
     # via httpx
     # via kubernetes
     # via pinecone-client
     # via requests
     # via sentry-sdk
-cffi==1.17.0
+cffi==1.17.1
+    # via aider-chat
     # via argon2-cffi-bindings
     # via cryptography
     # via pycares
+    # via sounddevice
+    # via soundfile
     # via weasyprint
 cfgv==3.4.0
     # via pre-commit
@@ -171,7 +182,7 @@ chardet==5.2.0
     # via sandbox-agent
     # via tox
 charset-normalizer==3.3.2
-    # via commitizen
+    # via aider-chat
     # via docformatter
     # via requests
 chroma-hnswlib==0.7.6
@@ -180,10 +191,12 @@ chromadb==0.5.5
     # via langchain-chroma
     # via sandbox-agent
 click==8.1.7
+    # via aider-chat
     # via aiomonitor
     # via black
     # via dask
     # via duckduckgo-search
+    # via litellm
     # via maison
     # via mkdocs
     # via mkdocstrings
@@ -204,7 +217,6 @@ cloudpickle==3.0.0
 codetiming==1.4.0
     # via sandbox-agent
 colorama==0.4.6
-    # via commitizen
     # via griffe
     # via mkdocs-material
     # via tox
@@ -215,7 +227,8 @@ columnar==1.4.1
 comm==0.2.2
     # via ipykernel
     # via ipywidgets
-commitizen==3.29.0
+configargparse==1.7
+    # via aider-chat
 contourpy==1.3.0
     # via matplotlib
 coverage==7.6.1
@@ -239,12 +252,10 @@ dataclasses-json==0.6.7
 dataproperty==1.0.1
     # via pytablewriter
     # via tabledata
-datasets==2.21.0
+datasets==2.2.1
     # via simpletransformers
 debugpy==1.8.5
     # via ipykernel
-decli==0.6.2
-    # via commitizen
 decorator==4.4.2
     # via ipython
     # via moviepy
@@ -255,6 +266,8 @@ deprecated==1.2.14
     # via opentelemetry-api
     # via opentelemetry-exporter-otlp-proto-grpc
     # via opentelemetry-semantic-conventions
+diff-match-patch==20230430
+    # via aider-chat
 dill==0.3.8
     # via datasets
     # via multiprocess
@@ -262,9 +275,12 @@ dill==0.3.8
 discord-py==2.4.0
     # via dpytest
     # via sandbox-agent
+diskcache==5.6.3
+    # via aider-chat
 distlib==0.3.8
     # via virtualenv
 distro==1.9.0
+    # via aider-chat
     # via anthropic
     # via groq
     # via openai
@@ -316,28 +332,29 @@ fastapi-cli==0.0.5
 fastjsonschema==2.20.0
     # via nbformat
     # via validate-pyproject
-filelock==3.15.4
-    # via datasets
+filelock==3.16.1
+    # via aider-chat
     # via huggingface-hub
     # via torch
     # via tox
     # via transformers
     # via virtualenv
 flake8==7.1.1
+    # via aider-chat
 flatbuffers==24.3.25
     # via onnxruntime
 fonttools==4.53.1
     # via matplotlib
     # via sandbox-agent
     # via weasyprint
-fqdn==1.5.1
-    # via jsonschema
 frozendict==2.4.4
     # via yfinance
 frozenlist==1.4.1
+    # via aider-chat
     # via aiohttp
     # via aiosignal
-fsspec==2024.6.1
+fsspec==2024.9.0
+    # via aider-chat
     # via dask
     # via datasets
     # via huggingface-hub
@@ -349,8 +366,10 @@ geojson==2.5.0
 ghp-import==2.1.0
     # via mkdocs
 gitdb==4.0.11
+    # via aider-chat
     # via gitpython
 gitpython==3.1.43
+    # via aider-chat
     # via streamlit
     # via wandb
 google==3.0.0
@@ -388,6 +407,8 @@ grandalf==0.8
     # via sandbox-agent
 greenlet==3.0.3
     # via bpython
+grep-ast==0.3.3
+    # via aider-chat
 griffe==1.2.0
     # via mkdocstrings-python
 groq==0.10.0
@@ -406,6 +427,7 @@ grpcio-status==1.62.3
 gutter==0.5.0
     # via sandbox-agent
 h11==0.14.0
+    # via aider-chat
     # via httpcore
     # via uvicorn
 h2==4.1.0
@@ -416,6 +438,7 @@ html5lib==1.1
     # via weasyprint
     # via yfinance
 httpcore==1.0.5
+    # via aider-chat
     # via httpx
 httplib2==0.22.0
     # via google-api-python-client
@@ -423,6 +446,7 @@ httplib2==0.22.0
 httptools==0.6.1
     # via uvicorn
 httpx==0.27.2
+    # via aider-chat
     # via anthropic
     # via chromadb
     # via fastapi
@@ -434,7 +458,8 @@ httpx==0.27.2
     # via pytest-httpx
     # via respx
     # via sandbox-agent
-huggingface-hub==0.24.6
+huggingface-hub==0.25.0
+    # via aider-chat
     # via datasets
     # via sandbox-agent
     # via sentence-transformers
@@ -450,11 +475,11 @@ hyperframe==6.0.1
     # via h2
 identify==2.6.0
     # via pre-commit
-idna==3.8
+idna==3.10
+    # via aider-chat
     # via anyio
     # via email-validator
     # via httpx
-    # via jsonschema
     # via requests
     # via yarl
 imageio==2.35.1
@@ -462,9 +487,12 @@ imageio==2.35.1
     # via sandbox-agent
 imageio-ffmpeg==0.5.1
     # via moviepy
-importlib-metadata==8.4.0
+importlib-metadata==7.2.1
+    # via aider-chat
+    # via litellm
     # via opentelemetry-api
-importlib-resources==6.4.4
+importlib-resources==6.4.5
+    # via aider-chat
     # via chromadb
 imutils==0.5.4
     # via sandbox-agent
@@ -480,8 +508,6 @@ ipython==8.18.0
     # via nbqa
 ipywidgets==8.1.5
     # via sandbox-agent
-isoduration==20.11.0
-    # via jsonschema
 isort==5.13.2
     # via pylint
 itsdangerous==2.2.0
@@ -494,13 +520,14 @@ jedi==0.19.1
 jedi-language-server==0.41.4
     # via sandbox-agent
 jinja2==3.1.4
+    # via aider-chat
     # via aiomonitor
     # via altair
-    # via commitizen
     # via fastapi
     # via jupyter-server
     # via jupyterlab
     # via jupyterlab-server
+    # via litellm
     # via memray
     # via mkdocs
     # via mkdocs-material
@@ -510,6 +537,7 @@ jinja2==3.1.4
     # via torch
     # via towncrier
 jiter==0.5.0
+    # via aider-chat
     # via anthropic
     # via openai
 joblib==1.4.2
@@ -519,6 +547,7 @@ jq==1.8.0
 jsbeautifier==1.15.1
     # via mkdocs-mermaid2-plugin
 json5==0.9.25
+    # via aider-chat
     # via jupyterlab-server
 jsonpatch==1.33
     # via langchain-core
@@ -526,14 +555,16 @@ jsonpickle==3.3.0
     # via gutter
 jsonpointer==3.0.0
     # via jsonpatch
-    # via jsonschema
-jsonschema==4.22.0
+jsonschema==4.23.0
+    # via aider-chat
     # via altair
     # via jupyter-events
     # via jupyterlab-server
+    # via litellm
     # via nbformat
     # via pyproject-toml
 jsonschema-specifications==2023.12.1
+    # via aider-chat
     # via jsonschema
 jupyter-client==8.6.2
     # via ipykernel
@@ -547,11 +578,11 @@ jupyter-core==5.7.2
     # via nbclient
     # via nbconvert
     # via nbformat
-jupyter-events==0.10.0
+jupyter-events==0.4.0
     # via jupyter-server
 jupyter-lsp==2.2.5
     # via jupyterlab
-jupyter-server==2.14.2
+jupyter-server==2.5.0
     # via jupyter-lsp
     # via jupyterlab
     # via jupyterlab-server
@@ -633,6 +664,8 @@ libsass==0.23.0
     # via mkdocs-with-pdf
 linkify-it-py==2.0.3
     # via markdown-it-py
+litellm==1.47.0
+    # via aider-chat
 locket==1.0.0
     # via partd
 logging-tree==1.10
@@ -663,6 +696,7 @@ markdown==3.7
     # via sandbox-agent
     # via tensorboard
 markdown-it-py==3.0.0
+    # via aider-chat
     # via jupytext
     # via mdformat
     # via mdformat-gfm
@@ -672,6 +706,7 @@ markdown-it-py==3.0.0
 markdown2==2.5.0
     # via md2pdf
 markupsafe==2.1.5
+    # via aider-chat
     # via jinja2
     # via mkdocs
     # via mkdocs-autorefs
@@ -690,6 +725,7 @@ mbstrdecoder==1.1.3
     # via pytablewriter
     # via typepy
 mccabe==0.7.0
+    # via aider-chat
     # via flake8
     # via pylint
 md2pdf==1.0.1
@@ -723,6 +759,7 @@ mdit-py-plugins==0.4.1
     # via mdformat-gfm
     # via mdformat-mkdocs
 mdurl==0.1.2
+    # via aider-chat
     # via markdown-it-py
 mdx-gh-links==0.4
 memory-profiler==0.61.0
@@ -777,7 +814,8 @@ moviepy==1.0.3
     # via sandbox-agent
 mpmath==1.3.0
     # via sympy
-multidict==6.0.5
+multidict==6.1.0
+    # via aider-chat
     # via aiohttp
     # via yarl
 multiprocess==0.70.16
@@ -810,7 +848,8 @@ nbqa==1.9.0
     # via sandbox-agent
 nest-asyncio==1.6.0
     # via ipykernel
-networkx==3.3
+networkx==3.2.1
+    # via aider-chat
     # via torch
 nodeenv==1.9.1
     # via pre-commit
@@ -821,6 +860,7 @@ notebook-shim==0.2.4
     # via jupyterlab
     # via notebook
 numpy==1.26.4
+    # via aider-chat
     # via chroma-hnswlib
     # via chromadb
     # via contourpy
@@ -864,8 +904,10 @@ oauthlib==3.2.2
 onnxruntime==1.19.0
     # via chromadb
     # via rapidocr-onnxruntime
-openai==1.43.0
+openai==1.47.0
+    # via aider-chat
     # via langchain-openai
+    # via litellm
 opencv-python==4.10.0.84
     # via rapidocr-onnxruntime
     # via scenedetect
@@ -914,12 +956,11 @@ orjson==3.10.7
     # via langsmith
 overrides==7.7.0
     # via chromadb
-    # via jupyter-server
 packaging==24.1
+    # via aider-chat
     # via altair
     # via black
     # via build
-    # via commitizen
     # via dask
     # via datasets
     # via faiss-cpu
@@ -968,7 +1009,9 @@ passlib==1.7.4
 pathlib-mate==1.3.2
     # via sandbox-agent
 pathspec==0.12.1
+    # via aider-chat
     # via black
+    # via grep-ast
     # via mkdocs
     # via yamllint
 pathvalidate==3.2.1
@@ -978,12 +1021,14 @@ pdf2image==1.17.0
 peewee==3.17.6
     # via yfinance
 pexpect==4.9.0
+    # via aider-chat
     # via ipython
 pgvector==0.2.5
     # via langchain-postgres
 pickledb==0.9.2
     # via sandbox-agent
 pillow==10.4.0
+    # via aider-chat
     # via imageio
     # via matplotlib
     # via pdf2image
@@ -1032,7 +1077,8 @@ proglog==0.1.10
 prometheus-client==0.20.0
     # via jupyter-server
     # via sandbox-agent
-prompt-toolkit==3.0.36
+prompt-toolkit==3.0.47
+    # via aider-chat
     # via aiomonitor
     # via ipython
     # via questionary
@@ -1057,6 +1103,7 @@ protobuf==4.25.4
 protoc-gen-openapiv2==0.0.1
     # via pinecone-client
 psutil==6.0.0
+    # via aider-chat
     # via ipykernel
     # via memory-profiler
     # via wandb
@@ -1067,6 +1114,7 @@ psycopg-pool==3.2.2
 psycopg2-binary==2.9.9
     # via sandbox-agent
 ptyprocess==0.7.0
+    # via aider-chat
     # via pexpect
     # via terminado
 pure-eval==0.2.3
@@ -1084,13 +1132,16 @@ pycares==4.4.0
 pyclipper==1.3.0.post5
     # via rapidocr-onnxruntime
 pycodestyle==2.12.1
+    # via aider-chat
     # via autopep8
     # via flake8
 pycparser==2.22
+    # via aider-chat
     # via cffi
 pycryptodome==3.20.0
     # via sandbox-agent
-pydantic==2.8.2
+pydantic==2.9.2
+    # via aider-chat
     # via anthropic
     # via chromadb
     # via fastapi
@@ -1100,12 +1151,14 @@ pydantic==2.8.2
     # via langchain-core
     # via langserve
     # via langsmith
+    # via litellm
     # via openai
     # via pydantic-extra-types
     # via pydantic-settings
     # via sandbox-agent
     # via yamlfix
-pydantic-core==2.20.1
+pydantic-core==2.23.4
+    # via aider-chat
     # via pydantic
 pydantic-extra-types==2.9.0
     # via fastapi
@@ -1116,13 +1169,17 @@ pydeck==0.9.1
     # via streamlit
 pydocstringformatter==0.7.3
 pydocstyle==6.3.0
+pydub==0.25.1
+    # via aider-chat
 pydyf==0.11.0
     # via weasyprint
 pyflakes==3.2.0
+    # via aider-chat
     # via flake8
 pygls==1.3.1
     # via jedi-language-server
 pygments==2.18.0
+    # via aider-chat
     # via bpython
     # via ipython
     # via mkdocs-jupyter
@@ -1150,6 +1207,8 @@ pymupdfb==1.24.10
     # via pymupdf
 pyowm==3.3.0
     # via sandbox-agent
+pypandoc==1.13
+    # via aider-chat
 pyparsing==3.1.4
     # via grandalf
     # via httplib2
@@ -1158,6 +1217,8 @@ pypdf==4.3.1
     # via sandbox-agent
 pypdf2==3.0.1
     # via sandbox-agent
+pyperclip==1.9.0
+    # via aider-chat
 pyphen==0.16.0
     # via weasyprint
 pypi-command-line==1.7.1
@@ -1208,7 +1269,6 @@ pytest-retry==1.6.3
 pytest-skip-slow==0.0.5
 pytest-sugar==1.0.0
 python-dateutil==2.9.0.post0
-    # via arrow
     # via faker
     # via ghp-import
     # via jupyter-client
@@ -1222,6 +1282,8 @@ python-decouple==3.8
 python-docx==1.1.2
     # via sandbox-agent
 python-dotenv==1.0.1
+    # via aider-chat
+    # via litellm
     # via pydantic-settings
     # via sandbox-agent
     # via uvicorn
@@ -1243,11 +1305,10 @@ pyupgrade==3.17.0
 pyxdg==0.28
     # via bpython
 pyyaml==6.0.2
+    # via aider-chat
     # via application-properties
     # via chromadb
-    # via commitizen
     # via dask
-    # via datasets
     # via fastapi
     # via huggingface-hub
     # via jupyter-events
@@ -1278,8 +1339,7 @@ pyzmq==26.2.0
     # via jupyter-server
 quantile-python==1.1
     # via aioprometheus
-questionary==2.0.1
-    # via commitizen
+questionary==1.10.0
     # via pypi-command-line
 rank-bm25==0.2.2
     # via sandbox-agent
@@ -1293,16 +1353,18 @@ rapidocr-onnxruntime==1.3.24
 redis==5.0.8
     # via sandbox-agent
 referencing==0.35.1
+    # via aider-chat
     # via jsonschema
     # via jsonschema-specifications
-    # via jupyter-events
     # via types-jsonschema
-regex==2024.7.24
+regex==2024.9.11
+    # via aider-chat
     # via mkdocs-material
     # via simpletransformers
     # via tiktoken
     # via transformers
 requests==2.32.3
+    # via aider-chat
     # via bpython
     # via datasets
     # via gallery-dl
@@ -1314,6 +1376,7 @@ requests==2.32.3
     # via langchain-community
     # via langchainhub
     # via langsmith
+    # via litellm
     # via mkdocs-material
     # via mkdocs-mermaid2-plugin
     # via moviepy
@@ -1325,6 +1388,7 @@ requests==2.32.3
     # via requests-mock
     # via requests-oauthlib
     # via requests-toolbelt
+    # via responses
     # via sandbox-agent
     # via simpletransformers
     # via streamlit
@@ -1342,14 +1406,11 @@ requests-oauthlib==2.0.0
     # via kubernetes
 requests-toolbelt==1.0.0
     # via sandbox-agent
+responses==0.18.0
+    # via datasets
 respx==0.21.1
-rfc3339-validator==0.1.4
-    # via jsonschema
-    # via jupyter-events
-rfc3986-validator==0.1.1
-    # via jsonschema
-    # via jupyter-events
-rich==13.8.0
+rich==13.8.1
+    # via aider-chat
     # via bump-pydantic
     # via memray
     # via pyinspect
@@ -1365,6 +1426,7 @@ rich-click==1.8.3
 rich-rst==1.3.1
     # via pypi-command-line
 rpds-py==0.20.0
+    # via aider-chat
     # via jsonschema
     # via referencing
 rsa==4.9
@@ -1386,7 +1448,8 @@ scikit-learn==1.5.1
     # via sentence-transformers
     # via seqeval
     # via simpletransformers
-scipy==1.14.1
+scipy==1.13.1
+    # via aider-chat
     # via scikit-learn
     # via sentence-transformers
     # via simpletransformers
@@ -1433,12 +1496,13 @@ six==1.16.0
     # via posthog
     # via python-dateutil
     # via rapidocr-onnxruntime
-    # via rfc3339-validator
     # via tensorboard
     # via url-normalize
 smmap==5.0.1
+    # via aider-chat
     # via gitdb
 sniffio==1.3.1
+    # via aider-chat
     # via anthropic
     # via anyio
     # via groq
@@ -1446,7 +1510,12 @@ sniffio==1.3.1
     # via openai
 snowballstemmer==2.2.0
     # via pydocstyle
+sounddevice==0.5.0
+    # via aider-chat
+soundfile==0.12.1
+    # via aider-chat
 soupsieve==2.6
+    # via aider-chat
     # via beautifulsoup4
     # via sandbox-agent
 sourcery==1.22.0
@@ -1490,7 +1559,6 @@ tensorboard-data-server==0.7.2
 tensorboardx==2.6.2.2
     # via simpletransformers
 termcolor==2.4.0
-    # via commitizen
     # via pytest-sugar
 terminado==0.18.1
     # via jupyter-server
@@ -1506,7 +1574,9 @@ thefuzz==0.22.1
 threadpoolctl==3.5.0
     # via scikit-learn
 tiktoken==0.7.0
+    # via aider-chat
     # via langchain-openai
+    # via litellm
 timm==1.0.9
     # via sandbox-agent
 tinycss2==1.3.0
@@ -1517,8 +1587,10 @@ tokenize-rt==6.0.0
     # via nbqa
     # via pyupgrade
 tokenizers==0.19.1
+    # via aider-chat
     # via anthropic
     # via chromadb
+    # via litellm
     # via simpletransformers
     # via transformers
 toml==0.10.2
@@ -1530,7 +1602,6 @@ tomli==2.0.1
     # via application-properties
     # via nbqa
 tomlkit==0.13.2
-    # via commitizen
     # via pylint
 toolz==0.12.1
     # via columnar
@@ -1555,6 +1626,7 @@ tornado==6.4.1
 towncrier==24.8.0
 tox==4.18.0
 tqdm==4.66.5
+    # via aider-chat
     # via chromadb
     # via datasets
     # via google-generativeai
@@ -1588,6 +1660,12 @@ transformers==4.44.2
     # via sandbox-agent
     # via sentence-transformers
     # via simpletransformers
+tree-sitter==0.21.3
+    # via aider-chat
+    # via tree-sitter-languages
+tree-sitter-languages==1.10.2
+    # via aider-chat
+    # via grep-ast
 trove-classifiers==2024.7.2
     # via validate-pyproject
 typepy==1.3.2
@@ -1621,8 +1699,6 @@ types-pyasn1==0.6.0.20240824
     # via types-python-jose
 types-pyopenssl==24.1.0.20240722
     # via types-redis
-types-python-dateutil==2.9.0.20240821
-    # via arrow
 types-python-jose==3.3.4.20240106
 types-pytz==2024.1.0.20240417
     # via pandas-stubs
@@ -1639,6 +1715,7 @@ types-tqdm==4.66.0.20240417
 types-ujson==5.10.0.20240515
 types-urllib3==1.26.25.14
 typing-extensions==4.12.2
+    # via aider-chat
     # via aiodebug
     # via aiomonitor
     # via aiosqlite
@@ -1681,8 +1758,6 @@ ujson==5.10.0
     # via pypi-command-line
 untokenize==0.1.1
     # via docformatter
-uri-template==1.3.0
-    # via jsonschema
 uritemplate==4.1.1
     # via google-api-python-client
     # via sandbox-agent
@@ -1690,11 +1765,13 @@ uritools==4.0.3
     # via sandbox-agent
 url-normalize==1.4.3
     # via requests-cache
-urllib3==2.2.2
+urllib3==2.2.3
+    # via aider-chat
     # via kubernetes
     # via pinecone-client
     # via requests
     # via requests-cache
+    # via responses
     # via sentry-sdk
     # via types-requests
 uvicorn==0.30.6
@@ -1725,6 +1802,7 @@ watchfiles==0.24.0
 wcmatch==9.0
     # via mkdocs-include-markdown-plugin
 wcwidth==0.2.13
+    # via aider-chat
     # via blessed
     # via columnar
     # via mdformat-tables
@@ -1734,7 +1812,6 @@ weasyprint==62.3
     # via md2pdf
     # via mkdocs-with-pdf
 webcolors==1.13
-    # via jsonschema
     # via sandbox-agent
 webencodings==0.5.1
     # via bleach
@@ -1767,14 +1844,16 @@ xxhash==3.5.0
     # via datasets
 yamlfix==1.17.0
 yamllint==1.35.1
-yarl==1.9.7
+yarl==1.11.1
+    # via aider-chat
     # via aiohttp
     # via vcrpy
 yfinance==0.2.43
     # via sandbox-agent
 youtube-search==2.1.2
     # via sandbox-agent
-zipp==3.20.1
+zipp==3.20.2
+    # via aider-chat
     # via importlib-metadata
 zopfli==0.2.3
     # via fonttools

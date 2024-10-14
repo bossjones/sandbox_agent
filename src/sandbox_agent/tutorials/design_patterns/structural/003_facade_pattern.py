@@ -1,4 +1,34 @@
 """
+Example from https://en.wikipedia.org/wiki/Facade_pattern#Python
+
+
+*What is this pattern about?
+The Facade pattern is a way to provide a simpler unified interface to
+a more complex system. It provides an easier way to access functions
+of the underlying system by providing a single entry point.
+This kind of abstraction is seen in many real life situations. For
+example, we can turn on a computer by just pressing a button, but in
+fact there are many procedures and operations done when that happens
+(e.g., loading programs from disk to memory). In this case, the button
+serves as an unified interface to all the underlying procedures to
+turn on a computer.
+
+*Where is the pattern used practically?
+This pattern can be seen in the Python standard library when we use
+the isdir function. Although a user simply uses this function to know
+whether a path refers to a directory, the system makes a few
+operations and calls other modules (e.g., os.stat) to give the result.
+
+*References:
+https://sourcemaking.com/design_patterns/facade
+https://fkromer.github.io/python-pattern-references/design/#facade
+http://python-3-patterns-idioms-test.readthedocs.io/en/latest/ChangeInterface.html#facade
+
+*TL;DR
+Provides a simpler unified interface to a more complex system.
+"""
+
+"""
 Facade Pattern
 
 Overview of the Facade Pattern

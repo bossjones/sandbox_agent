@@ -1425,6 +1425,12 @@ max-complexity = 31 # C901: Recommended goal is 10
 # 4. Ignore `E402` (import violations) in all `__init__.py` files, and in select subdirectories.
 [tool.ruff.lint.per-file-ignores]
 "src/sandbox_agent/gen_ai/models/vectorstores/*" = ["N815"]
+"src/sandbox_agent/tutorials/design_patterns/practical_examples/*" = [
+    "PT018",
+    "PLW0211",
+    "ISC003",
+    "N803",
+]
 "__init__.py" = ["F401", "E402"]
 "**/{tests,docs,doc}/*" = ["E402"]
 # https://github.com/astral-sh/ruff/issues/3928

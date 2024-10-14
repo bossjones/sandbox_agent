@@ -23,13 +23,13 @@
 #anthropic-api-key: xxx
 
 ## Specify the model to use for the main chat
-model: gpt-4o
+# model: gpt-4o
 
 ## Use claude-3-opus-20240229 model for the main chat
 #opus: false
 
 ## Use claude-3-5-sonnet-20240620 model for the main chat
-#sonnet: false
+sonnet: true
 
 ## Use gpt-4-0613 model for the main chat
 #4: false

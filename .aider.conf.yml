@@ -106,15 +106,15 @@ model: gpt-4o
 #max-chat-history-tokens: xxx
 
 ## Specify the .env file to load (default: .env in git root)
-#env-file: .env
+env-file: aider_configs/.env
 
 #################
 # Cache Settings:
 ## Enable caching of prompts (default: False)
-#cache-prompts: false
+cache-prompts: true
 
 ## Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)
-#cache-keepalive-pings: false
+cache-keepalive-pings: 2
 
 ###################
 # Repomap Settings:
@@ -191,13 +191,13 @@ code-theme: solarized-dark
 ###############
 # Git Settings:
 ## Enable/disable looking for a git repo (default: True)
-#git: true
+git: true
 
 ## Enable/disable adding .aider* to .gitignore (default: True)
-#gitignore: true
+gitignore: true
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
-#aiderignore: .aiderignore
+aiderignore: .aiderignore
 
 ## Only consider files in the current subtree of the git repository
 #subtree-only: false
@@ -274,7 +274,8 @@ commit: false
 #  - xxx
 #  - yyy
 #  - zzz
-
+read:
+  - aider_configs/CONVENTIONS.md
 ## Use VI editing mode in the terminal (default: False)
 #vim: false
 
@@ -321,7 +322,7 @@ commit: false
 #message-file: xxx
 
 ## Specify the encoding for input and output (default: utf-8)
-#encoding: utf-8
+encoding: utf-8
 
 ## Specify the config file (default: search for .aider.conf.yml in git root, cwd or home directory)
 #config: xxx

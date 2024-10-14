@@ -9,6 +9,7 @@ from langchain_community.tools import BraveSearch, DuckDuckGoSearchRun
 import pytest
 
 from sandbox_agent.ai.tools import ToolFactory
+from sandbox_agent.aio_settings import aiosettings
 
 
 if TYPE_CHECKING:
@@ -25,8 +26,9 @@ class TestToolFactory:
             ("brave", BraveSearch),
         ],
     )
-    def test_create_supported_tools(self, tool_name: str, expected_tool: type) -> None:
+    def test_create_supported_tools(self, tool_name: str, expected_tool: type, mocker: MockerFixture) -> None:
         """Test that the factory creates the correct tool for supported tool names."""
+        mocker.patch.object(aiosettings, "brave_search_api_key", "dummy_api_key")
         tool = ToolFactory.create(tool_name)
         assert isinstance(tool, expected_tool)
 
@@ -44,7 +46,8 @@ class TestToolFactory:
         mocker.patch.object(
             ToolFactory,
             "create",
-            side_effect=lambda x: custom_tool_class if x == custom_tool_name else None,
+            side_effect=lambda x: custom_tool_class() if x == custom_tool_name else None,
         )
         tool = ToolFactory.create(custom_tool_name)
-        assert tool == custom_tool_class
+        assert isinstance(tool, custom_tool_class)
+        custom_tool_class.assert_called_once()

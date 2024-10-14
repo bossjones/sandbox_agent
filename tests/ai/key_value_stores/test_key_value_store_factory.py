@@ -29,8 +29,10 @@ class TestKeyValueStoreFactory:
             ("local_file", LocalFileStore),
         ],
     )
-    def test_create_supported_stores(self, store_type: str, expected_store: type) -> None:
+    def test_create_supported_stores(self, store_type: str, expected_store: type, mocker: MockerFixture) -> None:
         """Test that the factory creates the correct store for supported types."""
+        mocker.patch.object(aiosettings, "redis_url", "redis://localhost:6379")
+        mocker.patch.object(aiosettings, "localfilestore_root_path", "/test/root/path")
         store = KeyValueStoreFactory.create(store_type)
         assert isinstance(store, expected_store)
 
@@ -47,4 +49,4 @@ class TestKeyValueStoreFactory:
         mocker.patch.object(aiosettings, "localfilestore_root_path", root_path)
         store = KeyValueStoreFactory.create("local_file")
         assert isinstance(store, LocalFileStore)
-        assert store.root_path == root_path
+        assert str(store.root_path) == root_path

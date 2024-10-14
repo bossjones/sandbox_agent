@@ -43,6 +43,8 @@ async def download_image(url: str) -> BytesIO:
             if response.status == 200:
                 data = await response.read()
                 return io.BytesIO(data)
+            else:
+                raise ValueError(f"Failed to download image. Status code: {response.status}")
 
 
 async def file_to_data_uri(file: File) -> str:

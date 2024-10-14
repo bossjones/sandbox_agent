@@ -70,12 +70,33 @@ async def test_download_image(mocker: MockerFixture) -> None:
     mock_response.status = 200
     mock_response.read.return_value = b"test_data"
 
-    mock_session = mocker.patch("aiohttp.ClientSession")
-    mock_session.return_value.__aenter__.return_value.get.return_value.__aenter__.return_value = mock_response
+    mock_session = mocker.AsyncMock()
+    mock_session.get.return_value.__aenter__.return_value = mock_response
+
+    mocker.patch("aiohttp.ClientSession", return_value=mock_session)
 
     result = await download_image("test_url")
     assert isinstance(result, BytesIO)
     assert result.getvalue() == b"test_data"
+
+@pytest.mark.asyncio
+async def test_download_image_failure(mocker: MockerFixture) -> None:
+    """
+    Test the download_image function when the request fails.
+
+    Args:
+        mocker (MockerFixture): Pytest fixture for mocking.
+    """
+    mock_response = mocker.AsyncMock()
+    mock_response.status = 404
+
+    mock_session = mocker.AsyncMock()
+    mock_session.get.return_value.__aenter__.return_value = mock_response
+
+    mocker.patch("aiohttp.ClientSession", return_value=mock_session)
+
+    with pytest.raises(ValueError, match="Failed to download image. Status code: 404"):
+        await download_image("test_url")
 
 
 @pytest.mark.asyncio

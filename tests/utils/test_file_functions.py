@@ -374,10 +374,12 @@ def test_sort_dataframe():
 
 
 def test_format_size():
-    assert format_size(1024) == "1024 B"
-    assert format_size(1024 * 1024) == "1 MB"
-    assert format_size(1024 * 1024 * 1024) == "1 GB"
+    assert format_size(1024) == "1.00 KB"
+    assert format_size(1024 * 1024) == "1.00 MB"
+    assert format_size(1024 * 1024 * 1024) == "1.00 GB"
     assert format_size(500) == "500 B"
+    assert format_size(1500) == "1.46 KB"
+    assert format_size(1500000) == "1.43 MB"
 
 
 def test_tree(tmp_path):

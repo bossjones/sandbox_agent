@@ -39,7 +39,7 @@ import typer
 from langchain.globals import set_debug, set_verbose
 from langchain_chroma import Chroma as ChromaVectorStore
 from loguru import logger as LOGGER
-from pinecone import Pinecone, ServerlessSpec
+from pinecone import ServerlessSpec
 from pinecone.core.openapi.data.model.describe_index_stats_response import DescribeIndexStatsResponse
 from pinecone.core.openapi.data.model.query_response import QueryResponse
 from pinecone.core.openapi.data.model.upsert_response import UpsertResponse

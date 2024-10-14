@@ -94,7 +94,7 @@ If the discord.py library is used, be sure to add the following to the top of th
 
 Strive for 100% code coverage for all functions and classes that you write.
 
-If you are writing tests for a function that requires an actual image, or file, use the tmp_path fixture to define a pytest fixture that will create a temporary file and pass it to the function. for example:
+If you are writing tests for a function that requires an actual image, or file, use the tmp_path fixture to define a pytest fixture that will copy a given file from the fixtures folder to the newly created temporary directory and pass it to the function. for example:
 
 ```
 @pytest.fixture()

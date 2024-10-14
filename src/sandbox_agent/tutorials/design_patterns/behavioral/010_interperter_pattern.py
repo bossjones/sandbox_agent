@@ -1,3 +1,8 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+
 """
 Interpreter Pattern
 Overview of the Interpreter Pattern

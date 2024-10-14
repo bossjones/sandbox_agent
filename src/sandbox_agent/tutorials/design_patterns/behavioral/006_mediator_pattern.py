@@ -1,3 +1,8 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+
 """
 Mediator Pattern
 Overview of the Mediator Pattern

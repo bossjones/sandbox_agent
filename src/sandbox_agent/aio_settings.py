@@ -391,6 +391,22 @@ class AioSettings(BaseSettings):
     debug: bool = True
     log_pii: bool = True
 
+    personalization_file: str = Field(
+        env="PERSONALIZATION_FILE",
+        description="Path to the personalization JSON file",
+        default="./personalization.json",
+    )
+    scratch_pad_dir: str = Field(
+        env="SCRATCH_PAD_DIR",
+        description="Directory for scratch pad files",
+        default="./scratchpad",
+    )
+    active_memory_file: str = Field(
+        env="ACTIVE_MEMORY_FILE",
+        description="Path to the active memory JSON file",
+        default="./active_memory.json",
+    )
+
     # pylint: disable=redundant-keyword-arg
     better_exceptions: bool = Field(env="BETTER_EXCEPTIONS", description="Enable better exceptions", default=1)
     pythonasynciodebug: bool = Field(

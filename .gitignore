@@ -377,3 +377,22 @@ file.out
 typingcov_cobertura/*
 typingcov_xml/*
 typingcov_txt
+
+
+# Finder (MacOS) folder config
+.DS_Store
+.aider*
+
+__pycache__/
+
+.venv/
+
+apps/marimo-prompt-library/prompt_executions
+
+.env
+
+scratchpad/
+
+runtime_time_table.jsonl
+
+bup/

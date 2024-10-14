@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Monitor Object Pattern
 
@@ -14,21 +20,44 @@ from __future__ import annotations
 
 import threading
 
+from typing import Any
+
 
 class Stack:
+    """A thread-safe stack using the Monitor Object pattern."""
+
     def __init__(self):
-        self.stack = []
+        """Initialize the stack."""
+        self.stack: list[Any] = []
         self.lock = threading.Lock()
 
-    def push(self, item):
+    def push(self, item: Any) -> None:
+        """
+        Push an item onto the stack.
+
+        Args:
+            item (Any): The item to push onto the stack.
+        """
         with self.lock:
             self.stack.append(item)
 
-    def pop(self):
+    def pop(self) -> Any:
+        """
+        Pop an item from the stack.
+
+        Returns:
+            Any: The item popped from the stack.
+        """
         with self.lock:
             return self.stack.pop()
 
-    def size(self):
+    def size(self) -> int:
+        """
+        Get the size of the stack.
+
+        Returns:
+            int: The size of the stack.
+        """
         with self.lock:
             return len(self.stack)
 

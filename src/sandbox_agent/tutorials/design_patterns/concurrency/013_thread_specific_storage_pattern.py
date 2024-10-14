@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
+
 """
 Thread-Specific Storage Pattern
 

@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Half-Sync/Half-Async Pattern
 
@@ -19,7 +25,13 @@ import time
 
 
 # Asynchronous layer
-def producer(queue):
+def producer(queue: queue.Queue) -> None:
+    """
+    Produce items and put them in the queue.
+
+    Args:
+        queue (queue.Queue): The queue to put items into.
+    """
     for i in range(10):
         print(f"Producer is producing {i}")
         queue.put(i)
@@ -27,7 +39,13 @@ def producer(queue):
 
 
 # Synchronous layer
-def consumer(queue):
+def consumer(queue: queue.Queue) -> None:
+    """
+    Consume items from the queue.
+
+    Args:
+        queue (queue.Queue): The queue to consume items from.
+    """
     while True:
         item = queue.get()
         if item is None:
@@ -37,12 +55,18 @@ def consumer(queue):
         queue.task_done()
 
 
-# Queueing layer
-q = queue.Queue()
+def main() -> None:
+    """Main function to demonstrate the Half-Sync/Half-Async pattern."""
+    # Queueing layer
+    q: queue.Queue = queue.Queue()
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-    executor.submit(producer, q)
-    executor.submit(consumer, q)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        executor.submit(producer, q)
+        executor.submit(consumer, q)
+
+
+if __name__ == "__main__":
+    main()
 
 """
 In this example, producer is a function representing the asynchronous layer and puts them in the queue. consumer represents the synchronous layer, which consumes items from the queue. The queue serves as the queueing layer. The ThreadPoolExecutor is used to run the producer and consumer concurrently in separate threads.

@@ -3,6 +3,8 @@
 # pyright: ignore[reportOperatorIssue]
 # pyright: ignore[reportOptionalIterable]
 # pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
+# pyright: ignore[reportCallInDefaultInitializer]
 
 """
 Iterator Pattern
@@ -19,7 +21,7 @@ from typing import Any
 
 
 class MyIterator:
-    def __init__(self, items: list[Any] = []) -> None:
+    def __init__(self, items: list[Any] = []) -> None:  # pyright: ignore[reportAttributeAccessIssue,reportCallInDefaultInitializer]
         """
         Initialize the MyIterator with an optional list of items.
 

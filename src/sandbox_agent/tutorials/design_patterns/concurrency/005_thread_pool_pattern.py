@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Thread Pool Pattern
 
@@ -15,17 +21,32 @@ from __future__ import annotations
 import concurrent.futures
 
 
-def fib(n):
+def fib(n: int) -> int:
+    """
+    Calculate the nth Fibonacci number.
+
+    Args:
+        n (int): The index of the Fibonacci number to calculate.
+
+    Returns:
+        int: The nth Fibonacci number.
+    """
     if n <= 1:
         return n
     else:
         return fib(n - 1) + fib(n - 2)
 
 
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    futures = [executor.submit(fib, n) for n in range(30)]
-    for future in concurrent.futures.as_completed(futures):
-        print(future.result())
+def main() -> None:
+    """Main function to demonstrate the Thread Pool pattern."""
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(fib, n) for n in range(30)]
+        for future in concurrent.futures.as_completed(futures):
+            print(future.result())
+
+
+if __name__ == "__main__":
+    main()
 
 """
 In this example, fib is a function that calculates a Fibonacci number. The ThreadPoolExecutor is a class that creates a pool of worker threads. executor.submit(fib, n) submits a callable to be executed and returns a Future object representing the execution of the callable. concurrent.futures.as_completed yields Futures as they complete.

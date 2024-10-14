@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Future-Promise Pattern
 
@@ -25,13 +31,25 @@ import urllib.request
 URLS = ["http://www.python.org", "http://www.python.org/about"]
 
 
-def load_url(url, timeout):
+def load_url(url: str, timeout: int) -> bytes:
+    """
+    Load a URL and return its contents.
+
+    Args:
+        url (str): The URL to load.
+        timeout (int): The timeout in seconds.
+
+    Returns:
+        bytes: The contents of the URL.
+    """
     with urllib.request.urlopen(url, timeout=timeout) as conn:
         return conn.read()
 
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-    future_to_url = {executor.submit(load_url, url, 60): url for url in URLS}
+    future_to_url: dict[concurrent.futures.Future[bytes], str] = {
+        executor.submit(load_url, url, 60): url for url in URLS
+    }
 
     for future in concurrent.futures.as_completed(future_to_url):
         url = future_to_url[future]

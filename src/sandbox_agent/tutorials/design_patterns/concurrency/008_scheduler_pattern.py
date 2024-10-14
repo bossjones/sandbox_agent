@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Scheduler Pattern
 
@@ -20,11 +26,13 @@ import time
 s = sched.scheduler(time.time, time.sleep)
 
 
-def print_time():
+def print_time() -> None:
+    """Print the current time."""
     print("Current Time:", time.time())
 
 
-def print_hello():
+def print_hello() -> None:
+    """Print 'Hello, world!'."""
     print("Hello, world!")
 
 

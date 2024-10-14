@@ -42,7 +42,7 @@ class CharacterStyle:
         return cls._styles[key]
 
     def __repr__(self):
-        return f"{self.font_size}px {'bold' if self.bold else ''} {'italic' if self.italic else ''}"
+        return f"{self.font_size}px {'bold' if self.bold else ''} {'italic' if self.italic else ''}"  # pyright: ignore[reportAttributeAccessIssue]
 
 
 style1 = CharacterStyle(12, True, False)

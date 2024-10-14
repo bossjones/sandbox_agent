@@ -2,6 +2,8 @@
 # pylint: disable=consider-using-tuple
 # pyright: ignore[reportOperatorIssue]
 # pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 
 """
 CONCURRENCY PATTERNS
@@ -38,11 +40,20 @@ import threading
 
 
 class Producer(threading.Thread):
-    def __init__(self, queue):
+    """Producer class that generates data and puts it into a queue."""
+
+    def __init__(self, queue: queue.Queue):
+        """
+        Initialize the Producer.
+
+        Args:
+            queue (queue.Queue): The queue to put generated data into.
+        """
         threading.Thread.__init__(self)
         self.queue = queue
 
     def run(self) -> None:
+        """Run the producer thread."""
         for _ in range(10):  # Producer will produce 10 items
             item = random.randint(0, 256)  # Produce a random item
             self.queue.put(item)
@@ -51,11 +62,20 @@ class Producer(threading.Thread):
 
 
 class Consumer(threading.Thread):
-    def __init__(self, queue):
+    """Consumer class that consumes data from a queue."""
+
+    def __init__(self, queue: queue.Queue):
+        """
+        Initialize the Consumer.
+
+        Args:
+            queue (queue.Queue): The queue to consume data from.
+        """
         threading.Thread.__init__(self)
         self.queue = queue
 
     def run(self) -> None:
+        """Run the consumer thread."""
         while True:
             item = self.queue.get()  # Consume an item
             print(f"Consumer notify: {item} popped from list by {self.name}\n")
@@ -63,7 +83,7 @@ class Consumer(threading.Thread):
 
 
 # Client code
-q = queue.Queue()
+q: queue.Queue = queue.Queue()
 producer = Producer(q)
 consumer = Consumer(q)
 

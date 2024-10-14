@@ -541,6 +541,8 @@ markers = [
     "vcronly: marks tests that run code that utilizes the vcr module (deselect with '-m \"not vcronly\"')",
     "pgvectoronly: marks tests that run code that utilizes the pgvector module (deselect with '-m \"not pgvectoronly\"')",
     "services: marks tests that run code that belongs to the services module  (deselect with '-m \"not services\"')",
+    "slower: marks tests that run code that belongs to the slower calls at end of pytest run module  (deselect with '-m \"not slower\"')",
+    "discordonly: marks tests that run code that belongs to the discordonly calls at end of pytest run module  (deselect with '-m \"not discordonly\"')",
 ]
 # filterwarnings = [
 #     "error",

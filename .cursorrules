@@ -154,3 +154,5 @@ def test_load_documents(mocker: MockerFixture, mock_pdf_file: Path, vcr: Any) ->
     assert len(documents) == 713
     assert vcr.play_count == 0
 ```
+
+Any tests involving the discord api or discord files/attachments should use dpytest library and the tests should be marked as discordonly.

@@ -51,7 +51,7 @@ def pytest_collection_modifyitems(items):
 
 
 # ORIG: https://gist.github.com/iedmrc/2fbddeb8ca8df25356d8acc3d297e955
-@pytest.mark.asyncio(scope="module")
+@pytest.mark.asyncio(loop_scope="module")
 @pytest.mark.unittest
 @pytest.mark.integration
 class TestUtilsAsync:

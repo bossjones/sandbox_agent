@@ -1,0 +1,46 @@
+"""
+Interpreter Pattern
+Overview of the Interpreter Pattern
+
+The Interpreter pattern is a behavioral design pattern that deals with evaluating sentences in a language.
+It provides a way to include language elements in a program to match and manipulate the given problem's syntax.
+This pattern involves implementing an expression interface which tells how to interpret a particular context.
+This pattern is used in compilers, parsers, or macro expansions.
+"""
+
+from __future__ import annotations
+
+
+class Interpreter:
+    def __init__(self):
+        self.variables = {}
+
+    def evaluate(self, expression):
+        tokens = expression.split()
+        operator = tokens[0]
+
+        if operator == "add":
+            self.variables[tokens[1]] = int(tokens[2]) + int(tokens[3])
+        elif operator == "subtract":
+            self.variables[tokens[1]] = int(tokens[2]) - int(tokens[3])
+        else:
+            raise ValueError(f"Invalid operation {operator}")
+
+
+# Client code
+interpreter = Interpreter()
+
+interpreter.evaluate("add result 10 20")
+print(interpreter.variables)  # Outputs: {'result': 30}
+
+interpreter.evaluate("subtract result 30 10")
+print(interpreter.variables)  # Outputs: {'result': 20}
+
+"""
+In this example, Interpreter is our interpreter class that interprets and executes the operations specified in the expressions.
+
+The Interpreter pattern provides a way to include language elements in a program to match and manipulate the given problem's syntax.
+This can be useful when you want to define a simple language for problems where the syntax is simple and efficiency isn't a critical concern.
+However, the Interpreter pattern can become complicated when the grammar of the language becomes more complex.
+For complex languages, tools like parser generators are a better option.
+"""

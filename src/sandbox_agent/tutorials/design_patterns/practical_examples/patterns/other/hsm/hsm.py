@@ -5,6 +5,7 @@
 # pyright: ignore[reportOptionalIterable]
 # pyright: ignore[reportCallInDefaultInitializer]
 # pyright: ignore[reportAttributeAccessIssue]
+
 """
 Implementation of the HSM (hierarchical state machine) or
 NFSM (nested finite state machine) C++ example from

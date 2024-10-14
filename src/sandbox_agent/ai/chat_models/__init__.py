@@ -24,7 +24,9 @@ class ChatModelFactory:
         Raises:
             ValueError: If an unsupported model name is provided.
         """
-        if model_name == "gpt-4":
+        if model_name == "gpt-4o":
+            return ChatOpenAI(model_name="gpt-4o", temperature=aiosettings.llm_temperature)
+        elif model_name == "gpt-4":
             return ChatOpenAI(model_name="gpt-4", temperature=aiosettings.llm_temperature)
         elif model_name == "gpt-4-0314":
             return ChatOpenAI(model_name="gpt-4-0314", temperature=aiosettings.llm_temperature)

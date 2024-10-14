@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pylint: disable=simplifiable-if-expression
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
 """
 Implementation of the HSM (hierarchical state machine) or
 NFSM (nested finite state machine) C++ example from

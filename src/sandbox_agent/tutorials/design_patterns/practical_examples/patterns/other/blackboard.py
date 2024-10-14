@@ -1,3 +1,11 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pylint: disable=simplifiable-if-expression
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
+# pyright: ignore[reportAttributeAccessIssue]
+
 """
 @author: Eugene Duboviy <eugene.dubovoy@gmail.com> | github.com/duboviy
 

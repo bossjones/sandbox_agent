@@ -11,24 +11,24 @@ from __future__ import annotations
 
 import asyncio
 import os
+import re
 import sys
 import traceback
-import re
-import aiohttp
 
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple
 from io import BytesIO
+from typing import Any, Dict, List, Optional, Tuple
 
+import aiohttp
 import discord
 import rich
-from PIL import Image
 
 from codetiming import Timer
 from discord.ext import commands
 from loguru import logger as LOGGER
+from PIL import Image
 
-from sandbox_agent import utils
+from sandbox_agent import shell, utils
 from sandbox_agent.aio_settings import aiosettings
 from sandbox_agent.clients.discord import DiscordClient
 from sandbox_agent.factories import ChatModelFactory, EmbeddingModelFactory, VectorStoreFactory
@@ -50,7 +50,7 @@ INVITE_LINK = "https://discordapp.com/api/oauth2/authorize?client_id={}&scope=bo
 
 HOME_PATH = os.environ.get("HOME")
 
-COMMAND_RUNNER = {"dl_thumb": utils.shell.run_coroutine_subprocess}
+COMMAND_RUNNER = {"dl_thumb": shell.run_coroutine_subprocess}
 THREAD_DATA = defaultdict()
 
 

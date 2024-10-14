@@ -1,3 +1,16 @@
+# pylint: disable=no-member
+# pylint: disable=consider-using-tuple
+# pyright: ignore[reportOperatorIssue]
+# pyright: ignore[reportOptionalIterable]
+
+"""
+Flyweight Pattern
+
+Overview of the Flyweight Pattern
+
+The Flyweight pattern is a design pattern that minimizes memory use by sharing as much data as possible with similar objects. It is a way to use objects in large numbers when a simple repeated representation would use an unacceptable amount of memory. The concept is named after the idea of a flyweight, a boxing weight class that includes fighters who weigh very little.
+"""
+
 # Here is the extracted text from the image:
 
 # ---

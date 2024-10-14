@@ -9,6 +9,7 @@ from langchain_community.tools import BraveSearch, DuckDuckGoSearchRun
 import pytest
 
 from sandbox_agent.ai.tools import ToolFactory
+from pydantic import SecretStr
 from sandbox_agent.aio_settings import aiosettings
 
 

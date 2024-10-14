@@ -13,40 +13,96 @@ Overview of the Observer Pattern The Observer pattern is a design pattern that d
 # ---
 from __future__ import annotations
 
+from abc import ABC, abstractmethod
+from typing import Any, Set
 
-class Observer:
-    def update(self, *args, **kwargs):
+
+class Observer(ABC):
+    """
+    Abstract base class for observers.
+    """
+
+    @abstractmethod
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        """
+        Update the observer with new data.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         pass
 
 
-class DisplayElement:
-    def display(self):
+class DisplayElement(ABC):
+    """
+    Abstract base class for display elements.
+    """
+
+    @abstractmethod
+    def display(self) -> None:
+        """
+        Display the current state.
+        """
         pass
 
 
 class WeatherStation:
-    def __init__(self):
-        self._observers = set()
-        self._temperature = None
-        self._humidity = None
-        self._pressure = None
+    """
+    Weather station class that acts as the subject.
+    """
 
-    def register_observer(self, observer):
-        observer._subject = self
+    def __init__(self) -> None:
+        """
+        Initialize the WeatherStation.
+        """
+        self._observers: set[Observer] = set()
+        self._temperature: float | None = None
+        self._humidity: float | None = None
+        self._pressure: float | None = None
+
+    def register_observer(self, observer: Observer) -> None:
+        """
+        Register an observer.
+
+        Args:
+            observer: The observer to register.
+        """
+        observer._subject = self  # type: ignore
         self._observers.add(observer)
 
-    def remove_observer(self, observer):
-        observer._subject = None
+    def remove_observer(self, observer: Observer) -> None:
+        """
+        Remove an observer.
+
+        Args:
+            observer: The observer to remove.
+        """
+        observer._subject = None  # type: ignore
         self._observers.discard(observer)
 
-    def notify_observers(self):
+    def notify_observers(self) -> None:
+        """
+        Notify all observers about an event.
+        """
         for observer in self._observers:
             observer.update(self._temperature, self._humidity, self._pressure)
 
-    def measurements_changed(self):
+    def measurements_changed(self) -> None:
+        """
+        Indicate that measurements have changed and notify observers.
+        """
         self.notify_observers()
 
-    def set_measurements(self, temperature, humidity, pressure):
+    def set_measurements(self, temperature: float, humidity: float, pressure: float) -> None:
+        """
+        Set new measurements and notify observers.
+
+        Args:
+            temperature: The temperature measurement.
+            humidity: The humidity measurement.
+            pressure: The pressure measurement.
+        """
         self._temperature = temperature
         self._humidity = humidity
         self._pressure = pressure
@@ -54,16 +110,39 @@ class WeatherStation:
 
 
 class CurrentConditionsDisplay(Observer, DisplayElement):
-    def __init__(self, weather_station):
+    """
+    Current conditions display class that acts as an observer.
+    """
+
+    def __init__(self, weather_station: WeatherStation) -> None:
+        """
+        Initialize the CurrentConditionsDisplay.
+
+        Args:
+            weather_station: The weather station to observe.
+        """
         self._subject = weather_station
+        self._temperature: float | None = None
+        self._humidity: float | None = None
         self._subject.register_observer(self)
 
-    def update(self, temperature, humidity, pressure):
+    def update(self, temperature: float | None, humidity: float | None, pressure: float | None) -> None:
+        """
+        Update the display with new measurements.
+
+        Args:
+            temperature: The temperature measurement.
+            humidity: The humidity measurement.
+            pressure: The pressure measurement (unused).
+        """
         self._temperature = temperature
         self._humidity = humidity
         self.display()
 
-    def display(self):
+    def display(self) -> None:
+        """
+        Display the current conditions.
+        """
         print(f"Current conditions: {self._temperature}F degrees and {self._humidity}% humidity")
 
 

@@ -1,8 +1,10 @@
 # pylint: disable=no-member
 # pylint: disable=possibly-used-before-assignment
 # pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
 # mypy: disable-error-code="index"
 # mypy: disable-error-code="no-redef"
+
 """Main bot implementation for the sandbox agent."""
 
 from __future__ import annotations

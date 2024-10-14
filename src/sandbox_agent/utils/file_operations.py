@@ -30,7 +30,14 @@ from sandbox_agent import shell
 
 
 async def download_image(url: str) -> BytesIO:
-    """Download an image from a given URL asynchronously."""
+    """Download an image from a given URL asynchronously.
+
+    Args:
+        url (str): The URL of the image to download.
+
+    Returns:
+        BytesIO: The downloaded image data as a BytesIO object.
+    """
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
@@ -39,7 +46,14 @@ async def download_image(url: str) -> BytesIO:
 
 
 async def file_to_data_uri(file: File) -> str:
-    """Convert a discord.File object to a data URI."""
+    """Convert a discord.File object to a data URI.
+
+    Args:
+        file (File): The discord.File object to convert.
+
+    Returns:
+        str: The data URI string representation of the file.
+    """
     with BytesIO(file.fp.read()) as f:
         file_bytes = f.read()
     base64_encoded = base64.b64encode(file_bytes).decode("ascii")
@@ -47,7 +61,15 @@ async def file_to_data_uri(file: File) -> str:
 
 
 async def data_uri_to_file(data_uri: str, filename: str) -> File:
-    """Convert a data URI to a discord.File object."""
+    """Convert a data URI to a discord.File object.
+
+    Args:
+        data_uri (str): The data URI string to convert.
+        filename (str): The filename to use for the resulting File object.
+
+    Returns:
+        File: The converted discord.File object.
+    """
     metadata, base64_data = data_uri.split(",")
     content_type = metadata.split(";")[0].split(":")[1]
     file_bytes = base64.b64decode(base64_data)
@@ -55,7 +77,15 @@ async def data_uri_to_file(data_uri: str, filename: str) -> File:
 
 
 def file_to_local_data_dict(fname: str, dir_root: str) -> dict[str, Any]:
-    """Convert a file to a dictionary with metadata."""
+    """Convert a file to a dictionary with metadata.
+
+    Args:
+        fname (str): The filename of the file.
+        dir_root (str): The root directory path.
+
+    Returns:
+        dict[str, Any]: A dictionary containing the file metadata.
+    """
     file_api = pathlib.Path(fname)
     return {
         "filename": f"{dir_root}/{file_api.stem}{file_api.suffix}",
@@ -66,7 +96,15 @@ def file_to_local_data_dict(fname: str, dir_root: str) -> dict[str, Any]:
 
 
 async def handle_save_attachment_locally(attm_data_dict: dict[str, Any], dir_root: str) -> str:
-    """Save a Discord attachment locally."""
+    """Save a Discord attachment locally.
+
+    Args:
+        attm_data_dict (dict[str, Any]): A dictionary containing the attachment data.
+        dir_root (str): The root directory path to save the attachment.
+
+    Returns:
+        str: The path of the saved attachment file.
+    """
     fname = f"{dir_root}/orig_{attm_data_dict['id']}_{attm_data_dict['filename']}"
     print(f"Saving to ... {fname}")
     await attm_data_dict["attachment_obj"].save(fname, use_cached=True)
@@ -75,7 +113,15 @@ async def handle_save_attachment_locally(attm_data_dict: dict[str, Any], dir_roo
 
 
 async def details_from_file(path_to_media_from_cli: str, cwd: Union[str, None] = None) -> tuple[str, str, str]:
-    """Generate input and output file paths and retrieve the timestamp of the input file."""
+    """Generate input and output file paths and retrieve the timestamp of the input file.
+
+    Args:
+        path_to_media_from_cli (str): The path to the media file from the command line.
+        cwd (Union[str, None], optional): The current working directory. Defaults to None.
+
+    Returns:
+        tuple[str, str, str]: A tuple containing the input file path, output file path, and timestamp.
+    """
     p = pathlib.Path(path_to_media_from_cli)
     full_path_input_file = f"{p.stem}{p.suffix}"
     full_path_output_file = f"{p.stem}_smaller.mp4"
@@ -94,7 +140,11 @@ async def details_from_file(path_to_media_from_cli: str, cwd: Union[str, None] =
 
 
 def create_temp_directory() -> str:
-    """Create a temporary directory and return its path."""
+    """Create a temporary directory and return its path.
+
+    Returns:
+        str: The path of the created temporary directory.
+    """
     tmpdirname = f"temp/{str(uuid.uuid4())}"
     os.makedirs(os.path.dirname(tmpdirname), exist_ok=True)
     print("created temporary directory", tmpdirname)
@@ -102,5 +152,12 @@ def create_temp_directory() -> str:
 
 
 def get_file_tree(directory: str) -> list[str]:
-    """Get the directory tree of the given directory."""
+    """Get the directory tree of the given directory.
+
+    Args:
+        directory (str): The directory path to get the file tree from.
+
+    Returns:
+        list[str]: A list of file paths in the directory tree.
+    """
     return [str(p) for p in pathlib.Path(directory).rglob("*")]

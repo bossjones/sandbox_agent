@@ -71,3 +71,11 @@ if TYPE_CHECKING:
 
 
 Using the test coverage reports ./cov.xml and contents of source code and corresponding test files, suggest new test cases that would increase coverage of the source code.
+
+If the discord.py library is used, be sure to add the following to the top of the file:
+
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"

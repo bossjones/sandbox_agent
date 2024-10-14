@@ -280,3 +280,6 @@ init-aicommits:
 	npm install -g aicommits
 	aicommits config set OPENAI_KEY=$OCO_OPENAI_API_KEY type=conventional model=gpt-4o-mini
 	aicommits hook install
+
+aider:
+	aider -c .aider.conf.yml --aiderignore .aiderignore

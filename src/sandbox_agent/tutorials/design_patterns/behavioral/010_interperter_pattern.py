@@ -15,12 +15,27 @@ This pattern is used in compilers, parsers, or macro expansions.
 
 from __future__ import annotations
 
+from typing import Dict
+
 
 class Interpreter:
-    def __init__(self):
-        self.variables = {}
+    """
+    The Interpreter class interprets and executes the operations specified in the expressions.
+    """
 
-    def evaluate(self, expression):
+    def __init__(self) -> None:
+        """
+        Initialize the Interpreter with an empty dictionary of variables.
+        """
+        self.variables: dict[str, int] = {}
+
+    def evaluate(self, expression: str) -> None:
+        """
+        Evaluate the given expression.
+
+        Args:
+            expression (str): The expression to be evaluated.
+        """
         tokens = expression.split()
         operator = tokens[0]
 

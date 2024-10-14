@@ -29,6 +29,7 @@ It provides the necessary locking semantics to handle multiple producers and mul
 
 Let's consider an example where the producers are generating numbers and the consumer is printing them:
 """
+
 from __future__ import annotations
 
 import queue

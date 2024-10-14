@@ -19,45 +19,89 @@ from abc import ABC, abstractmethod
 
 
 class DataMiner(ABC):
-    def template_method(self):
+    """
+    Abstract base class representing a data miner.
+    """
+
+    def template_method(self) -> None:
+        """
+        The template method defines the skeleton of the data mining algorithm.
+        """
         self.prepare_data()
         self.analyze_data()
         self.present_results()
 
-    def prepare_data(self):
+    def prepare_data(self) -> None:
+        """
+        Prepare the data for analysis.
+        """
         print("Preparation stage might be common for all subclasses")
 
     @abstractmethod
-    def analyze_data(self):
+    def analyze_data(self) -> None:
+        """
+        Analyze the data (abstract method to be implemented by subclasses).
+        """
         pass
 
     @abstractmethod
-    def present_results(self):
+    def present_results(self) -> None:
+        """
+        Present the results of the data analysis (abstract method to be implemented by subclasses).
+        """
         pass
 
 
 class ConcreteDataMiner1(DataMiner):
-    def analyze_data(self):
+    """
+    Concrete subclass of DataMiner implementing specific steps of the algorithm.
+    """
+
+    def analyze_data(self) -> None:
+        """
+        Analyze the data specific to ConcreteDataMiner1.
+        """
         print("Data analysis by ConcreteDataMiner1")
 
-    def present_results(self):
+    def present_results(self) -> None:
+        """
+        Present the results specific to ConcreteDataMiner1.
+        """
         print("Results presentation by ConcreteDataMiner1")
 
 
 class ConcreteDataMiner2(DataMiner):
-    def analyze_data(self):
+    """
+    Concrete subclass of DataMiner implementing specific steps of the algorithm.
+    """
+
+    def analyze_data(self) -> None:
+        """
+        Analyze the data specific to ConcreteDataMiner2.
+        """
         print("Data analysis by ConcreteDataMiner2")
 
-    def present_results(self):
+    def present_results(self) -> None:
+        """
+        Present the results specific to ConcreteDataMiner2.
+        """
         print("Results presentation by ConcreteDataMiner2")
 
 
 # Client code
 miner1 = ConcreteDataMiner1()
 miner1.template_method()
+# Output:
+# Preparation stage might be common for all subclasses
+# Data analysis by ConcreteDataMiner1
+# Results presentation by ConcreteDataMiner1
 
 miner2 = ConcreteDataMiner2()
 miner2.template_method()
+# Output:
+# Preparation stage might be common for all subclasses
+# Data analysis by ConcreteDataMiner2
+# Results presentation by ConcreteDataMiner2
 
 """
 In this example, DataMiner is our abstract class implementing the template method,

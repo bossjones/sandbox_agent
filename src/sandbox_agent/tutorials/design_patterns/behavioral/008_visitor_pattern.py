@@ -15,56 +15,148 @@ without altering any existing code. You can introduce a new operation to a class
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class CarPart(ABC):
+    """
+    Abstract base class representing a car part.
+    """
+
     @abstractmethod
-    def accept(self, visitor):
+    def accept(self, visitor: Visitor) -> None:
+        """
+        Accept a visitor and allow it to visit the car part.
+
+        Args:
+            visitor (Visitor): The visitor to accept.
+        """
         pass
 
 
 class Wheel(CarPart):
-    def accept(self, visitor):
+    """
+    Concrete class representing a wheel.
+    """
+
+    def accept(self, visitor: Visitor) -> None:
+        """
+        Accept a visitor and allow it to visit the wheel.
+
+        Args:
+            visitor (Visitor): The visitor to accept.
+        """
         visitor.visit_wheel(self)
 
 
 class Engine(CarPart):
-    def accept(self, visitor):
+    """
+    Concrete class representing an engine.
+    """
+
+    def accept(self, visitor: Visitor) -> None:
+        """
+        Accept a visitor and allow it to visit the engine.
+
+        Args:
+            visitor (Visitor): The visitor to accept.
+        """
         visitor.visit_engine(self)
 
 
 class Car:
-    def __init__(self):
-        self._parts = [Wheel(), Engine()]
+    """
+    Class representing a car composed of car parts.
+    """
 
-    def accept(self, visitor):
+    def __init__(self) -> None:
+        """
+        Initialize the car with a list of car parts.
+        """
+        self._parts: list[CarPart] = [Wheel(), Engine()]
+
+    def accept(self, visitor: Visitor) -> None:
+        """
+        Accept a visitor and allow it to visit all car parts.
+
+        Args:
+            visitor (Visitor): The visitor to accept.
+        """
         for part in self._parts:
             part.accept(visitor)
 
 
 class Visitor(ABC):
+    """
+    Abstract base class representing a visitor.
+    """
+
     @abstractmethod
-    def visit_wheel(self, wheel):
+    def visit_wheel(self, wheel: Wheel) -> None:
+        """
+        Visit a wheel.
+
+        Args:
+            wheel (Wheel): The wheel to visit.
+        """
         pass
 
     @abstractmethod
-    def visit_engine(self, engine):
+    def visit_engine(self, engine: Engine) -> None:
+        """
+        Visit an engine.
+
+        Args:
+            engine (Engine): The engine to visit.
+        """
         pass
 
 
 class CarDisplayVisitor(Visitor):
-    def visit_wheel(self, wheel):
+    """
+    Concrete visitor class for displaying car parts.
+    """
+
+    def visit_wheel(self, wheel: Wheel) -> None:
+        """
+        Visit a wheel and display it.
+
+        Args:
+            wheel (Wheel): The wheel to visit.
+        """
         print("Displaying Wheel.")
 
-    def visit_engine(self, engine):
+    def visit_engine(self, engine: Engine) -> None:
+        """
+        Visit an engine and display it.
+
+        Args:
+            engine (Engine): The engine to visit.
+        """
         print("Displaying Engine.")
 
 
 class CarRepairVisitor(Visitor):
-    def visit_wheel(self, wheel):
+    """
+    Concrete visitor class for repairing car parts.
+    """
+
+    def visit_wheel(self, wheel: Wheel) -> None:
+        """
+        Visit a wheel and repair it.
+
+        Args:
+            wheel (Wheel): The wheel to visit.
+        """
         print("Repairing Wheel.")
 
-    def visit_engine(self, engine):
+    def visit_engine(self, engine: Engine) -> None:
+        """
+        Visit an engine and repair it.
+
+        Args:
+            engine (Engine): The engine to visit.
+        """
         print("Repairing Engine.")
 
 

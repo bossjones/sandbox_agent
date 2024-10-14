@@ -15,27 +15,76 @@ Upon receiving a request, each handler decides either to process the request or 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 class Handler(ABC):
-    def __init__(self):
-        self._next_handler = None
+    """
+    Abstract base class representing a handler in the chain of responsibility.
+    """
 
-    def set_next(self, handler):
+    def __init__(self) -> None:
+        """
+        Initialize the handler with no next handler.
+        """
+        self._next_handler: Optional[Handler] = None
+
+    def set_next(self, handler: Handler) -> Handler:
+        """
+        Set the next handler in the chain.
+
+        Args:
+            handler (Handler): The next handler to be set.
+
+        Returns:
+            Handler: The next handler.
+        """
         self._next_handler = handler
         return handler
 
     @abstractmethod
-    def handle_request(self, request):
+    def handle_request(self, request: str) -> Optional[str]:
+        """
+        Handle the request or pass it to the next handler.
+
+        Args:
+            request (str): The request to be handled.
+
+        Returns:
+            Optional[str]: The result of handling the request, if applicable.
+        """
         pass
 
-    def pass_to_next(self, request):
+    def pass_to_next(self, request: str) -> Optional[str]:
+        """
+        Pass the request to the next handler, if available.
+
+        Args:
+            request (str): The request to be passed.
+
+        Returns:
+            Optional[str]: The result of handling the request by the next handler, if available.
+        """
         if self._next_handler:
             return self._next_handler.handle_request(request)
+        return None
 
 
 class ConcreteHandler1(Handler):
-    def handle_request(self, request):
+    """
+    Concrete handler class that handles specific requests.
+    """
+
+    def handle_request(self, request: str) -> Optional[str]:
+        """
+        Handle the request if it matches a specific condition, otherwise pass it to the next handler.
+
+        Args:
+            request (str): The request to be handled.
+
+        Returns:
+            Optional[str]: The result of handling the request, if applicable.
+        """
         if request == "request1":
             return "Handler1 handling request1"
         else:
@@ -43,7 +92,20 @@ class ConcreteHandler1(Handler):
 
 
 class ConcreteHandler2(Handler):
-    def handle_request(self, request):
+    """
+    Concrete handler class that handles specific requests.
+    """
+
+    def handle_request(self, request: str) -> Optional[str]:
+        """
+        Handle the request if it matches a specific condition, otherwise pass it to the next handler.
+
+        Args:
+            request (str): The request to be handled.
+
+        Returns:
+            Optional[str]: The result of handling the request, if applicable.
+        """
         if request == "request2":
             return "Handler2 handling request2"
         else:

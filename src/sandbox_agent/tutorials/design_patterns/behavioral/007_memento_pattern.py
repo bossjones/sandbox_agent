@@ -14,29 +14,80 @@ without revealing the details of its implementation. It provides the ability to 
 
 from __future__ import annotations
 
+from typing import Any
+
 
 class Memento:
-    def __init__(self, state):
+    """
+    The Memento class represents a snapshot of the state of the Editor.
+    It stores the state and provides a method to retrieve the saved state.
+    """
+
+    def __init__(self, state: str) -> None:
+        """
+        Initialize the Memento with the given state.
+
+        Args:
+            state (str): The state to be saved.
+        """
         self._state = state
 
-    def get_saved_state(self):
+    def get_saved_state(self) -> str:
+        """
+        Get the saved state.
+
+        Returns:
+            str: The saved state.
+        """
         return self._state
 
 
 class Editor:
-    def __init__(self):
+    """
+    The Editor class represents the originator that creates and restores mementos.
+    It has methods to manipulate the text, save the current state, and restore to a previous state.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the Editor with an empty text.
+        """
         self._text = ""
 
-    def type(self, words):
+    def type(self, words: str) -> None:
+        """
+        Append the given words to the text.
+
+        Args:
+            words (str): The words to be appended.
+        """
         self._text += " " + words
 
-    def content(self):
+    def content(self) -> str:
+        """
+        Get the current content of the text.
+
+        Returns:
+            str: The current content of the text.
+        """
         return self._text
 
-    def save(self):
+    def save(self) -> Memento:
+        """
+        Save the current state of the Editor.
+
+        Returns:
+            Memento: The memento object representing the current state.
+        """
         return Memento(self._text)
 
-    def restore(self, memento):
+    def restore(self, memento: Memento) -> None:
+        """
+        Restore the Editor to a previous state using the given memento.
+
+        Args:
+            memento (Memento): The memento object representing the state to restore.
+        """
         self._text = memento.get_saved_state()
 
 

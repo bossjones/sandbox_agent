@@ -2,6 +2,7 @@
 # pylint: disable=consider-using-tuple
 # pyright: ignore[reportOperatorIssue]
 # pyright: ignore[reportOptionalIterable]
+# pyright: ignore[reportCallInDefaultInitializer]
 
 """
 Iterator Pattern
@@ -13,16 +14,40 @@ The Iterator pattern is a behavioral design pattern that lets you traverse eleme
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from typing import Any
+
 
 class MyIterator:
-    def __init__(self, items=[]):
+    def __init__(self, items: list[Any] = []) -> None:
+        """
+        Initialize the MyIterator with an optional list of items.
+
+        Args:
+            items (list[Any], optional): The list of items to iterate over. Defaults to [].
+        """
         self._items = items
         self._index = 0
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
+        """
+        Return the iterator object itself.
+
+        Returns:
+            Iterator[Any]: The iterator object.
+        """
         return self
 
-    def __next__(self):
+    def __next__(self) -> Any:
+        """
+        Return the next item from the iterator.
+
+        Returns:
+            Any: The next item in the iterator.
+
+        Raises:
+            StopIteration: If there are no more items to return.
+        """
         if self._index < len(self._items):
             result = self._items[self._index]
             self._index += 1

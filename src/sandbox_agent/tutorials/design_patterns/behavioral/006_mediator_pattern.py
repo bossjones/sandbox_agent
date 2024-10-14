@@ -18,13 +18,38 @@ from abc import ABC, abstractmethod
 
 
 class Mediator(ABC):
+    """
+    The Mediator interface declares a method used by components to notify the
+    mediator about various events. The Mediator may react to these events and
+    pass the execution to other components.
+    """
+
     @abstractmethod
     def notify(self, sender: object, event: str) -> None:
+        """
+        Notify the mediator about an event.
+
+        Args:
+            sender (object): The sender component.
+            event (str): The event that occurred.
+        """
         pass
 
 
 class ConcreteMediator(Mediator):
+    """
+    Concrete Mediators implement cooperative behavior by coordinating several
+    components.
+    """
+
     def notify(self, sender: object, event: str) -> None:
+        """
+        Handle notifications from components.
+
+        Args:
+            sender (object): The sender component.
+            event (str): The event that occurred.
+        """
         if event == "event_A":
             print("Mediator reacts on event_A and triggers following operations:")
             # logic related to event_A
@@ -34,19 +59,47 @@ class ConcreteMediator(Mediator):
 
 
 class Component1:
-    def __init__(self, mediator: Mediator):
+    """
+    The Base Component provides the basic functionality of storing a mediator's
+    instance inside component objects.
+    """
+
+    def __init__(self, mediator: Mediator) -> None:
+        """
+        Initialize the Component1 with a mediator.
+
+        Args:
+            mediator (Mediator): The mediator instance.
+        """
         self._mediator = mediator
 
-    def do_something(self):
+    def do_something(self) -> None:
+        """
+        Perform an action and notify the mediator.
+        """
         print("Component1 does something.")
         self._mediator.notify(self, "event_A")
 
 
 class Component2:
-    def __init__(self, mediator: Mediator):
+    """
+    The Base Component provides the basic functionality of storing a mediator's
+    instance inside component objects.
+    """
+
+    def __init__(self, mediator: Mediator) -> None:
+        """
+        Initialize the Component2 with a mediator.
+
+        Args:
+            mediator (Mediator): The mediator instance.
+        """
         self._mediator = mediator
 
-    def do_something(self):
+    def do_something(self) -> None:
+        """
+        Perform an action and notify the mediator.
+        """
         print("Component2 does something.")
         self._mediator.notify(self, "event_B")
 

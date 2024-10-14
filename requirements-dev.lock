@@ -287,7 +287,7 @@ dominate==2.9.1
 dpytest==0.7.0
 duckdb==1.0.0
     # via sandbox-agent
-duckduckgo-search==6.2.11
+duckduckgo-search==6.3.0
     # via sandbox-agent
 durabledict==0.9.4
     # via gutter
@@ -1025,7 +1025,7 @@ pprintpp==0.4.0
 pre-commit==3.8.0
 prettytable==3.11.0
     # via sandbox-agent
-primp==0.6.1
+primp==0.6.3
     # via duckduckgo-search
 proglog==0.1.10
     # via moviepy
@@ -1064,6 +1064,8 @@ psycopg==3.2.1
     # via langchain-postgres
 psycopg-pool==3.2.2
     # via langchain-postgres
+psycopg2-binary==2.9.9
+    # via sandbox-agent
 ptyprocess==0.7.0
     # via pexpect
     # via terminado

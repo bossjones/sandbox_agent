@@ -381,6 +381,8 @@ class AioSettings(BaseSettings):
 
     discord_token: SecretStr = ""
 
+    vector_store_type: str = "pgvector"
+
     # openai_token: str = ""
     openai_api_key: SecretStr = ""
 

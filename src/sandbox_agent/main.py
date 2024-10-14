@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 
+from sandbox_agent.aio_settings import aiosettings
 from sandbox_agent.bot import SandboxAgent
-from sandbox_agent.config import aiosettings
 
 
 async def main():

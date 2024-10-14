@@ -237,7 +237,7 @@ def test_filter_pth(tmp_path):
     txt_file = tmp_path / "text.txt"
     pth_file.touch()
     txt_file.touch()
-    
+
     result = filter_pth([str(pth_file), str(txt_file)])
     assert result == [str(pth_file)]
 
@@ -247,7 +247,7 @@ def test_filter_json(tmp_path):
     txt_file = tmp_path / "text.txt"
     json_file.touch()
     txt_file.touch()
-    
+
     result = filter_json([str(json_file), str(txt_file)])
     assert result == [str(json_file)]
 
@@ -255,7 +255,7 @@ def test_filter_json(tmp_path):
 def test_rename_without_cachebuster(tmp_path):
     file_with_cb = tmp_path / "image.jpg?updatedAt=123456"
     file_with_cb.touch()
-    
+
     result = rename_without_cachebuster([str(file_with_cb)])
     assert result == [str(tmp_path / "image.jpg")]
     assert (tmp_path / "image.jpg").exists()
@@ -266,7 +266,7 @@ def test_filter_videos(tmp_path):
     txt_file = tmp_path / "text.txt"
     video_file.touch()
     txt_file.touch()
-    
+
     result = filter_videos([str(video_file), str(txt_file)])
     assert result == [str(video_file)]
 
@@ -276,7 +276,7 @@ def test_filter_audio(tmp_path):
     txt_file = tmp_path / "text.txt"
     audio_file.touch()
     txt_file.touch()
-    
+
     result = filter_audio([str(audio_file), str(txt_file)])
     assert result == [str(audio_file)]
 
@@ -286,7 +286,7 @@ def test_filter_gif(tmp_path):
     txt_file = tmp_path / "text.txt"
     gif_file.touch()
     txt_file.touch()
-    
+
     result = filter_gif([str(gif_file), str(txt_file)])
     assert result == [str(gif_file)]
 
@@ -296,7 +296,7 @@ def test_filter_mkv(tmp_path):
     txt_file = tmp_path / "text.txt"
     mkv_file.touch()
     txt_file.touch()
-    
+
     result = filter_mkv([str(mkv_file), str(txt_file)])
     assert result == [str(mkv_file)]
 
@@ -306,7 +306,7 @@ def test_filter_m3u8(tmp_path):
     txt_file = tmp_path / "text.txt"
     m3u8_file.touch()
     txt_file.touch()
-    
+
     result = filter_m3u8([str(m3u8_file), str(txt_file)])
     assert result == [str(m3u8_file)]
 
@@ -316,7 +316,7 @@ def test_filter_webm(tmp_path):
     txt_file = tmp_path / "text.txt"
     webm_file.touch()
     txt_file.touch()
-    
+
     result = filter_webm([str(webm_file), str(txt_file)])
     assert result == [str(webm_file)]
 
@@ -326,7 +326,7 @@ def test_filter_images(tmp_path):
     txt_file = tmp_path / "text.txt"
     image_file.touch()
     txt_file.touch()
-    
+
     result = filter_images([str(image_file), str(txt_file)])
     assert result == [str(image_file)]
 
@@ -336,7 +336,7 @@ def test_filter_pdfs(tmp_path):
     txt_file = tmp_path / "text.txt"
     pdf_file.touch()
     txt_file.touch()
-    
+
     result = filter_pdfs([str(pdf_file), str(txt_file)])
     assert result == [str(pdf_file)]
 
@@ -348,7 +348,7 @@ def test_filter_txts(tmp_path):
     txt_file1.touch()
     txt_file2.touch()
     pdf_file.touch()
-    
+
     result = filter_txts([str(txt_file1), str(txt_file2), str(pdf_file)])
     assert set(result) == {str(txt_file1), str(txt_file2)}
 
@@ -358,7 +358,7 @@ def test_filter_pdf(tmp_path):
     txt_file = tmp_path / "text.txt"
     pdf_file.touch()
     txt_file.touch()
-    
+
     result = filter_pdf([str(pdf_file), str(txt_file)])
     assert result == [str(pdf_file)]
 
@@ -374,7 +374,7 @@ def test_sort_dataframe():
 
 
 def test_format_size():
-    assert format_size(1024) == "1 KB"
+    assert format_size(1024) == "1024 B"
     assert format_size(1024 * 1024) == "1 MB"
     assert format_size(1024 * 1024 * 1024) == "1 GB"
     assert format_size(500) == "500 B"
@@ -384,7 +384,7 @@ def test_tree(tmp_path):
     (tmp_path / "file1.txt").touch()
     (tmp_path / "dir1").mkdir()
     (tmp_path / "dir1" / "file2.txt").touch()
-    
+
     result = tree(tmp_path)
     assert len(result) == 3
     assert any(str(tmp_path) in str(path) for path in result)

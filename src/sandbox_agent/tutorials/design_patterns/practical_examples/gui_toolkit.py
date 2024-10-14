@@ -1,18 +1,13 @@
 """
-Creating a GUI Toolkit using the Factory Method
+Creating a GUI Toolkit using the Factory Method.
 
-The Factory Method is a design pattern that provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created. This pattern is particularly useful when a class cannot anticipate the type of objects it needs to create.
+The Factory Method is a design pattern that provides an interface for creating objects in a superclass,
+but allows subclasses to alter the type of objects that will be created. This pattern is particularly
+useful when a class cannot anticipate the type of objects it needs to create.
 
-In this section, we will use the Factory Method pattern to create a simple GUI (Graphical User Interface) toolkit.
-
-Concept of the GUI Toolkit with Factory Method
-
-The main idea is to have a base WidgetFactory class with a factory method create_widget(). This method is used to create a widget, but the specific type of widget is determined by the concrete factory classes. For instance, we can have a ButtonFactory that creates button widgets and a LabelFactory that creates label widgets.
+In this module, we use the Factory Method pattern to create a simple GUI (Graphical User Interface) toolkit.
 """
 
-# Code Example in Python
-
-# We'll use the tkinter module to create the GUI elements:
 from __future__ import annotations
 
 import tkinter as tk
@@ -21,22 +16,58 @@ from abc import ABC, abstractmethod
 
 
 class WidgetFactory(ABC):
+    """
+    Abstract base class for widget factory implementations.
+    """
+
     @abstractmethod
-    def create_widget(self):
+    def create_widget(self) -> tk.Widget:
+        """
+        Abstract method to create a new widget.
+
+        Returns:
+            tk.Widget: The created widget.
+        """
         pass
 
 
 class ButtonFactory(WidgetFactory):
-    def create_widget(self):
+    """
+    Concrete implementation of widget factory for creating buttons.
+    """
+
+    def create_widget(self) -> tk.Button:
+        """
+        Create a new button widget.
+
+        Returns:
+            tk.Button: The created button widget.
+        """
         return tk.Button(text="I'm a button")
 
 
 class LabelFactory(WidgetFactory):
-    def create_widget(self):
+    """
+    Concrete implementation of widget factory for creating labels.
+    """
+
+    def create_widget(self) -> tk.Label:
+        """
+        Create a new label widget.
+
+        Returns:
+            tk.Label: The created label widget.
+        """
         return tk.Label(text="I'm a label")
 
 
-def draw_gui(factory):
+def draw_gui(factory: WidgetFactory) -> None:
+    """
+    Draw the GUI using the provided widget factory.
+
+    Args:
+        factory (WidgetFactory): The widget factory to create widgets.
+    """
     widget = factory.create_widget()
     widget.pack()
 

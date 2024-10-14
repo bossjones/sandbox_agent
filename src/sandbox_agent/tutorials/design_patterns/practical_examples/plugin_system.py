@@ -1,9 +1,13 @@
 """
 Creating a Plugin System using the Strategy Pattern
 
-The Strategy Pattern is a behavioral design pattern that allows you to define a family of algorithms, put each of them into a separate class, and make their objects interchangeable. This pattern is a good choice when you need to provide multiple ways to process the same type of data, which makes it suitable for designing a plugin system.
+The Strategy Pattern is a behavioral design pattern that allows you to define a family of algorithms,
+put each of them into a separate class, and make their objects interchangeable. This pattern is a good
+choice when you need to provide multiple ways to process the same type of data, which makes it suitable
+for designing a plugin system.
 
-In this section, we will use the Strategy Pattern to create a plugin system that can dynamically add new functionality to a core application.
+In this module, we use the Strategy Pattern to create a plugin system that can dynamically add new
+functionality to a core application.
 """
 
 # Concept of Plugin System with Strategy Pattern
@@ -21,47 +25,110 @@ from abc import ABC, abstractmethod
 
 # Define the common interface for all strategies
 class Plugin(ABC):
+    """
+    Abstract base class for plugin implementations.
+    """
+
     @abstractmethod
-    def process(self, text):
+    def process(self, text: str) -> str:
+        """
+        Abstract method to process the given text.
+
+        Args:
+            text (str): The text to process.
+
+        Returns:
+            str: The processed text.
+        """
         pass
 
 
 # Implement specific strategies
 class LowerCasePlugin(Plugin):
-    def process(self, text):
+    """
+    Concrete implementation of a plugin that converts text to lowercase.
+    """
+
+    def process(self, text: str) -> str:
+        """
+        Process the given text by converting it to lowercase.
+
+        Args:
+            text (str): The text to process.
+
+        Returns:
+            str: The lowercase version of the text.
+        """
         return text.lower()
 
 
 class UpperCasePlugin(Plugin):
-    def process(self, text):
+    """
+    Concrete implementation of a plugin that converts text to uppercase.
+    """
+
+    def process(self, text: str) -> str:
+        """
+        Process the given text by converting it to uppercase.
+
+        Args:
+            text (str): The text to process.
+
+        Returns:
+            str: The uppercase version of the text.
+        """
         return text.upper()
 
 
 # Context
 class TextProcessor:
-    def __init__(self, plugin):
+    """
+    The context class that maintains a reference to a plugin and delegates text processing to it.
+    """
+
+    def __init__(self, plugin: Plugin) -> None:
+        """
+        Initialize the text processor with a plugin.
+
+        Args:
+            plugin (Plugin): The plugin to use for text processing.
+        """
         self.plugin = plugin
 
-    def set_plugin(self, plugin):
+    def set_plugin(self, plugin: Plugin) -> None:
+        """
+        Set the plugin to use for text processing.
+
+        Args:
+            plugin (Plugin): The plugin to set.
+        """
         self.plugin = plugin
 
-    def process(self, text):
+    def process(self, text: str) -> str:
+        """
+        Process the given text using the current plugin.
+
+        Args:
+            text (str): The text to process.
+
+        Returns:
+            str: The processed text.
+        """
         return self.plugin.process(text)
 
 
 if __name__ == "__main__":
-    # Create strategies
+    # Create plugins
     lower_case_plugin = LowerCasePlugin()
     upper_case_plugin = UpperCasePlugin()
 
-    # Create context and use a strategy
+    # Create text processor and use a plugin
     text_processor = TextProcessor(lower_case_plugin)
     print(text_processor.process("Hello, World!"))  # Output: 'hello, world!'
 
-    # Change strategy at runtime
+    # Change plugin at runtime
     text_processor.set_plugin(upper_case_plugin)
     print(text_processor.process("Hello, World!"))  # Output: 'HELLO, WORLD!'
-
 """
 In this code:
 - Plugin is an abstract base class that defines a common interface for all plugins.

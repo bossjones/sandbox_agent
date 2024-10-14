@@ -5,58 +5,105 @@ The Memento Pattern is a design pattern that provides the ability to restore an 
 
 The Command Pattern is a design pattern that encapsulates a request as an object, thereby allowing users to parameterize clients with queues, requests, and operations. The pattern promotes the idea of encapsulation and decoupling and provides a means to separate the responsibility of issuing a command from knowing how to perform it.
 
-In this section, we will combine these two patterns to create a simple text editor with undo functionality.
+In this module, we combine these two patterns to create a simple text editor with undo functionality.
 """
 
-# Concept of the Text Editor with Memento and Command Patterns
-"""
-The main idea is to have a Command abstract base class, with each concrete command encapsulating an action performed on the text, such as WriteCommand or DeleteCommand. Each command holds a memento—a snapshot of the editor's content before the operation is executed—allowing us to undo the operation if needed.
-"""
-
-# Code Example in Python
-
-# Here is a simplified text editor example that supports writing and undoing:
 from __future__ import annotations
 
 
 class Memento:
-    def __init__(self, text):
+    """
+    Memento class to store the state of the TextEditor.
+    """
+
+    def __init__(self, text: str) -> None:
+        """
+        Initialize the memento with the given text.
+
+        Args:
+            text (str): The text to store in the memento.
+        """
         self.text = text
 
 
 class TextEditor:
-    def __init__(self):
-        self.commands = []
-        self.undo_stack = []
+    """
+    TextEditor class representing the originator that uses mementos to save and restore its state.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the text editor with empty commands, undo stack, and text.
+        """
+        self.commands: list[Command] = []
+        self.undo_stack: list[Memento] = []
         self.text = ""
 
-    def write(self, text):
+    def write(self, text: str) -> None:
+        """
+        Write text to the editor and create a WriteCommand.
+
+        Args:
+            text (str): The text to write to the editor.
+        """
         memento = Memento(self.text)
         cmd = WriteCommand(self, text, memento)
         cmd.execute()
         self.commands.append(cmd)
 
-    def undo(self):
+    def undo(self) -> None:
+        """
+        Undo the last command if there are any commands in the history.
+        """
         if self.commands:
             cmd = self.commands.pop()
             cmd.undo()
 
 
 class Command:
-    def __init__(self, editor, memento):
+    """
+    Abstract base class for command implementations.
+    """
+
+    def __init__(self, editor: TextEditor, memento: Memento) -> None:
+        """
+        Initialize the command with the text editor and a memento.
+
+        Args:
+            editor (TextEditor): The text editor to perform the command on.
+            memento (Memento): The memento to store the editor's state.
+        """
         self.editor = editor
         self.memento = memento
 
-    def undo(self):
+    def undo(self) -> None:
+        """
+        Undo the command by restoring the editor's state from the memento.
+        """
         self.editor.text = self.memento.text
 
 
 class WriteCommand(Command):
-    def __init__(self, editor, text, memento):
+    """
+    Concrete command class for writing text to the editor.
+    """
+
+    def __init__(self, editor: TextEditor, text: str, memento: Memento) -> None:
+        """
+        Initialize the write command with the text editor, text to write, and a memento.
+
+        Args:
+            editor (TextEditor): The text editor to write the text to.
+            text (str): The text to write to the editor.
+            memento (Memento): The memento to store the editor's state before writing.
+        """
         super().__init__(editor, memento)
         self.text = text
 
-    def execute(self):
+    def execute(self) -> None:
+        """
+        Execute the write command by appending the text to the editor.
+        """
         self.editor.text += self.text
 
 

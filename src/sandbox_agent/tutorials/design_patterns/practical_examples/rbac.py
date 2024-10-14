@@ -1,12 +1,18 @@
 """
 Building a Role-Based Access Control System using the Proxy Pattern
 
-The Proxy Pattern is a structural design pattern that allows you to provide a substitute or placeholder for another object. A proxy controls access to this original object, allowing you to perform something either before or after the request gets through to the original object.
+The Proxy Pattern is a structural design pattern that allows you to provide a substitute or placeholder for another object.
+A proxy controls access to this original object, allowing you to perform something either before or after the request gets
+through to the original object.
+
+In the context of a role-based access control system, we can use a proxy to represent the system's resources, controlling
+access based on the user's role.
 """
 
 # Concept of Role-Based Access Control System with Proxy Pattern
 """
-In the context of a role-based access control system, we can use a proxy to represent the system's resources, controlling access based on the user's role.
+In the context of a role-based access control system, we can use a proxy to represent the system's resources, controlling
+access based on the user's role.
 """
 
 # Code Example in Python
@@ -16,20 +22,43 @@ from __future__ import annotations
 
 
 class Resource:
-    """Original object providing some valuable service."""
+    """
+    Original object providing some valuable service.
+    """
 
-    def operation(self):
+    def operation(self) -> str:
+        """
+        Perform the resource operation.
+
+        Returns:
+            str: The result of the resource operation.
+        """
         return "Resource operation"
 
 
 class Proxy:
-    """Proxy controlling access to the original object."""
+    """
+    Proxy controlling access to the original object.
+    """
 
-    def __init__(self, resource, role):
+    def __init__(self, resource: Resource, role: str) -> None:
+        """
+        Initialize the proxy with a resource and a role.
+
+        Args:
+            resource (Resource): The resource to control access to.
+            role (str): The role required to access the resource.
+        """
         self.resource = resource
         self.role = role
 
-    def operation(self):
+    def operation(self) -> str:
+        """
+        Perform the resource operation if the role is 'admin', otherwise deny access.
+
+        Returns:
+            str: The result of the resource operation or an access denied message.
+        """
         if self.role == "admin":
             return self.resource.operation()
         else:

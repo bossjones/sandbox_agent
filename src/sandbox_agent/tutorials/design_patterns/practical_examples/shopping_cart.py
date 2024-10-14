@@ -15,37 +15,90 @@ The main idea is to have a common interface for both individual items and compos
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import List
 
 
 # Define common interface for both elements and composites
 class CartItem(ABC):
+    """
+    Abstract base class for cart item implementations.
+    """
+
     @abstractmethod
-    def get_price(self):
+    def get_price(self) -> float:
+        """
+        Abstract method to get the price of the cart item.
+
+        Returns:
+            float: The price of the cart item.
+        """
         pass
 
 
 # Leaf
 class Product(CartItem):
-    def __init__(self, name, price):
+    """
+    Leaf class representing a product in the shopping cart.
+    """
+
+    def __init__(self, name: str, price: float) -> None:
+        """
+        Initialize a product with a name and price.
+
+        Args:
+            name (str): The name of the product.
+            price (float): The price of the product.
+        """
         self.name = name
         self.price = price
 
-    def get_price(self):
+    def get_price(self) -> float:
+        """
+        Get the price of the product.
+
+        Returns:
+            float: The price of the product.
+        """
         return self.price
 
 
 # Composite
 class Cart(CartItem):
-    def __init__(self):
-        self.items = []
+    """
+    Composite class representing a shopping cart that can contain products and other carts.
+    """
 
-    def add_item(self, item: CartItem):
+    def __init__(self) -> None:
+        """
+        Initialize an empty shopping cart.
+        """
+        self.items: list[CartItem] = []
+
+    def add_item(self, item: CartItem) -> None:
+        """
+        Add an item to the shopping cart.
+
+        Args:
+            item (CartItem): The item to add to the cart.
+        """
         self.items.append(item)
 
-    def remove_item(self, item: CartItem):
+    def remove_item(self, item: CartItem) -> None:
+        """
+        Remove an item from the shopping cart.
+
+        Args:
+            item (CartItem): The item to remove from the cart.
+        """
         self.items.remove(item)
 
-    def get_price(self):
+    def get_price(self) -> float:
+        """
+        Get the total price of all items in the shopping cart.
+
+        Returns:
+            float: The total price of the cart.
+        """
         return sum(item.get_price() for item in self.items)
 
 

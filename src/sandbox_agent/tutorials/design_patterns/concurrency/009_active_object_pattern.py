@@ -28,6 +28,8 @@ import concurrent.futures
 import queue
 import time
 
+from typing import Any
+
 
 class ActiveObject:
     """An active object that executes tasks concurrently."""

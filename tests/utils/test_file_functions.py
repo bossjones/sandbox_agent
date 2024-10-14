@@ -165,9 +165,8 @@ async def test_aioread_file(tmp_path):
     test_file = tmp_path / "test.txt"
     test_file.write_text(test_data)
     
-    result = []
-    await aioread_file(result, str(tmp_path), "test", "txt")
-    assert "".join(result) == test_data
+    result = await aioread_file(str(tmp_path), "test", "txt")
+    assert result == test_data
 
 
 def test_rich_likes_or_comments():

@@ -815,30 +815,32 @@ async def aiowrite_file(data: str, dl_dir: str = "./", fname: str = "", ext: str
     LOGGER.debug(f"Writing to {p_new.absolute()}")
     async with aiofiles.open(p_new.absolute(), mode="w") as f:
         await f.write(data)
-        await f.write(data)
     await LOGGER.complete()
 
 
-async def aioread_file(data: str, dl_dir: str = "./", fname: str = "", ext: str = "") -> None:
+async def aioread_file(dl_dir: str = "./", fname: str = "", ext: str = "") -> str:
     """
     Read data from a file asynchronously.
 
     Args:
     ----
-        data (str): Data to read.
         dl_dir (str, optional): Directory to read from. Defaults to "./".
         fname (str, optional): File name. Defaults to "".
         ext (str, optional): File extension. Defaults to "".
+
+    Returns:
+    -------
+        str: The content of the file.
 
     """
     p_dl_dir = pathlib.Path(dl_dir)
     full_path_dl_dir = f"{p_dl_dir.absolute()}"
     p_new = pathlib.Path(f"{full_path_dl_dir}/{fname}.{ext}")
-    LOGGER.debug(f"Writing to {p_new.absolute()}")
+    LOGGER.debug(f"Reading from {p_new.absolute()}")
     async with aiofiles.open(p_new.absolute(), mode="r") as f:
-        await f.read(data)
-        await f.read(data)
+        content = await f.read()
     await LOGGER.complete()
+    return content
 
 
 def check_file_size(a_file: str) -> tuple[bool, str]:

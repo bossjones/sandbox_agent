@@ -787,12 +787,12 @@ def format_size(a_file: int) -> str:
         str: Formatted file size.
 
     """
-    if a_file > 1024**3:
-        return f"{a_file / float(1024**3):.0f} GB"
-    elif a_file > 1024**2:
-        return f"{a_file / float(1024**2):.0f} MB"
-    elif a_file > 1024:
-        return f"{a_file / float(1024):.0f} KB"
+    if a_file >= 1024**3:
+        return f"{a_file / float(1024**3):.2f} GB"
+    elif a_file >= 1024**2:
+        return f"{a_file / float(1024**2):.2f} MB"
+    elif a_file >= 1024:
+        return f"{a_file / float(1024):.2f} KB"
     else:
         return f"{a_file:.0f} B"
 

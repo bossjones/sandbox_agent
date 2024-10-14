@@ -37,7 +37,7 @@ async def test_check_for_attachments_tenor_gif(sandbox_agent):
     message.author.display_name = "TestUser"
 
     result = await sandbox_agent.check_for_attachments(message)
-    expected = "Check out this GIF  [TestUser posts an animated funny cat dancing ]"
+    expected = "Check out this GIF [TestUser posts an animated funny cat dancing]"
     assert result == expected
 
 @pytest.mark.asyncio
@@ -45,20 +45,11 @@ async def test_check_for_attachments_image_url(sandbox_agent):
     message = MagicMock(spec=Message)
     message.content = "https://example.com/image.jpg"
 
-    with patch("sandbox_agent.utils.file_operations.download_image") as mock_download, \
-         patch("PIL.Image.open") as mock_image_open:
-        mock_response = MagicMock()
-        mock_response.content = b"fake image data"
-        mock_download.return_value = mock_response
-        mock_image = MagicMock()
-        mock_image_open.return_value.convert.return_value = mock_image
-
+    with patch.object(sandbox_agent, "process_image") as mock_process_image:
         result = await sandbox_agent.check_for_attachments(message)
 
         assert result == "https://example.com/image.jpg"
-        mock_download.assert_called_once_with("https://example.com/image.jpg")
-        mock_image_open.assert_called_once()
-        mock_image.convert.assert_called_once_with("RGB")
+        mock_process_image.assert_called_once_with("https://example.com/image.jpg")
 
 @pytest.mark.asyncio
 async def test_check_for_attachments_attached_image(sandbox_agent):
@@ -68,6 +59,16 @@ async def test_check_for_attachments_attached_image(sandbox_agent):
     attachment.url = "http://example.com/attached_image.jpg"
     message.attachments = [attachment]
 
+    with patch.object(sandbox_agent, "process_image") as mock_process_image:
+        result = await sandbox_agent.check_for_attachments(message)
+
+        assert result == "Check out this image"
+        mock_process_image.assert_called_once_with("http://example.com/attached_image.jpg")
+
+@pytest.mark.asyncio
+async def test_process_image(sandbox_agent):
+    url = "http://example.com/image.jpg"
+
     with patch("sandbox_agent.utils.file_operations.download_image") as mock_download, \
          patch("PIL.Image.open") as mock_image_open:
         mock_response = MagicMock()
@@ -76,10 +77,9 @@ async def test_check_for_attachments_attached_image(sandbox_agent):
         mock_image = MagicMock()
         mock_image_open.return_value.convert.return_value = mock_image
 
-        result = await sandbox_agent.check_for_attachments(message)
+        await sandbox_agent.process_image(url)
 
-        assert result == "Check out this image"
-        mock_download.assert_called_once_with("http://example.com/attached_image.jpg")
+        mock_download.assert_called_once_with(url)
         mock_image_open.assert_called_once()
         mock_image.convert.assert_called_once_with("RGB")
 

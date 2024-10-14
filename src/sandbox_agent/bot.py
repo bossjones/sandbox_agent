@@ -123,20 +123,30 @@ class SandboxAgent(DiscordClient):
             tenor_url = message_content[start_index:] if end_index == -1 else message_content[start_index:end_index]
             words = tenor_url.split("/")[-1].split("-")[:-1]
             sentence = " ".join(words)
-            message_content = f"{message_content} [{message.author.display_name} posts an animated {sentence} ]"
-            return message_content.replace(tenor_url, "")
-        elif url_pattern.match(message_content):
+            message_content = f"{message_content.replace(tenor_url, '')} [{message.author.display_name} posts an animated {sentence}]"
+            return message_content.strip()
+        elif url_pattern.search(message_content):
             # Process image URL
-            response = await file_operations.download_image(message_content)
-            image = Image.open(BytesIO(response.content)).convert("RGB")
-        else:
+            url = url_pattern.search(message_content).group()
+            await self.process_image(url)
+        elif message.attachments:
             # Process attached image
             image_url = message.attachments[0].url
-            response = await file_operations.download_image(image_url)
-            image = Image.open(BytesIO(response.content)).convert("RGB")
+            await self.process_image(image_url)
 
         await LOGGER.complete()
         return message_content
+
+    async def process_image(self, url: str) -> None:
+        """
+        Process an image from a given URL.
+
+        Args:
+            url (str): The URL of the image to process.
+        """
+        response = await file_operations.download_image(url)
+        image = Image.open(BytesIO(response.content)).convert("RGB")
+        # Add any additional image processing logic here
 
     def get_attachments(
         self, message: discord.Message

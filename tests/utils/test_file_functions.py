@@ -82,6 +82,36 @@ def test_get_all_media_files_to_upload(mocker):
     mock_tree.assert_called_once_with(pathlib.Path("test_dir"))
     mock_filter_media.assert_called_once_with(["file1", "file2"])
 
+@pytest.mark.asyncio
+async def test_aio_read_jsonfile(tmp_path):
+    test_data = {"key": "value"}
+    json_file = tmp_path / "test.json"
+    with open(json_file, "w") as f:
+        json.dump(test_data, f)
+    
+    result = await aio_read_jsonfile(str(json_file))
+    assert result == test_data
+
+@pytest.mark.asyncio
+async def test_aio_json_loads(tmp_path):
+    test_data = {"key": "value"}
+    json_file = tmp_path / "test.json"
+    with open(json_file, "w") as f:
+        json.dump(test_data, f)
+    
+    result = await aio_json_loads(str(json_file))
+    assert result == test_data
+
+@pytest.mark.asyncio
+async def test_run_aio_json_loads(tmp_path):
+    test_data = {"key": "value"}
+    json_file = tmp_path / "test.json"
+    with open(json_file, "w") as f:
+        json.dump(test_data, f)
+    
+    result = await run_aio_json_loads(str(json_file))
+    assert result == test_data
+
 
 # def test_filter_pdfs():
 #     d = tree(DATA_PATH)
@@ -118,6 +148,23 @@ def test_get_dataframe_from_csv(mocker):
 def test_rich_format_followers():
     result = rich_format_followers(1000000)
     assert result == "[bold bright_white]1000000[/bold bright_white]"
+
+@pytest.mark.asyncio
+async def test_aiowrite_file(tmp_path):
+    test_data = "Test content"
+    test_file = tmp_path / "test.txt"
+    await aiowrite_file(test_data, str(tmp_path), "test", "txt")
+    assert test_file.read_text() == test_data
+
+@pytest.mark.asyncio
+async def test_aioread_file(tmp_path):
+    test_data = "Test content"
+    test_file = tmp_path / "test.txt"
+    test_file.write_text(test_data)
+    
+    result = []
+    await aioread_file(result, str(tmp_path), "test", "txt")
+    assert "".join(result) == test_data
 
 
 def test_rich_likes_or_comments():
@@ -172,6 +219,44 @@ def test_glob_file_by_extension(mocker):
     result = glob_file_by_extension("test_dir", "*.mp4", recursive=False)
     assert result == ["file1.mp4"]
     mock_glob.assert_called_once_with("test_dir/*.mp4", recursive=False)
+
+def test_unlink_orig_file(tmp_path):
+    test_file = tmp_path / "test.txt"
+    test_file.write_text("Test content")
+    assert test_file.exists()
+    
+    unlink_orig_file(str(test_file))
+    assert not test_file.exists()
+
+def test_get_files_to_upload(tmp_path):
+    image_file = tmp_path / "image.jpg"
+    video_file = tmp_path / "video.mp4"
+    text_file = tmp_path / "text.txt"
+    
+    image_file.touch()
+    video_file.touch()
+    text_file.touch()
+    
+    result = get_files_to_upload(str(tmp_path))
+    assert len(result) == 2
+    assert str(image_file) in result
+    assert str(video_file) in result
+    assert str(text_file) not in result
+
+def test_run_tree(tmp_path):
+    image_file = tmp_path / "image.jpg"
+    video_file = tmp_path / "video.mp4"
+    text_file = tmp_path / "text.txt"
+    
+    image_file.touch()
+    video_file.touch()
+    text_file.touch()
+    
+    result = run_tree(str(tmp_path))
+    assert len(result) == 2
+    assert str(image_file) in result
+    assert str(video_file) in result
+    assert str(text_file) not in result
 
 
 def test_print_and_append(mocker):

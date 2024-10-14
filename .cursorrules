@@ -79,3 +79,78 @@ If the discord.py library is used, be sure to add the following to the top of th
 # pyright: reportImportCycles=false
 # mypy: disable-error-code="index"
 # mypy: disable-error-code="no-redef"
+
+
+
+Using the test coverage reports ./cov.xml and contents of source code and corresponding test files, suggest new test cases that would increase coverage of the source code.
+
+If the discord.py library is used, be sure to add the following to the top of the file:
+
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
+
+Strive for 100% code coverage for all functions and classes that you write.
+
+If you are writing tests for a function that requires an actual image, or file, use the tmp_path fixture to define a pytest fixture that will create a temporary file and pass it to the function. for example:
+
+```
+@pytest.fixture()
+def mock_pdf_file(tmp_path: Path) -> Path:
+    """
+    Fixture to create a mock PDF file for testing purposes.
+
+    This fixture creates a temporary directory and copies a test PDF file into it.
+    The path to the mock PDF file is then returned for use in tests.
+
+    Args:
+    ----
+        tmp_path (Path): The temporary path provided by pytest.
+
+    Returns:
+    -------
+        Path: A Path object of the path to the mock PDF file.
+
+    """
+    test_pdf_path: Path = tmp_path / "rich-readthedocs-io-en-latest.pdf"
+    shutil.copy("src/sandbox_agent/data/chroma/documents/rich-readthedocs-io-en-latest.pdf", test_pdf_path)
+    return test_pdf_path
+
+
+@pytest.mark.slow()
+@pytest.mark.services()
+# @pytest.mark.vcr(allow_playback_repeats=True, match_on=["request_matcher"], ignore_localhost=False)
+@pytest.mark.vcr(
+    allow_playback_repeats=True, match_on=["method", "scheme", "port", "path", "query"], ignore_localhost=False
+)
+def test_load_documents(mocker: MockerFixture, mock_pdf_file: Path, vcr: Any) -> None:
+    """
+    Test the loading of documents from a PDF file.
+
+    This test verifies that the `load_documents` function correctly loads
+    documents from a PDF file, splits the text into chunks, and saves the
+    chunks to Chroma.
+
+    Args:
+    ----
+        mocker (MockerFixture): The mocker fixture for patching.
+        mock_pdf_file (Path): The path to the mock PDF file.
+
+    The test performs the following steps:
+    1. Mocks the `os.listdir` and `os.path.join` functions to simulate the presence of the PDF file.
+    2. Mocks the `PyPDFLoader` to return a document with test content.
+    3. Calls the `generate_data_store` function to load, split, and save the document.
+    4. Asserts that the document is loaded, split, and saved correctly.
+
+    """
+
+    from sandbox_agent.services.chroma_service import load_documents
+
+    documents = load_documents()
+
+    # this is a bad test, cause the data will change eventually. Need to find a way to test this.
+    assert len(documents) == 713
+    assert vcr.play_count == 0
+```

@@ -224,7 +224,9 @@ auto-commits: true
 commit: false
 
 ## Specify a custom prompt for generating commit messages
-#commit-prompt: xxx
+commit-prompt: 'Your mission is to create clean and comprehensive commit messages in the given coventional @commitlint convention
+  and explain WHAT were the changes and WHY the changes were done. Add a short description of WHY the changes are done after
+  the commit message. Dont start it with "This commit", just describe the changes.'
 
 ## Perform a dry run without modifying files (default: False)
 #dry-run: false
@@ -238,7 +240,7 @@ commit: false
 #lint: false
 
 ## Specify lint commands to run for different languages, eg: "python: flake8 --select=..." (can be used multiple times)
-#lint-cmd: xxx
+lint-cmd: rye run lint
 ## Specify multiple values like this:
 #lint-cmd:
 #  - xxx
@@ -249,7 +251,7 @@ commit: false
 #auto-lint: true
 
 ## Specify command to run tests
-test-cmd: rye run ci
+test-cmd: rye run unittests
 
 ## Enable/disable automatic testing after changes (default: False)
 auto-test: true
@@ -277,7 +279,7 @@ auto-test: true
 read:
   - aider_configs/CONVENTIONS.md
 ## Use VI editing mode in the terminal (default: False)
-#vim: false
+vim: true
 
 ## Specify the language to use in the chat (default: None, uses system settings)
 #chat-language: xxx

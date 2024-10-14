@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from langchain_community.storage import LocalFileStore, RedisStore
+from langchain_community.storage import RedisStore
+from langchain_community.storage.file_system import LocalFileStore
 from langchain_core.stores import InMemoryStore
 
 from sandbox_agent.aio_settings import aiosettings

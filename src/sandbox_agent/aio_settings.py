@@ -407,6 +407,10 @@ class AioSettings(BaseSettings):
         default="./active_memory.json",
     )
 
+    changelogs_github_api_token: SecretStr = Field(
+        env="CHANGELOGS_GITHUB_API_TOKEN", description="GitHub API token for Changelogs", default=""
+    )
+
     # pylint: disable=redundant-keyword-arg
     better_exceptions: bool = Field(env="BETTER_EXCEPTIONS", description="Enable better exceptions", default=1)
     pythonasynciodebug: bool = Field(

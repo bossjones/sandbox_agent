@@ -2,7 +2,7 @@
 # use `rye lock` or `rye sync` to update this lockfile
 #
 # last locked with the following flags:
-#   pre: false
+#   pre: true
 #   features: []
 #   all-features: true
 #   with-sources: false
@@ -176,6 +176,7 @@ cffi==1.17.1
     # via weasyprint
 cfgv==3.4.0
     # via pre-commit
+changelogs @ git+https://github.com/bossjones/changelogs@63287d56c8fe2c5b39e740fdde2d03ad6b76a40e
 chardet==5.2.0
     # via mbstrdecoder
     # via sandbox-agent
@@ -199,6 +200,7 @@ click==8.1.7
     # via maison
     # via mkdocs
     # via mkdocstrings
+    # via pur
     # via pyinspect
     # via rich-click
     # via sandbox-agent
@@ -364,6 +366,8 @@ geojson==2.5.0
     # via pyowm
 ghp-import==2.1.0
     # via mkdocs
+gitchangelog==3.0.4
+    # via changelogs
 gitdb==4.0.11
     # via aider-chat
     # via gitpython
@@ -675,6 +679,7 @@ lsprotocol==2023.0.1
     # via jedi-language-server
     # via pygls
 lxml==5.3.0
+    # via changelogs
     # via pypi-command-line
     # via python-docx
     # via sandbox-agent
@@ -960,6 +965,7 @@ packaging==24.1
     # via altair
     # via black
     # via build
+    # via changelogs
     # via dask
     # via datasets
     # via faiss-cpu
@@ -1116,6 +1122,8 @@ ptyprocess==0.7.0
     # via aider-chat
     # via pexpect
     # via terminado
+pur==7.3.2
+    # via sandbox-agent
 pure-eval==0.2.3
     # via stack-data
 pyarrow==17.0.0
@@ -1365,6 +1373,7 @@ regex==2024.9.11
 requests==2.32.3
     # via aider-chat
     # via bpython
+    # via changelogs
     # via datasets
     # via gallery-dl
     # via google-api-core
@@ -1785,6 +1794,7 @@ validate-pyproject==0.19
 validate-pyproject-schema-store==2024.8.26
     # via validate-pyproject
 validators==0.33.0
+    # via changelogs
     # via sandbox-agent
 vcrpy==6.0.1
     # via pytest-recording

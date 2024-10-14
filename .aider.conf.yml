@@ -249,10 +249,10 @@ commit: false
 #auto-lint: true
 
 ## Specify command to run tests
-#test-cmd: xxx
+test-cmd: rye run ci
 
 ## Enable/disable automatic testing after changes (default: False)
-#auto-test: false
+auto-test: true
 
 ## Run tests and fix problems found
 #test: false

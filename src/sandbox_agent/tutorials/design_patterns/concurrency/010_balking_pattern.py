@@ -22,10 +22,18 @@ import threading
 
 
 class BalkingExample:
+    """An example class that demonstrates the Balking pattern."""
+
     def __init__(self):
+        """Initialize the BalkingExample."""
         self._flag = threading.Event()
 
-    def run_task(self):
+    def run_task(self) -> None:
+        """
+        Run a task if it's not already running.
+
+        If the task is already running, balk at the request.
+        """
         if self._flag.is_set():
             print("Task is already running. Balking...")
             return

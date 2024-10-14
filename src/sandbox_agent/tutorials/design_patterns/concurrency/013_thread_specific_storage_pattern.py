@@ -24,7 +24,13 @@ import threading
 local_storage = threading.local()
 
 
-def display_storage(name):
+def display_storage(name: str) -> None:
+    """
+    Display the value stored in the thread-local storage for the current thread.
+
+    Args:
+        name (str): The name of the thread.
+    """
     try:
         val = local_storage.val
     except AttributeError:
@@ -33,7 +39,13 @@ def display_storage(name):
         print(f"{name}: value = {val}")
 
 
-def worker(number):
+def worker(number: int) -> None:
+    """
+    A worker function that runs in a separate thread.
+
+    Args:
+        number (int): The worker number.
+    """
     print(f"Worker: {number}")
     if number < 3:
         local_storage.val = number  # Store thread-specific value
@@ -41,7 +53,7 @@ def worker(number):
 
 
 # Create and start threads
-threads = []
+threads: list[threading.Thread] = []
 for i in range(5):
     t = threading.Thread(target=worker, args=(i,))
     threads.append(t)

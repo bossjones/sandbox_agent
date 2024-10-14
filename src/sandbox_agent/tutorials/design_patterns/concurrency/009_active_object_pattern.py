@@ -30,16 +30,39 @@ import time
 
 
 class ActiveObject:
-    def __init__(self):
-        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-        self.queue = queue.Queue()
+    """An active object that executes tasks concurrently."""
 
-    def add_task(self, task, *args, **kwargs):
+    def __init__(self):
+        """Initialize the active object."""
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+        self.queue: queue.Queue[concurrent.futures.Future] = queue.Queue()
+
+    def add_task(self, task: callable, *args, **kwargs) -> concurrent.futures.Future:
+        """
+        Add a task to be executed.
+
+        Args:
+            task (callable): The task to be executed.
+            *args: Positional arguments to be passed to the task.
+            **kwargs: Keyword arguments to be passed to the task.
+
+        Returns:
+            concurrent.futures.Future: A Future representing the result of the task.
+        """
         future = self.executor.submit(task, *args, **kwargs)
         self.queue.put(future)
         return future
 
-    def get_result(self, future):
+    def get_result(self, future: concurrent.futures.Future) -> Any:
+        """
+        Get the result of a task.
+
+        Args:
+            future (concurrent.futures.Future): The Future representing the task.
+
+        Returns:
+            Any: The result of the task.
+        """
         return future.result()
 
 
@@ -47,7 +70,16 @@ class ActiveObject:
 ao = ActiveObject()
 
 
-def long_running_task(n):
+def long_running_task(n: int) -> str:
+    """
+    A long-running task.
+
+    Args:
+        n (int): The number of seconds to sleep.
+
+    Returns:
+        str: A message indicating that the task is finished.
+    """
     time.sleep(n)
     return "Task finished"
 

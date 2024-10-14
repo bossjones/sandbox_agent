@@ -24,11 +24,23 @@ import threading
 
 
 class Singleton:
+    """A singleton class that uses the Double-Checked Locking pattern."""
+
     _instance = None
     _lock = threading.Lock()
 
     @classmethod
-    def get_instance(cls):
+    def get_instance(cls) -> Singleton:
+        """
+        Get the singleton instance of the class.
+
+        This method uses the Double-Checked Locking pattern to ensure that
+        only one instance of the class is created, even in a multithreaded
+        environment.
+
+        Returns:
+            Singleton: The singleton instance of the class.
+        """
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:

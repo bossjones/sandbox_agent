@@ -22,11 +22,14 @@ import threading
 # Shared condition
 condition = threading.Condition()
 # Shared data
-data = []
+data: list[str] = []
 data_ready = False
 
 
-def server_thread():
+def server_thread() -> None:
+    """
+    Simulate a server thread that waits for data to be ready before processing it.
+    """
     global data
     global data_ready
     with condition:
@@ -37,7 +40,10 @@ def server_thread():
         data_ready = False
 
 
-def client_thread():
+def client_thread() -> None:
+    """
+    Simulate a client thread that sends data and notifies the server thread.
+    """
     global data
     global data_ready
     with condition:

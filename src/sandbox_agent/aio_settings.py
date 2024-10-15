@@ -558,6 +558,24 @@ class AioSettings(BaseSettings):
     visual: str = Field(env="VISUAL", description="VISUAL", default="vim")
     git_editor: str = Field(env="GIT_EDITOR", description="GIT_EDITOR", default="vim")
 
+    llm_streaming: bool = Field(env="LLM_STREAMING", description="Enable streaming for LLM", default=False)
+    llm_provider: str = Field(
+        env="LLM_PROVIDER", description="LLM provider (e.g., openai, anthropic)", default="openai"
+    )
+    llm_max_retries: int = Field(
+        env="LLM_MAX_RETRIES", description="Maximum number of retries for LLM API calls", default=3
+    )
+    llm_document_loader_type: str = Field(
+        env="LLM_DOCUMENT_LOADER_TYPE", description="Document loader type", default="pymupdf"
+    )
+    llm_vectorstore_type: str = Field(env="LLM_VECTORSTORE_TYPE", description="Vector store type", default="pgvector")
+    llm_embedding_model_type: str = Field(
+        env="LLM_EMBEDDING_MODEL_TYPE", description="Embedding model type", default="text-embedding-3-large"
+    )
+    llm_key_value_stores_type: str = Field(
+        env="LLM_KEY_VALUE_STORES_TYPE", description="Key-value stores type", default="redis"
+    )
+
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
     #     driver=os.environ.get("PGVECTOR_DRIVER", "psycopg"),

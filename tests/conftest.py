@@ -4,21 +4,31 @@
 # Taken from tedi and guid_tracker
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures.thread
 import copy
 import datetime
 import functools
 import glob
+import inspect
+import logging
 import os
+import pickle
 import posixpath
 import re
 import shutil
 import sys
 import time
+import typing
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterable, Iterator
+from concurrent.futures import Executor, Future
 from dataclasses import dataclass
-from pathlib import Path
-from typing import TYPE_CHECKING, Optional, TypeVar
+from pathlib import Path, PosixPath
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union
+
+import pytest_asyncio
+import rich
 
 from _pytest.logging import LogCaptureFixture
 from _pytest.monkeypatch import MonkeyPatch
@@ -27,15 +37,22 @@ from langchain_community.document_loaders import TextLoader
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_openai.embeddings import OpenAIEmbeddings
+from rich.console import Console
+from rich.markdown import Markdown
 from vcr import filters
 
 import pytest
 
 
 if TYPE_CHECKING:
+    from _pytest.config import Config as PytestConfig
     from _pytest.fixtures import FixtureRequest
+    from _pytest.logging import LogCaptureFixture
     from _pytest.monkeypatch import MonkeyPatch
+    from vcr.config import VCR
     from vcr.request import Request as VCRRequest
+
+    from pytest_mock.plugin import MockerFixture
 
 INDEX_NAME = "goobaiunittest"
 
@@ -50,6 +67,93 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 FAKE_TIME = datetime.datetime(2020, 12, 25, 17, 5, 55)
 
 print(f"HERE: {HERE}")
+
+
+class IgnoreOrder:
+    """
+    pytest helper to test equality of lists/tuples ignoring item order
+
+    E.g., these asserts pass:
+    >>> assert [1, 2, 3, 3] == IgnoreOrder([3, 1, 2, 3])
+    >>> assert {"foo": [1, 2, 3]} == {"foo": IgnoreOrder([3, 2, 1])}
+    """
+
+    def __init__(self, items: Union[list, tuple], key=None):
+        self.items = items
+        self.key = key
+
+    def __eq__(self, other):
+        return type(other) == type(self.items) and sorted(other, key=self.key) == sorted(self.items, key=self.key)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.items!r})"
+
+
+class RegexMatcher:
+    """
+    pytest helper to check a string against a regex, especially in nested structures, e.g.:
+
+        >>> assert {"foo": "baaaaa"} == {"foo": RegexMatcher("ba+")}
+    """
+
+    def __init__(self, pattern: str, flags=0):
+        self.regex = re.compile(pattern=pattern, flags=flags)
+
+    def __eq__(self, other):
+        return isinstance(other, str) and bool(self.regex.match(other))
+
+    def __repr__(self):
+        return self.regex.pattern
+
+
+class DictSubSet:
+    """
+    pytest helper to check if a dictionary contains a subset of items, e.g.:
+
+    >> assert {"foo": "bar", "meh": 4} == DictSubSet({"foo": "bar"})
+    """
+
+    __slots__ = ["items", "_missing", "_differing"]
+
+    # TODO rename/alias to `a_dict_with()` to be more self-explanatory
+
+    def __init__(self, items: Union[dict[Any | str, Any], None] = None, **kwargs):
+        self.items = {**(items or {}), **kwargs}
+        self._missing = None
+        self._differing = None
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self.items)):
+            return False
+        self._missing = {k: v for k, v in self.items.items() if k not in other}
+        self._differing = {k: (v, other[k]) for k, v in self.items.items() if k in other and other[k] != v}
+        return not (self._missing or self._differing)
+
+    def __repr__(self):
+        msg = repr(self.items)
+        if self._missing:
+            msg += f"\n    # Missing: {self._missing}"
+        if self._differing:
+            msg += f"\n    # Differing: {self._differing}"
+        return msg
+
+
+class ListSubSet:
+    """
+    pytest helper to check if a list contains a subset of items, e.g.:
+
+    >> assert [1, 2, 3, 666] == ListSubSet([1, 666])
+    """
+
+    # TODO: also take item counts into account?
+    def __init__(self, items: list):
+        self.items = items
+
+    def __eq__(self, other):
+        return isinstance(other, type(self.items)) and all(any(y == x for y in other) for x in self.items)
+
+    def __repr__(self):
+        return repr(self.items)
 
 
 ########################################## vcr ##########################################
@@ -91,26 +195,16 @@ def is_chroma_uri(uri: str) -> bool:
 def request_matcher(r1: VCRRequest, r2: VCRRequest) -> bool:
     """
     Custom matcher to determine if the requests are the same
-    - For sensei requests, we match the parts of the multipart request. This is needed as we can't compare the body
+    - For internal adobe requests, we match the parts of the multipart request. This is needed as we can't compare the body
         directly as the chunk boundary is generated randomly
     - For opensearch requests, we just match the body
     - For openai, allow llm-proxy
     - For others, we match both uri and body
     """
-    import rich
-
-    rich.inspect(r1, all=True)
-    rich.inspect(r2, all=True)
 
     if r1.uri == r2.uri:
         if r1.body == r2.body:
             return True
-        # elif 'sensei' in r1.uri:
-        #     r1_parts = [r1p.content for r1p in decoder.MultipartDecoder(r1.body, r1.headers['Content-Type']).parts]
-        #     r2_parts = [r2p.content for r2p in decoder.MultipartDecoder(r2.body, r2.headers['Content-Type']).parts]
-
-        #     parts_same = [r1p == r2p for (r1p, r2p) in zip(r1_parts, r2_parts)]
-        #     return all(parts_same)
     elif is_opensearch_uri(r1.uri) and is_opensearch_uri(r2.uri):
         return r1.body == r2.body
     elif is_llm_uri(r1.uri) and is_llm_uri(r2.uri):
@@ -122,23 +216,44 @@ def request_matcher(r1: VCRRequest, r2: VCRRequest) -> bool:
 
 
 # SOURCE: https://github.com/kiwicom/pytest-recording/tree/master
-def pytest_recording_configure(config, vcr):
+def pytest_recording_configure(config: PytestConfig, vcr: VCR):
     vcr.register_matcher("request_matcher", request_matcher)
     vcr.match_on = ["request_matcher"]
 
 
-def filter_response(response):
+def filter_response(response: VCRRequest) -> VCRRequest:
     """
     If the response has a 'retry-after' header, we set it to 0 to avoid waiting for the retry time
     """
 
-    if "retry-after" in response["headers"]:  # type: ignore
-        response["headers"]["retry-after"] = "0"  # type: ignore
+    if "retry-after" in response["headers"]:
+        response["headers"]["retry-after"] = "0"
+
+    if "apim-request-id" in response["headers"]:
+        response["headers"]["apim-request-id"] = ["9a705e27-2f04-4bd6-abd8-01848165ebbf"]
+
+    if "azureml-model-session" in response["headers"]:
+        response["headers"]["azureml-model-session"] = ["d089-20240815073451"]
+
+    if "x-ms-client-request-id" in response["headers"]:
+        response["headers"]["x-ms-client-request-id"] = ["9a705e27-2f04-4bd6-abd8-01848165ebbf"]
+
+    if "x-ratelimit-remaining-requests" in response["headers"]:
+        response["headers"]["x-ratelimit-remaining-requests"] = ["144"]
+    if "x-ratelimit-remaining-tokens" in response["headers"]:
+        response["headers"]["x-ratelimit-remaining-tokens"] = ["143324"]
+    if "x-request-id" in response["headers"]:
+        response["headers"]["x-request-id"] = ["143324"]
+    if "Set-Cookie" in response["headers"]:
+        response["headers"]["Set-Cookie"] = [
+            "__cf_bm=fake;path=/; expires=Tue, 15-Oct-24 23:22:45 GMT; domain=.api.openai.com; HttpOnly;Secure; SameSite=None",
+            "_cfuvid=fake;path=/; domain=.api.openai.com; HttpOnly; Secure; SameSite=None",
+        ]
 
     return response
 
 
-def filter_request(request):
+def filter_request(request: VCRRequest) -> Optional[VCRRequest]:
     """
     If the request is of type multipart/form-data we don't filter anything, else we perform two additional filterings -
     1. Processes the request body text, replacing today's date with a placeholder.This is necessary to ensure
@@ -172,14 +287,7 @@ def filter_request(request):
             request.body = request_body_str.encode("utf-8")
 
     # filter fields from post
-    filter_post_data_parameters = [
-        "api-version",
-        "client_id",
-        "client_secret",
-        "code",
-        "username",
-        "password",
-    ]
+    filter_post_data_parameters = ["api-version", "client_id", "client_secret", "code", "username", "password"]
     replacements = [p if isinstance(p, tuple) else (p, None) for p in filter_post_data_parameters]
     filter_function = functools.partial(filters.replace_post_data_parameters, replacements=replacements)
     request = filter_function(request)
@@ -187,7 +295,10 @@ def filter_request(request):
     return request
 
 
-@pytest.fixture(scope="module")
+# SOURCE: https://github.com/kiwicom/pytest-recording/tree/master?tab=readme-ov-file#configuration
+# @pytest.fixture(scope="module")
+# @pytest.fixture(scope="function")
+@pytest.fixture
 def vcr_config():
     return {
         "filter_headers": [

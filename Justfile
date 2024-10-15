@@ -263,10 +263,10 @@ delete-cassettes:
 # find tests -type d -name "*cassettes*" -print0 | xargs -0 -I {} rm -rfv {}
 
 
-regenerate-cassettes:
-	fd -td cassettes -X rm -ri
-	rye run unittests-vcr-record-final
-	rye run unittests-debug
+# regenerate-cassettes:
+# 	fd -td cassettes -X rm -ri
+# 	rye run unittests-vcr-record-final
+# 	rye run unittests-debug
 
 brew-deps:
 	brew install libmagic poppler tesseract pandoc qpdf tesseract-lang
@@ -309,3 +309,5 @@ local-regenerate-cassettes:
 
 # (alias) delete all cassette files and directories, regenerate all cassette files and rerun tests
 local-regenerate-vcr: local-regenerate-cassettes
+
+regenerate-cassettes: local-regenerate-cassettes

@@ -94,3 +94,116 @@ async def test_process_image(sandbox_agent):
         mock_image.convert.assert_called_once_with("RGB")
 
 # Add more test cases for other methods in the SandboxAgent class
+import pytest
+from unittest.mock import AsyncMock, MagicMock, patch
+from discord import Message, Attachment, File
+from io import BytesIO
+from PIL import Image
+
+from sandbox_agent.bot import SandboxAgent
+
+@pytest.fixture
+def bot():
+    return SandboxAgent()
+
+@pytest.mark.asyncio
+async def test_process_attachments(bot):
+    mock_message = AsyncMock(spec=Message)
+    mock_attachment = AsyncMock(spec=Attachment)
+    mock_attachment.url = "http://example.com/test.jpg"
+    mock_attachment.filename = "test.jpg"
+    mock_message.attachments = [mock_attachment]
+
+    with patch("aiohttp.ClientSession.get") as mock_get, \
+         patch("builtins.open", create=True) as mock_open, \
+         patch("os.makedirs") as mock_makedirs:
+        mock_get.return_value.__aenter__.return_value.status = 200
+        mock_get.return_value.__aenter__.return_value.read.return_value = b"fake image data"
+
+        await bot.process_attachments(mock_message)
+
+        mock_makedirs.assert_called()
+        mock_open.assert_called()
+        mock_get.assert_called_with("http://example.com/test.jpg")
+
+@pytest.mark.asyncio
+async def test_check_for_attachments_tenor_gif(bot):
+    mock_message = MagicMock(spec=Message)
+    mock_message.content = "Check out this GIF https://tenor.com/view/funny-cat-dancing-gif-12345"
+    mock_message.author.display_name = "TestUser"
+
+    result = await bot.check_for_attachments(mock_message)
+    expected = "Check out this GIF  [TestUser posts an animated funny cat dancing]"
+    assert result == expected
+
+@pytest.mark.asyncio
+async def test_check_for_attachments_image_url(bot):
+    mock_message = MagicMock(spec=Message)
+    mock_message.content = "Look at this image http://example.com/image.jpg"
+
+    with patch.object(bot, "process_image") as mock_process_image:
+        await bot.check_for_attachments(mock_message)
+        mock_process_image.assert_called_with("http://example.com/image.jpg")
+
+@pytest.mark.asyncio
+async def test_process_image(bot):
+    url = "http://example.com/test.jpg"
+    mock_response = MagicMock()
+    mock_response.content = b"fake image data"
+
+    with patch("sandbox_agent.utils.file_operations.download_image", return_value=mock_response) as mock_download, \
+         patch("PIL.Image.open") as mock_image_open:
+        mock_image = MagicMock(spec=Image.Image)
+        mock_image_open.return_value.convert.return_value = mock_image
+
+        await bot.process_image(url)
+
+        mock_download.assert_called_with(url)
+        mock_image_open.assert_called()
+        mock_image.convert.assert_called_with("RGB")
+
+@pytest.mark.asyncio
+async def test_on_message_bot_message(bot):
+    mock_message = AsyncMock(spec=Message)
+    mock_message.author.bot = True
+    
+    await bot.on_message(mock_message)
+    
+    mock_message.channel.send.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_on_message_percent_message(bot):
+    mock_message = AsyncMock(spec=Message)
+    mock_message.author.bot = False
+    mock_message.content = "%some command"
+    
+    await bot.on_message(mock_message)
+    
+    mock_message.channel.send.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_on_message_valid_message(bot):
+    mock_message = AsyncMock(spec=Message)
+    mock_message.author.bot = False
+    mock_message.content = "Hello, bot!"
+    
+    with patch.object(bot, "process_attachments") as mock_process_attachments, \
+         patch.object(bot, "process_commands") as mock_process_commands:
+        await bot.on_message(mock_message)
+        
+        mock_process_attachments.assert_called_once_with(mock_message)
+        mock_process_commands.assert_called_once_with(mock_message)
+
+@pytest.mark.asyncio
+async def test_chat_command(bot):
+    ctx = AsyncMock()
+    message = "Hello, bot!"
+    
+    mock_response = MagicMock()
+    mock_response.generations = [[MagicMock(text="Bot response")]]
+    
+    with patch.object(bot.chat_model, "agenerate", return_value=mock_response) as mock_agenerate:
+        await bot.chat(ctx, message=message)
+        
+        mock_agenerate.assert_called_once_with([message])
+        ctx.send.assert_called_once_with("Bot response")

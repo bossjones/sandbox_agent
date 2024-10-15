@@ -711,6 +711,8 @@ class AioSettings(BaseSettings):
     # Tool-specific configuration
     tavily_search_max_results: int = 3
 
+    agent_type: str = Field(env="AGENT_TYPE", description="Type of agent to use", default="plan_and_execute")
+
     @model_validator(mode="before")
     @classmethod
     def pre_update(cls, values: dict[str, Any]) -> dict[str, Any]:

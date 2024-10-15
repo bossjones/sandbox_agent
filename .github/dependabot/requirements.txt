@@ -1425,7 +1425,7 @@ urllib3==2.2.3
     # via responses
     # via sentry-sdk
     # via types-requests
-uvicorn==0.30.6
+uvicorn==0.32.0
     # via chromadb
     # via fastapi
     # via fastapi-cli

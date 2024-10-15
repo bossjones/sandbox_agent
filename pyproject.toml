@@ -89,7 +89,7 @@ dependencies = [
     "typer[all]>=0.12.3",
     "uritemplate>=4.1.1",
     "uritools>=4.0.2",
-    "uvicorn>=0.29.0",
+    "uvicorn>=0.32.0",
     "validators>=0.28.1",
     "watchdog[watchmedo]>=4.0.0",
     "webcolors==1.13",

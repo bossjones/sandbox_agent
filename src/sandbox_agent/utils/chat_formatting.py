@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
+
 """sandbox_agent.utils.chat_formatting"""
 
 from __future__ import annotations

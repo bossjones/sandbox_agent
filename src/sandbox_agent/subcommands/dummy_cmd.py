@@ -23,7 +23,6 @@ async def aio_cli_dummy_cmd() -> str:
     """Returns information about the bot."""
     await asyncio.sleep(1)
     return "slept for 1 second"
-    # typer.echo("This is GoobBot CLI")
 
 
 if __name__ == "__main__":

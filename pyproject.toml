@@ -280,7 +280,8 @@ fmt = {cmd = "pre-commit run --all-files"}
 pylint = {cmd = "python -m invoke ci.pylint --everything"}
 pylint-error-only = {cmd = "pylint --output-format=colorized --generated-members=torch.*,numpy.*,cv2.* --disable=all --max-line-length=120 --enable=F,E --rcfile pyproject.toml src tests"}
 lint-all = {cmd = "python -m pylint -j4 --output-format=colorized --rcfile pyproject.toml tests src"}
-lint = {cmd = "python -m pylint --output-format=colorized --disable=C0111,E0401,C,W,R0402,R6102 --enable=F,E tests src"}
+# lint = {cmd = "python -m pylint --output-format=colorized --disable=C0111,E0401,C,W,R0402,R6102 --enable=F,E tests src"}
+lint = {cmd = "python -m ruff check --fix . --config=pyproject.toml"}
 typecheck = {chain = [
     "typecheck:pyright",
     "typecheck:mypy",
@@ -497,6 +498,7 @@ filterwarnings = [
 # retry_delay = 30
 pythonpath = "."
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 addopts = [
     # Print runtimes of the slowest tests.
     '--durations=10',

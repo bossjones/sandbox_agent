@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
+# pyright: reportInvalidTypeForm=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
 # pylint: disable=consider-using-with, consider-using-min-builtin
 # SOURCE: https://github.com/GDi4K/imitools/blob/main/imitools.py
 from __future__ import annotations

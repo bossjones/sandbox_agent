@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
+# pyright: reportInvalidTypeForm=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
 # pylint: disable=possibly-used-before-assignment
 # pylint: disable=consider-using-from-import
 # https://github.com/universityofprofessorex/ESRGAN-Bot
@@ -41,17 +48,11 @@ from webcolors import CSS3_HEX_TO_NAMES, hex_to_rgb
 from sandbox_agent.utils import file_functions
 
 
-# from sandbox_agent.utils.devices import get_device
-# from sandbox_agent.utils.torchutils import load_model
-
-
 IMG_SIZE_CUTOFF = 1080
 
 TYPE_IMAGE_ARRAY = typing.Union[np.ndarray, typing.Any]
 
 TYPE_SCALE = typing.Union[str, int]
-
-# DEVICE = get_device()
 
 
 class Dimensions(IntEnum):
@@ -68,15 +69,6 @@ OPENCV_RED = (255, 0, 0)
 
 
 utc = pytz.utc
-
-
-###########################################################################3
-###########################################################################3
-###########################################################################3
-###########################################################################3
-###########################################################################3
-###########################################################################3
-###########################################################################3
 
 
 def looks_like_base64(sb):
@@ -147,13 +139,13 @@ def resize_base64_image(base64_string, size=(128, 128)):
     img = Image.open(io.BytesIO(img_data))
 
     # Resize the image
-    resized_img = img.resize(size, Image.LANCZOS)
+    resized_img = img.resize(size, Image.Resampling.LANCZOS)
 
     # Save the resized image to a bytes buffer
     buffered = io.BytesIO()
     resized_img.save(buffered, format=img.format)
 
-    return base64.b64encode(buffered.getvalue()).decod
+    return base64.b64encode(buffered.getvalue()).decode
 
 
 def convert_to_base64(pil_image):
@@ -184,10 +176,6 @@ def normalize_rectangle_coords(
     img_as_array = np.asarray(temp)
     img_as_array = cv2.cvtColor(img_as_array, cv2.COLOR_RGB2BGR)
 
-    # import bpdb
-
-    # bpdb.set_trace()
-
     # get fullsize bboxes
     xmin_fullsize, ymin_fullsize, xmax_fullsize, ymax_fullsize = bboxes[0]
 
@@ -198,11 +186,6 @@ def normalize_rectangle_coords(
     endX = max(int(xmax_fullsize), 0)
 
     rich.print(startY, endY, startX, endX)
-
-    # cropped_image = img_as_array[startY:endY, startX:endX]
-
-    # image_path_api = pathlib.Path(images_filepath).resolve()
-    # fname = f"{image_path_api.parent}/cropped-{model.name}-{image_path_api.stem}{image_path_api.suffix}"
 
     return [startY, endY, startX, endX]
 
@@ -220,26 +203,6 @@ def display_normalized_rectangle(image, out_bbox):
         OPENCV_RED,
         2,
     )
-    # plt.imshow(out_img)
-
-
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
-###########################################################################################
 
 
 def get_pil_image_channels(image_path: str) -> int:

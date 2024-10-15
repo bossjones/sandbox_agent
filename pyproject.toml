@@ -505,6 +505,9 @@ addopts = [
     '--durations-min=0.05',
     '--junitxml=junit/test-results.xml',
     '--cov-report=annotate:cov_annotate',
+    '--cov=src',
+    '--cov-report=xml:cov.xml',
+    '--cov-report=term-missing',
 ]
 
 # ###################################################################################

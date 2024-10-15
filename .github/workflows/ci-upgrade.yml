@@ -47,8 +47,10 @@ jobs:
       LANGCHAIN_HUB_API_URL: https://api.hub.langchain.com
       LANGCHAIN_HUB_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
       LANGCHAIN_PROJECT: sandbox_agent-upgrade
-      sandbox_agent_CONFIG_DISCORD_TOKEN: foo
-      sandbox_agent_CONFIG_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      SANDBOX_AGENT_CONFIG_DISCORD_TOKEN: foo
+      SANDBOX_AGENT_CONFIG_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      BRAVE_SEARCH_API_KEY: ${{ secrets.BRAVE_SEARCH_API_KEY }}
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -118,7 +120,7 @@ jobs:
 
       # Allow debugging with tmate
       - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+        uses: mxschmitt/action-tmate@v4
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
         with:
           limit-access-to-actor: true
@@ -140,21 +142,18 @@ jobs:
           cp -f env.sample .env
           rye config --set-bool behavior.use-uv=true
           ./scripts/retry -t 4  -- rye sync --update-all --all-features
-          # rye run goobctl chroma generate
+
           git diff requirements.lock > requirements.lock.diff
           git diff requirements-dev.lock > requirements-dev.lock.diff
 
-          # rye run typecheck
           echo "rye run python -c 'import sandbox_agent'"
           rye run python -c 'import sandbox_agent'
           pip install pre-commit
           pre-commit install
           pre-commit autoupdate
 
-          # NOTE: just fmt
           git ls-files '*.py' '*.ipynb' | xargs rye run pre-commit run --files
 
-          # NOTE: just lint
           pre-commit run ruff --all-files
           echo "rye run test"
           rye run test

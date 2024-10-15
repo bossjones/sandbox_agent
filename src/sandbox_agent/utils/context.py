@@ -1,3 +1,9 @@
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
 from __future__ import annotations
 
 import io
@@ -11,13 +17,12 @@ from discord.ext import commands
 
 
 if TYPE_CHECKING:
-    # from asyncpg import Pool, Connection
     from types import TracebackType
 
     from aiohttp import ClientSession
     from redis.asyncio import ConnectionPool as RedisConnectionPool
 
-    from ..goob_bot import AsyncGoobBot
+    from sandbox_agent.bot import SandboxAgent
 
 
 T = TypeVar("T")
@@ -38,23 +43,6 @@ class ConnectionContextManager(Protocol):
         exc_value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None: ...
-
-
-# class DatabaseProtocol(Protocol):
-#     async def execute(self, query: str, *args: Any, timeout: Optional[float] = None) -> str:
-#         ...
-
-#     async def fetch(self, query: str, *args: Any, timeout: Optional[float] = None) -> list[Any]:
-#         ...
-
-#     async def fetchrow(self, query: str, *args: Any, timeout: Optional[float] = None) -> Optional[Any]:
-#         ...
-
-#     def acquire(self, *, timeout: Optional[float] = None) -> ConnectionContextManager:
-#         ...
-
-#     def release(self, connection: RedisConnectionPool) -> None:
-#         ...
 
 
 class ConfirmationView(discord.ui.View):
@@ -137,7 +125,7 @@ class Context(commands.Context):
     channel: Union[discord.VoiceChannel, discord.TextChannel, discord.Thread, discord.DMChannel]
     prefix: str
     command: commands.Command[Any, ..., Any]
-    bot: AsyncGoobBot
+    bot: SandboxAgent
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

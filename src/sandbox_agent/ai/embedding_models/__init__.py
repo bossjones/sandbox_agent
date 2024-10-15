@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 from sandbox_agent.aio_settings import aiosettings
 

@@ -3,11 +3,6 @@
 from __future__ import annotations
 
 import collections
-
-# try:  # python 3
-#     pass
-# except ImportError:  # python 2
-#     pass
 import inspect
 import re
 

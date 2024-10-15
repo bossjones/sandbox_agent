@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from langchain.storage.file_system import LocalFileStore
-from langchain.storage.redis import RedisStore
+from langchain.storage import LocalFileStore
+from langchain_community.storage import RedisStore
 from langchain_core.stores import InMemoryStore
 
 import pytest

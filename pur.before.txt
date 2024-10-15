@@ -2,7 +2,7 @@
 # use `rye lock` or `rye sync` to update this lockfile
 #
 # last locked with the following flags:
-#   pre: true
+#   pre: false
 #   features: []
 #   all-features: true
 #   with-sources: false
@@ -39,6 +39,7 @@ aiohttp==3.10.5
     # via langchain-community
     # via langchain-pinecone
     # via litellm
+    # via pytest-aiohttp
     # via sandbox-agent
 aiomonitor==0.7.0
     # via sandbox-agent
@@ -71,6 +72,8 @@ anyio==4.6.0
     # via sse-starlette
     # via starlette
     # via watchfiles
+application-properties==0.8.2
+    # via pymarkdownlnt
 appnope==0.1.4
     # via ipykernel
 argon2-cffi==23.1.0
@@ -79,6 +82,8 @@ argon2-cffi-bindings==21.2.0
     # via argon2-cffi
 asgiref==3.8.1
     # via opentelemetry-instrumentation-asgi
+astroid==3.2.4
+    # via pylint
 asttokens==2.4.1
     # via stack-data
 async-lru==2.0.4
@@ -102,6 +107,7 @@ autopep8==2.3.1
     # via nbqa
 babel==2.16.0
     # via jupyterlab-server
+    # via mkdocs-material
     # via sandbox-agent
 backoff==2.2.1
     # via aider-chat
@@ -113,16 +119,24 @@ beautifulsoup4==4.12.3
     # via aider-chat
     # via bs4
     # via google
+    # via mkdocs-mermaid2-plugin
+    # via mkdocs-with-pdf
     # via nbconvert
     # via sandbox-agent
     # via wikipedia
     # via yfinance
 better-exceptions==0.3.3
     # via sandbox-agent
+black==24.8.0
 bleach==6.1.0
     # via nbconvert
+blessed==1.20.0
+    # via curtsies
 blinker==1.8.2
     # via streamlit
+bpython==0.24
+bracex==2.5
+    # via wcmatch
 brotli==1.1.0
     # via fonttools
 bs4==0.0.2
@@ -135,6 +149,7 @@ bump-pydantic==0.8.0
 cachetools==5.5.0
     # via google-auth
     # via streamlit
+    # via tox
 caio==0.9.17
     # via aiofile
 cattrs==24.1.0
@@ -154,15 +169,20 @@ certifi==2024.8.30
 cffi==1.17.1
     # via aider-chat
     # via argon2-cffi-bindings
+    # via cryptography
     # via pycares
     # via sounddevice
     # via soundfile
     # via weasyprint
+cfgv==3.4.0
+    # via pre-commit
 chardet==5.2.0
     # via mbstrdecoder
     # via sandbox-agent
+    # via tox
 charset-normalizer==3.3.2
     # via aider-chat
+    # via docformatter
     # via requests
 chroma-hnswlib==0.7.6
     # via chromadb
@@ -172,26 +192,37 @@ chromadb==0.5.5
 click==8.1.7
     # via aider-chat
     # via aiomonitor
+    # via black
     # via dask
     # via duckduckgo-search
     # via litellm
-    # via pur
+    # via maison
+    # via mkdocs
+    # via mkdocstrings
     # via pyinspect
     # via rich-click
     # via sandbox-agent
     # via scenedetect
     # via streamlit
+    # via towncrier
     # via typer
     # via uvicorn
     # via wandb
+    # via yamlfix
 click-spinner==0.1.10
     # via sandbox-agent
 cloudpickle==3.0.0
     # via dask
 codetiming==1.4.0
     # via sandbox-agent
+colorama==0.4.6
+    # via griffe
+    # via mkdocs-material
+    # via tox
 coloredlogs==15.0.1
     # via onnxruntime
+columnar==1.4.1
+    # via pymarkdownlnt
 comm==0.2.2
     # via ipykernel
     # via ipywidgets
@@ -199,8 +230,18 @@ configargparse==1.7
     # via aider-chat
 contourpy==1.3.0
     # via matplotlib
+coverage==7.6.1
+    # via pytest-cov
+cryptography==43.0.0
+    # via types-pyopenssl
+    # via types-redis
 cssselect2==0.7.0
     # via weasyprint
+curtsies==0.4.2
+    # via bpython
+cwcwidth==0.1.9
+    # via bpython
+    # via curtsies
 cycler==0.12.1
     # via matplotlib
 dask==2024.8.2
@@ -229,18 +270,24 @@ diff-match-patch==20230430
 dill==0.3.8
     # via datasets
     # via multiprocess
+    # via pylint
 discord-py==2.4.0
+    # via dpytest
     # via sandbox-agent
 diskcache==5.6.3
     # via aider-chat
+distlib==0.3.8
+    # via virtualenv
 distro==1.9.0
     # via aider-chat
     # via anthropic
     # via groq
     # via openai
+    # via ruyaml
 dnspython==2.6.1
     # via email-validator
     # via pymongo
+docformatter==1.7.5
 docker-pycreds==0.4.0
     # via wandb
 docopt==0.6.2
@@ -252,12 +299,15 @@ docutils==0.21.2
     # via sandbox-agent
 dominate==2.9.1
     # via pytablewriter
+dpytest==0.7.0
 duckdb==1.0.0
     # via sandbox-agent
 duckduckgo-search==6.3.0
     # via sandbox-agent
 durabledict==0.9.4
     # via gutter
+editorconfig==0.12.4
+    # via jsbeautifier
 email-validator==2.2.0
     # via fastapi
     # via pydantic
@@ -280,11 +330,14 @@ fastapi-cli==0.0.5
     # via fastapi
 fastjsonschema==2.20.0
     # via nbformat
+    # via validate-pyproject
 filelock==3.16.1
     # via aider-chat
     # via huggingface-hub
     # via torch
+    # via tox
     # via transformers
+    # via virtualenv
 flake8==7.1.1
     # via aider-chat
 flatbuffers==24.3.25
@@ -309,6 +362,8 @@ gallery-dl==1.27.3
     # via sandbox-agent
 geojson==2.5.0
     # via pyowm
+ghp-import==2.1.0
+    # via mkdocs
 gitdb==4.0.11
     # via aider-chat
     # via gitpython
@@ -349,13 +404,19 @@ googleapis-common-protos==1.65.0
     # via protoc-gen-openapiv2
 grandalf==0.8
     # via sandbox-agent
+greenlet==3.0.3
+    # via bpython
 grep-ast==0.3.3
     # via aider-chat
+griffe==1.2.0
+    # via mkdocstrings-python
 groq==0.10.0
     # via langchain-groq
+grpc-stubs==1.53.0.5
 grpcio==1.66.1
     # via chromadb
     # via google-api-core
+    # via grpc-stubs
     # via grpcio-status
     # via opentelemetry-exporter-otlp-proto-grpc
     # via pinecone-client
@@ -393,6 +454,8 @@ httpx==0.27.2
     # via langserve
     # via langsmith
     # via openai
+    # via pytest-httpx
+    # via respx
     # via sandbox-agent
 huggingface-hub==0.25.0
     # via aider-chat
@@ -406,8 +469,11 @@ humanfriendly==10.0
     # via coloredlogs
 humanize==4.10.0
     # via pypi-command-line
+hunter==3.7.0
 hyperframe==6.0.1
     # via h2
+identify==2.6.0
+    # via pre-commit
 idna==3.10
     # via aider-chat
     # via anyio
@@ -429,15 +495,20 @@ importlib-resources==6.4.5
     # via chromadb
 imutils==0.5.4
     # via sandbox-agent
+iniconfig==2.0.0
+    # via pytest
 ipykernel==6.29.5
     # via jupyterlab
+    # via mkdocs-jupyter
     # via sandbox-agent
-ipython==8.27.0
+ipython==8.18.0
     # via ipykernel
     # via ipywidgets
     # via nbqa
 ipywidgets==8.1.5
     # via sandbox-agent
+isort==5.13.2
+    # via pylint
 itsdangerous==2.2.0
     # via fastapi
 janus==1.0.0
@@ -456,9 +527,14 @@ jinja2==3.1.4
     # via jupyterlab
     # via jupyterlab-server
     # via litellm
+    # via memray
+    # via mkdocs
+    # via mkdocs-material
+    # via mkdocstrings
     # via nbconvert
     # via pydeck
     # via torch
+    # via towncrier
 jiter==0.5.0
     # via aider-chat
     # via anthropic
@@ -467,6 +543,8 @@ joblib==1.4.2
     # via scikit-learn
 jq==1.8.0
     # via sandbox-agent
+jsbeautifier==1.15.1
+    # via mkdocs-mermaid2-plugin
 json5==0.9.25
     # via aider-chat
     # via jupyterlab-server
@@ -520,6 +598,8 @@ jupyterlab-server==2.27.3
     # via notebook
 jupyterlab-widgets==3.0.13
     # via ipywidgets
+jupytext==1.16.4
+    # via mkdocs-jupyter
 kiwisolver==1.4.5
     # via matplotlib
 kubernetes==30.1.0
@@ -578,6 +658,11 @@ levenshtein==0.25.1
     # via python-levenshtein
 libcst==1.4.0
     # via bump-pydantic
+    # via monkeytype
+libsass==0.23.0
+    # via mkdocs-with-pdf
+linkify-it-py==2.0.3
+    # via markdown-it-py
 litellm==1.47.0
     # via aider-chat
 locket==1.0.0
@@ -596,17 +681,35 @@ lxml==5.3.0
     # via yfinance
 lz4==4.3.3
     # via pinecone-client
+maison==2.0.0
+    # via yamlfix
+manhole==1.8.1
+    # via hunter
 markdown==3.7
+    # via mdx-gh-links
+    # via mkdocs
+    # via mkdocs-autorefs
+    # via mkdocs-material
+    # via mkdocstrings
+    # via pymdown-extensions
     # via sandbox-agent
     # via tensorboard
 markdown-it-py==3.0.0
     # via aider-chat
+    # via jupytext
+    # via mdformat
+    # via mdformat-gfm
+    # via mdit-py-plugins
     # via rich
+    # via textual
 markdown2==2.5.0
     # via md2pdf
 markupsafe==2.1.5
     # via aider-chat
     # via jinja2
+    # via mkdocs
+    # via mkdocs-autorefs
+    # via mkdocstrings
     # via nbconvert
     # via werkzeug
 marshmallow==3.22.0
@@ -623,19 +726,87 @@ mbstrdecoder==1.1.3
 mccabe==0.7.0
     # via aider-chat
     # via flake8
+    # via pylint
 md2pdf==1.0.1
     # via sandbox-agent
+mdformat==0.7.17
+    # via mdformat-admon
+    # via mdformat-config
+    # via mdformat-footnote
+    # via mdformat-frontmatter
+    # via mdformat-gfm
+    # via mdformat-mkdocs
+    # via mdformat-pyproject
+    # via mdformat-tables
+mdformat-admon==2.0.6
+    # via mdformat-mkdocs
+mdformat-config==0.1.3
+mdformat-footnote==0.1.1
+mdformat-frontmatter==2.0.8
+mdformat-gfm==0.3.6
+    # via mdformat-mkdocs
+mdformat-mkdocs==3.0.0
+mdformat-pyproject==0.0.1
+mdformat-tables==1.0.0
+    # via mdformat-gfm
+mdit-py-plugins==0.4.1
+    # via jupytext
+    # via markdown-it-py
+    # via mdformat-admon
+    # via mdformat-footnote
+    # via mdformat-frontmatter
+    # via mdformat-gfm
+    # via mdformat-mkdocs
 mdurl==0.1.2
     # via aider-chat
     # via markdown-it-py
+mdx-gh-links==0.4
 memory-profiler==0.61.0
     # via sandbox-agent
+memray==1.13.4
+    # via pytest-memray
+mergedeep==1.3.4
+    # via mkdocs
+    # via mkdocs-get-deps
 mistune==3.0.2
     # via nbconvert
+mkdocs==1.6.1
+    # via mkdocs-autorefs
+    # via mkdocs-include-markdown-plugin
+    # via mkdocs-jupyter
+    # via mkdocs-material
+    # via mkdocs-mermaid2-plugin
+    # via mkdocs-redirects
+    # via mkdocs-simple-hooks
+    # via mkdocs-with-pdf
+    # via mkdocstrings
+mkdocs-autorefs==1.2.0
+    # via mkdocstrings
+    # via mkdocstrings-python
+mkdocs-get-deps==0.2.0
+    # via mkdocs
+mkdocs-include-markdown-plugin==6.2.2
+mkdocs-jupyter==0.24.8
+mkdocs-material==9.5.34
+    # via mkdocs-jupyter
+mkdocs-material-extensions==1.3.1
+    # via mkdocs-material
+mkdocs-mermaid2-plugin==1.1.1
+mkdocs-redirects==1.2.1
+mkdocs-simple-hooks==0.1.5
+mkdocs-version-annotations==1.0.0
+mkdocs-with-pdf==0.9.3
+mkdocstrings==0.26.0
+    # via mkdocstrings-python
+mkdocstrings-python==1.10.9
+    # via mkdocstrings
 mmh3==4.1.0
     # via chromadb
+monkeytype==23.3.0
 monotonic==1.6
     # via posthog
+more-itertools==10.4.0
+    # via mdformat-mkdocs
 motor==3.5.1
     # via sandbox-agent
 moviepy==1.0.3
@@ -653,7 +824,11 @@ multitasking==0.0.11
     # via yfinance
 mutagen==1.47.0
     # via sandbox-agent
+mypy==1.11.2
 mypy-extensions==1.0.0
+    # via black
+    # via monkeytype
+    # via mypy
     # via typing-inspect
 narwhals==1.6.0
     # via altair
@@ -661,9 +836,11 @@ nbclient==0.10.0
     # via nbconvert
 nbconvert==7.16.4
     # via jupyter-server
+    # via mkdocs-jupyter
     # via sandbox-agent
 nbformat==5.10.4
     # via jupyter-server
+    # via jupytext
     # via nbclient
     # via nbconvert
 nbqa==1.9.0
@@ -673,6 +850,9 @@ nest-asyncio==1.6.0
 networkx==3.2.1
     # via aider-chat
     # via torch
+nodeenv==1.9.1
+    # via pre-commit
+    # via pyright
 notebook==7.2.2
     # via sandbox-agent
 notebook-shim==0.2.4
@@ -696,6 +876,7 @@ numpy==1.26.4
     # via onnxruntime
     # via opencv-python
     # via pandas
+    # via pandas-stubs
     # via pgvector
     # via pyarrow
     # via pydeck
@@ -731,17 +912,21 @@ opencv-python==4.10.0.84
     # via scenedetect
 opentelemetry-api==1.27.0
     # via chromadb
+    # via opentelemetry-distro
     # via opentelemetry-exporter-otlp-proto-grpc
     # via opentelemetry-instrumentation
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
     # via opentelemetry-sdk
     # via opentelemetry-semantic-conventions
+opentelemetry-distro==0.48b0
+    # via sentry-sdk
 opentelemetry-exporter-otlp-proto-common==1.27.0
     # via opentelemetry-exporter-otlp-proto-grpc
 opentelemetry-exporter-otlp-proto-grpc==1.27.0
     # via chromadb
 opentelemetry-instrumentation==0.48b0
+    # via opentelemetry-distro
     # via opentelemetry-instrumentation-asgi
     # via opentelemetry-instrumentation-fastapi
 opentelemetry-instrumentation-asgi==0.48b0
@@ -753,6 +938,7 @@ opentelemetry-proto==1.27.0
     # via opentelemetry-exporter-otlp-proto-grpc
 opentelemetry-sdk==1.27.0
     # via chromadb
+    # via opentelemetry-distro
     # via opentelemetry-exporter-otlp-proto-grpc
 opentelemetry-semantic-conventions==0.48b0
     # via opentelemetry-instrumentation-asgi
@@ -772,6 +958,7 @@ overrides==7.7.0
 packaging==24.1
     # via aider-chat
     # via altair
+    # via black
     # via build
     # via dask
     # via datasets
@@ -781,25 +968,35 @@ packaging==24.1
     # via jupyter-server
     # via jupyterlab
     # via jupyterlab-server
+    # via jupytext
     # via langchain-core
     # via langchainhub
     # via marshmallow
     # via matplotlib
+    # via mkdocs
     # via nbconvert
     # via onnxruntime
     # via pypi-command-line
+    # via pyproject-api
     # via pytesseract
+    # via pytest
+    # via pytest-sugar
     # via streamlit
     # via tensorboard
     # via tensorboardx
+    # via tox
     # via transformers
     # via typepy
+    # via validate-pyproject
+paginate==0.5.7
+    # via mkdocs-material
 pandas==2.2.2
     # via datasets
     # via sandbox-agent
     # via simpletransformers
     # via streamlit
     # via yfinance
+pandas-stubs==2.2.2.240807
 pandocfilters==1.5.1
     # via nbconvert
 parso==0.8.4
@@ -812,7 +1009,10 @@ pathlib-mate==1.3.2
     # via sandbox-agent
 pathspec==0.12.1
     # via aider-chat
+    # via black
     # via grep-ast
+    # via mkdocs
+    # via yamllint
 pathvalidate==3.2.1
     # via pytablewriter
 pdf2image==1.17.0
@@ -847,13 +1047,26 @@ pinecone-plugin-interface==0.0.7
     # via pinecone-client
     # via pinecone-plugin-inference
 platformdirs==4.2.2
+    # via black
     # via jupyter-core
+    # via mkdocs-get-deps
+    # via mkdocstrings
+    # via pylint
     # via requests-cache
     # via scenedetect
+    # via textual
+    # via tox
+    # via virtualenv
     # via wandb
     # via yfinance
+pluggy==1.5.0
+    # via pytest
+    # via tox
 posthog==3.6.0
     # via chromadb
+pprintpp==0.4.0
+    # via pytest-clarity
+pre-commit==3.8.0
 prettytable==3.11.0
     # via sandbox-agent
 primp==0.6.3
@@ -903,8 +1116,6 @@ ptyprocess==0.7.0
     # via aider-chat
     # via pexpect
     # via terminado
-pur==7.3.2
-    # via sandbox-agent
 pure-eval==0.2.3
     # via stack-data
 pyarrow==17.0.0
@@ -944,6 +1155,7 @@ pydantic==2.9.2
     # via pydantic-extra-types
     # via pydantic-settings
     # via sandbox-agent
+    # via yamlfix
 pydantic-core==2.23.4
     # via aider-chat
     # via pydantic
@@ -954,6 +1166,8 @@ pydantic-settings==2.4.0
     # via sandbox-agent
 pydeck==0.9.1
     # via streamlit
+pydocstringformatter==0.7.3
+pydocstyle==6.3.0
 pydub==0.25.1
     # via aider-chat
 pydyf==0.11.0
@@ -965,7 +1179,10 @@ pygls==1.3.1
     # via jedi-language-server
 pygments==2.18.0
     # via aider-chat
+    # via bpython
     # via ipython
+    # via mkdocs-jupyter
+    # via mkdocs-material
     # via nbconvert
     # via rich
     # via sandbox-agent
@@ -973,6 +1190,14 @@ pyinspect==0.1.0
     # via sandbox-agent
 pyinstrument==4.7.2
     # via sandbox-agent
+pylint==3.2.7
+pylint-per-file-ignores==1.3.2
+pylint-to-ruff==0.3.0
+pymarkdownlnt==0.9.22
+pymdown-extensions==10.9
+    # via mkdocs-material
+    # via mkdocs-mermaid2-plugin
+    # via mkdocstrings
 pymongo==4.8.0
     # via motor
 pymupdf==1.24.10
@@ -999,10 +1224,14 @@ pypi-command-line==1.7.1
     # via sandbox-agent
 pypika==0.48.9
     # via chromadb
+pyproject-api==1.7.1
+    # via tox
 pyproject-hooks==1.1.0
     # via build
 pyproject-toml==0.0.10
     # via langserve
+pyright==1.1.378
+pysnooper==1.2.0
 pysocks==1.7.1
     # via pyowm
     # via requests
@@ -1010,8 +1239,37 @@ pytablewriter==1.2.0
     # via sandbox-agent
 pytesseract==0.3.13
     # via sandbox-agent
+pytest==8.3.2
+    # via dpytest
+    # via pytest-aiohttp
+    # via pytest-asyncio
+    # via pytest-clarity
+    # via pytest-cov
+    # via pytest-httpx
+    # via pytest-ignore-flaky
+    # via pytest-memray
+    # via pytest-mock
+    # via pytest-recording
+    # via pytest-retry
+    # via pytest-skip-slow
+    # via pytest-sugar
+pytest-aiohttp==1.0.5
+pytest-asyncio==0.24.0
+    # via dpytest
+    # via pytest-aiohttp
+pytest-clarity==1.0.1
+pytest-cov==5.0.0
+pytest-httpx==0.30.0
+pytest-ignore-flaky==2.2.1
+pytest-memray==1.7.0
+pytest-mock==3.14.0
+pytest-recording==0.13.2
+pytest-retry==1.6.3
+pytest-skip-slow==0.0.5
+pytest-sugar==1.0.0
 python-dateutil==2.9.0.post0
     # via faker
+    # via ghp-import
     # via jupyter-client
     # via kubernetes
     # via matplotlib
@@ -1042,24 +1300,38 @@ pytz==2024.1
     # via sandbox-agent
     # via typepy
     # via yfinance
+pyupgrade==3.17.0
+pyxdg==0.28
+    # via bpython
 pyyaml==6.0.2
     # via aider-chat
+    # via application-properties
     # via chromadb
     # via dask
     # via fastapi
     # via huggingface-hub
     # via jupyter-events
+    # via jupytext
     # via kubernetes
     # via langchain
     # via langchain-community
     # via langchain-core
     # via libcst
+    # via mkdocs
+    # via mkdocs-get-deps
+    # via pre-commit
+    # via pymdown-extensions
+    # via pyyaml-env-tag
     # via rapidocr-onnxruntime
     # via timm
     # via transformers
     # via uvicorn
+    # via vcrpy
     # via wandb
     # via watchdog
+    # via yamllint
+pyyaml-env-tag==0.1
+    # via mkdocs
 pyzmq==26.2.0
     # via ipykernel
     # via jupyter-client
@@ -1083,13 +1355,16 @@ referencing==0.35.1
     # via aider-chat
     # via jsonschema
     # via jsonschema-specifications
+    # via types-jsonschema
 regex==2024.9.11
     # via aider-chat
+    # via mkdocs-material
     # via simpletransformers
     # via tiktoken
     # via transformers
 requests==2.32.3
     # via aider-chat
+    # via bpython
     # via datasets
     # via gallery-dl
     # via google-api-core
@@ -1101,12 +1376,15 @@ requests==2.32.3
     # via langchainhub
     # via langsmith
     # via litellm
+    # via mkdocs-material
+    # via mkdocs-mermaid2-plugin
     # via moviepy
     # via posthog
     # via pyinspect
     # via pyowm
     # via pypi-command-line
     # via requests-cache
+    # via requests-mock
     # via requests-oauthlib
     # via requests-toolbelt
     # via responses
@@ -1121,6 +1399,7 @@ requests==2.32.3
     # via youtube-search
 requests-cache==1.2.1
     # via pypi-command-line
+requests-mock==1.12.1
 requests-oauthlib==2.0.0
     # via google-auth-oauthlib
     # via kubernetes
@@ -1128,14 +1407,18 @@ requests-toolbelt==1.0.0
     # via sandbox-agent
 responses==0.18.0
     # via datasets
+respx==0.21.1
 rich==13.8.1
     # via aider-chat
     # via bump-pydantic
+    # via memray
     # via pyinspect
     # via pypi-command-line
+    # via pytest-clarity
     # via rich-click
     # via rich-rst
     # via streamlit
+    # via textual
     # via typer
 rich-click==1.8.3
     # via pypi-command-line
@@ -1147,6 +1430,14 @@ rpds-py==0.20.0
     # via referencing
 rsa==4.9
     # via google-auth
+ruamel-yaml==0.18.6
+    # via mdformat-config
+    # via mdformat-frontmatter
+ruamel-yaml-clib==0.2.8
+    # via ruamel-yaml
+ruff==0.6.3
+ruyaml==0.91.0
+    # via yamlfix
 safetensors==0.4.4
     # via timm
     # via transformers
@@ -1178,9 +1469,11 @@ setproctitle==1.3.3
 # setuptools==74.1.0
     # via imageio-ffmpeg
     # via jupyterlab
+    # via mkdocs-mermaid2-plugin
     # via opentelemetry-instrumentation
     # via pyproject-toml
     # via pytablewriter
+    # via ruyaml
     # via tensorboard
     # via torch
     # via wandb
@@ -1194,8 +1487,10 @@ simpletransformers==0.70.1
 six==1.16.0
     # via asttokens
     # via bleach
+    # via blessed
     # via docker-pycreds
     # via html5lib
+    # via jsbeautifier
     # via kubernetes
     # via posthog
     # via python-dateutil
@@ -1212,6 +1507,8 @@ sniffio==1.3.1
     # via groq
     # via httpx
     # via openai
+snowballstemmer==2.2.0
+    # via pydocstyle
 sounddevice==0.5.0
     # via aider-chat
 soundfile==0.12.1
@@ -1220,6 +1517,7 @@ soupsieve==2.6
     # via aider-chat
     # via beautifulsoup4
     # via sandbox-agent
+sourcery==1.22.0
 sqlalchemy==2.0.32
     # via langchain
     # via langchain-community
@@ -1259,6 +1557,8 @@ tensorboard-data-server==0.7.2
     # via tensorboard
 tensorboardx==2.6.2.2
     # via simpletransformers
+termcolor==2.4.0
+    # via pytest-sugar
 terminado==0.18.1
     # via jupyter-server
     # via jupyter-server-terminals
@@ -1266,6 +1566,8 @@ terminaltables==3.1.10
     # via aiomonitor
 text-unidecode==1.3
     # via python-slugify
+textual==0.79.1
+    # via memray
 thefuzz==0.22.1
     # via pypi-command-line
 threadpoolctl==3.5.0
@@ -1282,6 +1584,7 @@ tinycss2==1.3.0
     # via weasyprint
 tokenize-rt==6.0.0
     # via nbqa
+    # via pyupgrade
 tokenizers==0.19.1
     # via aider-chat
     # via anthropic
@@ -1290,11 +1593,17 @@ tokenizers==0.19.1
     # via simpletransformers
     # via transformers
 toml==0.10.2
+    # via maison
+    # via mdformat-config
     # via pyproject-toml
     # via streamlit
 tomli==2.0.1
+    # via application-properties
     # via nbqa
+tomlkit==0.13.2
+    # via pylint
 toolz==0.12.1
+    # via columnar
     # via dask
     # via partd
 torch==2.4.0
@@ -1313,6 +1622,8 @@ tornado==6.4.1
     # via notebook
     # via streamlit
     # via terminado
+towncrier==24.8.0
+tox==4.18.0
 tqdm==4.66.5
     # via aider-chat
     # via chromadb
@@ -1354,6 +1665,8 @@ tree-sitter==0.21.3
 tree-sitter-languages==1.10.2
     # via aider-chat
     # via grep-ast
+trove-classifiers==2024.7.2
+    # via validate-pyproject
 typepy==1.3.2
     # via dataproperty
     # via pytablewriter
@@ -1364,8 +1677,42 @@ typer==0.12.5
     # via fastapi-cli
     # via pypi-command-line
     # via sandbox-agent
+types-aiofiles==24.1.0.20240626
+types-beautifulsoup4==4.12.0.20240511
+types-cffi==1.16.0.20240331
+    # via types-pyopenssl
+types-click==7.1.8
+types-click-spinner==0.1.13.20240311
+types-colorama==0.4.15.20240311
+types-contextvars==2.4.7.3
+types-dataclasses==0.6.6
+types-freezegun==1.1.10
+types-html5lib==1.1.11.20240806
+    # via types-beautifulsoup4
+types-jsonschema==4.23.0.20240813
+types-mock==5.1.0.20240425
+types-mypy-extensions==1.0.0.20240311
+types-protobuf==5.27.0.20240626
+types-psutil==6.0.0.20240901
+types-pyasn1==0.6.0.20240824
+    # via types-python-jose
+types-pyopenssl==24.1.0.20240722
+    # via types-redis
+types-python-jose==3.3.4.20240106
+types-pytz==2024.1.0.20240417
+    # via pandas-stubs
+types-pyyaml==6.0.12.20240808
+types-redis==4.6.0.20240819
+types-regex==2024.7.24.20240726
 types-requests==2.32.0.20240712
     # via langchainhub
+types-setuptools==74.0.0.20240831
+    # via types-cffi
+types-six==1.16.21.20240513
+types-toml==0.10.8.20240310
+types-tqdm==4.66.0.20240417
+types-ujson==5.10.0.20240515
+types-urllib3==1.26.25.14
 typing-extensions==4.12.2
     # via aider-chat
     # via aiodebug
@@ -1373,6 +1720,7 @@ typing-extensions==4.12.2
     # via aiosqlite
     # via altair
     # via anthropic
+    # via application-properties
     # via bump-pydantic
     # via chromadb
     # via fastapi
@@ -1381,6 +1729,7 @@ typing-extensions==4.12.2
     # via huggingface-hub
     # via janus
     # via langchain-core
+    # via mypy
     # via openai
     # via opentelemetry-sdk
     # via pinecone-client
@@ -1388,10 +1737,12 @@ typing-extensions==4.12.2
     # via psycopg-pool
     # via pydantic
     # via pydantic-core
+    # via pymarkdownlnt
     # via python-docx
     # via rich-click
     # via sqlalchemy
     # via streamlit
+    # via textual
     # via torch
     # via typer
     # via typing-inspect
@@ -1399,9 +1750,13 @@ typing-inspect==0.9.0
     # via dataclasses-json
 tzdata==2024.1
     # via pandas
+uc-micro-py==1.0.3
+    # via linkify-it-py
 ujson==5.10.0
     # via fastapi
     # via pypi-command-line
+untokenize==0.1.1
+    # via docformatter
 uritemplate==4.1.1
     # via google-api-python-client
     # via sandbox-agent
@@ -1426,20 +1781,35 @@ uvicorn==0.30.6
     # via sse-starlette
 uvloop==0.20.0
     # via uvicorn
+validate-pyproject==0.19
+validate-pyproject-schema-store==2024.8.26
+    # via validate-pyproject
 validators==0.33.0
     # via sandbox-agent
+vcrpy==6.0.1
+    # via pytest-recording
+virtualenv==20.26.3
+    # via pre-commit
+    # via tox
 wandb==0.17.8
     # via simpletransformers
 watchdog==5.0.1
+    # via mkdocs
     # via sandbox-agent
 watchfiles==0.24.0
     # via uvicorn
+wcmatch==9.0
+    # via mkdocs-include-markdown-plugin
 wcwidth==0.2.13
     # via aider-chat
+    # via blessed
+    # via columnar
+    # via mdformat-tables
     # via prettytable
     # via prompt-toolkit
 weasyprint==62.3
     # via md2pdf
+    # via mkdocs-with-pdf
 webcolors==1.13
     # via sandbox-agent
 webencodings==0.5.1
@@ -1468,11 +1838,15 @@ wikipedia==1.4.0
 wrapt==1.16.0
     # via deprecated
     # via opentelemetry-instrumentation
+    # via vcrpy
 xxhash==3.5.0
     # via datasets
+yamlfix==1.17.0
+yamllint==1.35.1
 yarl==1.11.1
     # via aider-chat
     # via aiohttp
+    # via vcrpy
 yfinance==0.2.43
     # via sandbox-agent
 youtube-search==2.1.2

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain.document_loaders import DirectoryLoader, PyMuPDFLoader, PyPDFLoader
+from langchain_community.document_loaders import DirectoryLoader, PyMuPDFLoader, PyPDFLoader
 
 
 class DocumentLoaderFactory:

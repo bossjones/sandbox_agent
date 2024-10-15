@@ -100,9 +100,8 @@ Common libaries and clients: The app should also support common client usage for
 - SQLite
 - Discord
 
-
-
 Custom Tools To Implement:
+
 - 'get_current_time': Returns the current time.
 - 'get_random_number': Returns a random number between 1 and 100.
 - 'open_browser': Opens a browser tab with the best-fitting URL based on the user's prompt.
@@ -113,10 +112,12 @@ Custom Tools To Implement:
 - 'update_file': Updates a file based on the user's prompt.
 - 'delete_file': Deletes a file based on the user's prompt.
 - 'discuss_file': Discusses a file's content based on the user's prompt, considering the current memory content.
-- 'read_file_into_memory': Reads a file from the scratch_pad_dir and saves its content into memory based on the user's prompt.
+- 'read_file_into_memory': Reads a file from the scratch_pad_dir and saves its content into memory based on the user's
+    prompt.
 - 'read_dir_into_memory': Reads all files from the scratch_pad_dir and saves their content into memory.
 - 'clipboard_to_memory': Copies the content from the clipboard to memory.
 - 'add_to_memory': Adds a key-value pair to memory.
 - 'remove_variable_from_memory': Removes a variable from memory based on the user's prompt.
 - 'reset_active_memory': Resets the active memory to an empty dictionary.
-- 'scrap_to_file_from_clipboard': Gets a URL from the clipboard, scrapes its content, and saves it to a file in the scratch_pad_dir.
+- 'scrap_to_file_from_clipboard': Gets a URL from the clipboard, scrapes its content, and saves it to a file in the
+    scratch_pad_dir.

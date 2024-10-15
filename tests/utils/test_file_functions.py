@@ -29,13 +29,14 @@ from sandbox_agent.utils.file_functions import (
     filter_pdf,
     filter_pdfs,
     filter_pth,
+    filter_txts,
     filter_videos,
     filter_webm,
-    filter_txts,
     fix_path,
     format_size,
     get_all_media_files_to_upload,
     get_dataframe_from_csv,
+    get_files_to_upload,
     glob_file_by_extension,
     is_a_symlink,
     is_directory,
@@ -47,14 +48,13 @@ from sandbox_agent.utils.file_functions import (
     rich_format_followers,
     rich_likes_or_comments,
     run_aio_json_loads,
+    run_tree,
     sort_dataframe,
     sort_dir_by_ctime,
     sort_dir_by_mtime,
     tilda,
     tree,
     unlink_orig_file,
-    get_files_to_upload,
-    run_tree,
 )
 
 
@@ -85,15 +85,17 @@ def test_get_all_media_files_to_upload(mocker):
     mock_tree.assert_called_once_with(pathlib.Path("test_dir"))
     mock_filter_media.assert_called_once_with(["file1", "file2"])
 
+
 @pytest.mark.asyncio
 async def test_aio_read_jsonfile(tmp_path):
     test_data = {"key": "value"}
     json_file = tmp_path / "test.json"
     with open(json_file, "w") as f:
         json.dump(test_data, f)
-    
+
     result = await aio_read_jsonfile(str(json_file))
     assert result == test_data
+
 
 @pytest.mark.asyncio
 async def test_aio_json_loads(tmp_path):
@@ -101,9 +103,10 @@ async def test_aio_json_loads(tmp_path):
     json_file = tmp_path / "test.json"
     with open(json_file, "w") as f:
         json.dump(test_data, f)
-    
+
     result = await aio_json_loads(str(json_file))
     assert result == test_data
+
 
 @pytest.mark.asyncio
 async def test_run_aio_json_loads(tmp_path):
@@ -111,7 +114,7 @@ async def test_run_aio_json_loads(tmp_path):
     json_file = tmp_path / "test.json"
     with open(json_file, "w") as f:
         json.dump(test_data, f)
-    
+
     result = await run_aio_json_loads(str(json_file))
     assert result == test_data
 
@@ -152,6 +155,7 @@ def test_rich_format_followers():
     result = rich_format_followers(1000000)
     assert result == "[bold bright_white]1000000[/bold bright_white]"
 
+
 @pytest.mark.asyncio
 async def test_aiowrite_file(tmp_path):
     test_data = "Test content"
@@ -159,12 +163,13 @@ async def test_aiowrite_file(tmp_path):
     await aiowrite_file(test_data, str(tmp_path), "test", "txt")
     assert test_file.read_text() == test_data
 
+
 @pytest.mark.asyncio
 async def test_aioread_file(tmp_path):
     test_data = "Test content"
     test_file = tmp_path / "test.txt"
     test_file.write_text(test_data)
-    
+
     result = await aioread_file(str(tmp_path), "test", "txt")
     assert result == test_data
 
@@ -222,38 +227,41 @@ def test_glob_file_by_extension(mocker):
     assert result == ["file1.mp4"]
     mock_glob.assert_called_once_with("test_dir/*.mp4", recursive=False)
 
+
 def test_unlink_orig_file(tmp_path):
     test_file = tmp_path / "test.txt"
     test_file.write_text("Test content")
     assert test_file.exists()
-    
+
     unlink_orig_file(str(test_file))
     assert not test_file.exists()
+
 
 def test_get_files_to_upload(tmp_path):
     image_file = tmp_path / "image.jpg"
     video_file = tmp_path / "video.mp4"
     text_file = tmp_path / "text.txt"
-    
+
     image_file.touch()
     video_file.touch()
     text_file.touch()
-    
+
     result = get_files_to_upload(str(tmp_path))
     assert len(result) == 2
     assert str(image_file) in result
     assert str(video_file) in result
     assert str(text_file) not in result
 
+
 def test_run_tree(tmp_path):
     image_file = tmp_path / "image.jpg"
     video_file = tmp_path / "video.mp4"
     text_file = tmp_path / "text.txt"
-    
+
     image_file.touch()
     video_file.touch()
     text_file.touch()
-    
+
     result = run_tree(str(tmp_path))
     assert len(result) == 2
     assert str(image_file) in result
@@ -451,13 +459,10 @@ def test_filter_pdf(tmp_path):
 
 
 def test_sort_dataframe():
-    df = pd.DataFrame({
-        'A': [3, 1, 2],
-        'B': ['c', 'a', 'b']
-    })
-    sorted_df = sort_dataframe(df, columns=['A'], ascending=(True,))
-    assert sorted_df['A'].tolist() == [1, 2, 3]
-    assert sorted_df['B'].tolist() == ['a', 'b', 'c']
+    df = pd.DataFrame({"A": [3, 1, 2], "B": ["c", "a", "b"]})
+    sorted_df = sort_dataframe(df, columns=["A"], ascending=(True,))
+    assert sorted_df["A"].tolist() == [1, 2, 3]
+    assert sorted_df["B"].tolist() == ["a", "b", "c"]
 
 
 def test_format_size():

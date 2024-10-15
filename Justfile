@@ -283,3 +283,8 @@ init-aicommits:
 
 aider:
 	aider -c .aider.conf.yml --aiderignore .aiderignore
+
+pur:
+	cp -a .github/dependabot/requirements-dev.txt pur.before.txt
+	rye run pur -d -r .github/dependabot/requirements-dev.txt > pur.after.txt
+	diff pur.before.txt pur.after.txt | colordiff

@@ -145,6 +145,7 @@ dependencies = [
     "asyncpg>=0.29.0",
     "psycopg2-binary>=2.9.9",
     "aider-chat>=0.59.1",
+    "pur>=7.3.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -256,6 +257,7 @@ dev-dependencies = [
     "tox>=4.18.0",
     "vcrpy>=6.0.1",
     "langsmith>=0.1.108",
+    "changelogs @ git+https://github.com/bossjones/changelogs",
 ]
 
 [tool.hatch.metadata]
@@ -278,7 +280,8 @@ fmt = {cmd = "pre-commit run --all-files"}
 pylint = {cmd = "python -m invoke ci.pylint --everything"}
 pylint-error-only = {cmd = "pylint --output-format=colorized --generated-members=torch.*,numpy.*,cv2.* --disable=all --max-line-length=120 --enable=F,E --rcfile pyproject.toml src tests"}
 lint-all = {cmd = "python -m pylint -j4 --output-format=colorized --rcfile pyproject.toml tests src"}
-lint = {cmd = "python -m pylint --output-format=colorized --disable=C0111,E0401,C,W,R0402,R6102 --enable=F,E tests src"}
+# lint = {cmd = "python -m pylint --output-format=colorized --disable=C0111,E0401,C,W,R0402,R6102 --enable=F,E tests src"}
+lint = {cmd = "python -m ruff check --fix . --config=pyproject.toml"}
 typecheck = {chain = [
     "typecheck:pyright",
     "typecheck:mypy",
@@ -495,6 +498,7 @@ filterwarnings = [
 # retry_delay = 30
 pythonpath = "."
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 addopts = [
     # Print runtimes of the slowest tests.
     '--durations=10',
@@ -1115,6 +1119,8 @@ unsafe-fixes = false
 
 # ===========================[ RUFF lint ]========================
 [tool.ruff.lint]
+# On top of the default `select` (`E4`, E7`, `E9`, and `F`), enable flake8-bugbear (`B`) and flake8-quotes (`Q`).
+extend-select = ["I"]
 unfixable = [
     "ERA", # do not autoremove commented out code
 ]
@@ -1513,6 +1519,8 @@ runtime-evaluated-decorators = ["pydantic.dataclasses.dataclass"]
 keep-runtime-typing = true
 
 [tool.ruff.lint.pydocstyle]
+ignore-decorators = ["typing.overload"]
+property-decorators = ["gi.repository.GObject.Property"]
 # NOTE: Enabling a convention will disable any rules that are not included in the specified convention. As such, the intended workflow is to enable a convention and then selectively enable or disable any additional rules on top of it. See: https://github.com/astral-sh/ruff/blob/c3e28f9d55b4484b0e7507d3bee6339b9fb83bb5/docs/faq.md
 # Accepts: "google", "numpy", or "pep257".
 convention = "pep257"
@@ -1707,7 +1715,8 @@ docstring-code-line-length = "dynamic"
 [tool.ruff.lint.pycodestyle]
 # E501 reports lines that exceed the length of 100
 max-doc-length = 120
-
+# E501 reports lines that exceed the length of 100.
+max-line-length = 120
 # ===========================[ PYLINT ]========================
 # Configuration for the pylint
 #

@@ -1,3 +1,10 @@
+# pylint: disable=no-member
+# pylint: disable=possibly-used-before-assignment
+# pyright: reportImportCycles=false
+# pyright: reportAttributeAccessIssue=false
+# mypy: disable-error-code="index"
+# mypy: disable-error-code="no-redef"
+
 """sandbox_agent.utils.chat_formatting"""
 
 from __future__ import annotations
@@ -266,7 +273,7 @@ def bordered(*columns: Sequence[str], ascii_border: bool = False) -> str:
         lines.append(sep.join(row))
 
     final_row = []
-    for width, done in zip(widths, colsdone):
+    for width, done in zip(widths, colsdone, strict=False):
         if not done:
             final_row.append("{BL}" + "{HZ}" * width + "{BR}")
         else:

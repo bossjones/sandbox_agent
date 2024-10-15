@@ -144,3 +144,12 @@ def test_load_documents(mocker: MockerFixture, mock_pdf_file: Path, vcr: Any) ->
 ```
 
 Any tests involving the discord api or discord files/attachments should use dpytest library and the tests should be marked as discordonly.
+
+do not use context managers when patching pytest mocks. Instead, use mocker.patch with multiple arguments. For example:
+
+```
+mock_download = mocker.patch("sandbox_agent.utils.file_operations.download_image")
+mock_image_open = mocker.patch("PIL.Image.open")
+```
+
+NEVER use `from unittest.mock`. Only use `pytest_mock.plugin.MockerFixture` for patching.

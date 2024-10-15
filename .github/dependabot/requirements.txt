@@ -2,7 +2,7 @@
 # use `rye lock` or `rye sync` to update this lockfile
 #
 # last locked with the following flags:
-#   pre: false
+#   pre: true
 #   features: []
 #   all-features: true
 #   with-sources: false
@@ -175,6 +175,7 @@ click==8.1.7
     # via dask
     # via duckduckgo-search
     # via litellm
+    # via pur
     # via pyinspect
     # via rich-click
     # via sandbox-agent
@@ -902,6 +903,8 @@ ptyprocess==0.7.0
     # via aider-chat
     # via pexpect
     # via terminado
+pur==7.3.2
+    # via sandbox-agent
 pure-eval==0.2.3
     # via stack-data
 pyarrow==17.0.0

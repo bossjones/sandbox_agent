@@ -595,7 +595,7 @@ source = ["sandbox_agent"]
 # SOURCE: https://github.com/anthonycorletti/snok/blob/039ae9aaf403485ce9b7fedb0e1943c25a250eed/snok/templates/__shared/_pyproject_toml#L130
 concurrency = ["thread", "greenlet", "multiprocessing"]
 omit = [
-    "src/sandbox_agent/tutorials/*",
+    "*/src/sandbox_agent/tutorials/*",
 ]
 # dd=======================[ BLACK ]========================
 [tool.black]

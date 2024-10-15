@@ -16,31 +16,56 @@ from typing_extensions import TypedDict
 
 
 class PlanExecute(TypedDict):
+    """
+    Represents the state to track for the plan-and-execute agent.
+
+    Attributes:
+        input (str): The original input or objective.
+        plan (list[str]): The current plan represented as a list of strings.
+        past_steps (Annotated[list[tuple], operator.add]): Previously executed steps represented as a list of tuples.
+        response (str): The final response to the user.
+    """
+
     input: str
     plan: list[str]
     past_steps: Annotated[list[tuple], operator.add]
     response: str
 
 
-# Planning Step¶ - Let's now think about creating the planning step. This will use function calling to create a plan.
+# Planning Step
+# This step creates a plan using function calling.
 class Plan(BaseModel):
-    """Plan to follow in future"""
+    """
+    Represents a plan to follow in the future.
 
-    steps: list[str] = Field(description="different steps to follow, should be in sorted order")
+    Attributes:
+        steps (list[str]): Different steps to follow, should be in sorted order.
+    """
+
+    steps: list[str] = Field(description="Different steps to follow, should be in sorted order.")
 
 
 class Response(BaseModel):
-    """Response to user."""
+    """
+    Represents a response to the user.
+
+    Attributes:
+        response (str): The response to the user.
+    """
 
     response: str
 
 
-# Re-Plan Step¶
-# Now, let's create a step that re-does the plan based on the result of the previous step.
-
-
+# Re-Plan Step
+# This step re-does the plan based on the result of the previous step.
 class Act(BaseModel):
-    """Action to perform."""
+    """
+    Represents an action to perform.
+
+    Attributes:
+        action (Union[Response, Plan]): The action to perform. If you want to respond to the user, use Response.
+                                         If you need to further use tools to get the answer, use Plan.
+    """
 
     action: Union[Response, Plan] = Field(
         description="Action to perform. If you want to respond to user, use Response. "

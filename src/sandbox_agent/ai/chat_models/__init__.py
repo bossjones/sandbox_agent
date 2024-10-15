@@ -11,12 +11,13 @@ class ChatModelFactory:
     """Factory class for creating chat model instances."""
 
     @staticmethod
-    def create(model_name: str = aiosettings.chat_model) -> ChatOpenAI:
-        """Create a chat model instance based on the given model name.
+    def create(model_name: str = aiosettings.llm_model_name) -> ChatOpenAI:
+        """
+        Create a chat model instance based on the given model name.
 
         Args:
             model_name (str): The name of the model to create.
-                Defaults to the value of `aiosettings.chat_model`.
+                Defaults to the value of `aiosettings.llm_model_name`.
 
         Returns:
             ChatOpenAI: The created chat model instance.
@@ -28,6 +29,8 @@ class ChatModelFactory:
             return ChatOpenAI(model_name="gpt-4o", temperature=aiosettings.llm_temperature)
         elif model_name == "gpt-4":
             return ChatOpenAI(model_name="gpt-4", temperature=aiosettings.llm_temperature)
+        elif model_name == "gpt-4o-mini":
+            return ChatOpenAI(model_name="gpt-4o-mini", temperature=aiosettings.llm_temperature)
         elif model_name == "gpt-4-0314":
             return ChatOpenAI(model_name="gpt-4-0314", temperature=aiosettings.llm_temperature)
         elif model_name == "gpt-4-32k":

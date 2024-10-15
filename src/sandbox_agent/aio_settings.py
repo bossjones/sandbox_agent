@@ -356,6 +356,15 @@ class AioSettings(BaseSettings):
         env_file_encoding="utf-8",
         extra="allow",
         arbitrary_types_allowed=True,
+        json_schema_extra={
+            "properties": {
+                "llm_retriever_type": {
+                    "type": "string",
+                    "default": "vector_store",
+                    "description": "Type of retriever to use",
+                }
+            }
+        },
     )
 
     monitor_host: str = "localhost"
@@ -624,7 +633,7 @@ class AioSettings(BaseSettings):
         env="EVAL_MAX_CONCURRENCY", description="Maximum number of concurrent evaluations", default=4
     )
     llm_model_name: str = Field(
-        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
+        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o", init=True
     )
     provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
     chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)
@@ -636,6 +645,11 @@ class AioSettings(BaseSettings):
         env="LLM_EMBEDDING_MODEL_NAME",
         description="Name of the embedding model to use",
         default="text-embedding-3-large",
+    )
+    llm_retriever_type: str = Field(
+        env="LLM_RETRIEVER_TYPE",
+        description="Type of retriever to use",
+        default="vector_store",
     )
     default_search_kwargs: dict[str, int] = Field(
         env="DEFAULT_SEARCH_KWARGS",
@@ -689,6 +703,12 @@ class AioSettings(BaseSettings):
         description="Enable evaluating RAG string embedding distance metrics",
         default=False,
     )
+
+    # Tool allowlist
+    tool_allowlist: list[str] = ["tavily_search"]
+
+    # Tool-specific configuration
+    tavily_search_max_results: int = 3
 
     @model_validator(mode="before")
     @classmethod

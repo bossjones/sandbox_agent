@@ -306,7 +306,7 @@ class TestSettings:
         assert test_settings.langchain_project == "sandbox_agent"
         assert isinstance(test_settings.langchain_tracing_v2, bool)
         assert test_settings.llm_embedding_model_name == "text-embedding-3-large"
-        assert test_settings.llm_model_name == "gpt-4o-mini"
+        assert test_settings.llm_model_name == "gpt-4o"
         assert test_settings.llm_temperature == 0.0
         assert isinstance(test_settings.local_test_debug, bool)
         assert isinstance(test_settings.local_test_enable_evals, bool)

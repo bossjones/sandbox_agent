@@ -17,7 +17,7 @@ dependencies = [
     "langchain-postgres>=0.0.9",
     "langchain>=0.2.15",
     "langchainhub>=0.1.20",
-    "langgraph>=0.1.10",
+    "langgraph>=0.2.38",
     "langserve[all]>=0.1.1",
     "discord-py>=2.3.2",
     "better-exceptions>=0.3.3",
@@ -146,6 +146,7 @@ dependencies = [
     "psycopg2-binary>=2.9.9",
     "aider-chat>=0.59.1",
     "pur>=7.3.2",
+    "tavily-python>=0.5.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

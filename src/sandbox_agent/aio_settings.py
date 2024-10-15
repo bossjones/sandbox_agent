@@ -511,6 +511,7 @@ class AioSettings(BaseSettings):
         description="unstructured api url",
         default="https://api.unstructured.io/general/v0/general",
     )
+    brave_search_api_key: SecretStr = Field(env="BRAVE_SEARCH_API_KEY", description="Brave Search API key", default="")
 
     anthropic_api_key: SecretStr = Field(env="ANTHROPIC_API_KEY", description="claude api key", default="")
     groq_api_key: SecretStr = Field(env="GROQ_API_KEY", description="groq api key", default="")

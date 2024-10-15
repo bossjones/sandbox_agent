@@ -28,7 +28,9 @@ class ToolFactory:
             tools.append(DuckDuckGoSearchRun())
 
         if "brave_search" in aiosettings.tool_allowlist:
-            tools.append(BraveSearch(api_key=aiosettings.brave_search_api_key))
+            tools.append(
+                BraveSearch.from_api_key(api_key=aiosettings.brave_search_api_key, search_kwargs={"num_results": 3})
+            )
 
         # Add more tools based on the allowlist and their respective configurations
 

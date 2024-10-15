@@ -151,3 +151,5 @@ do not use context managers when patching pytest mocks. Instead, use mocker.patc
 mock_download = mocker.patch("sandbox_agent.utils.file_operations.download_image")
 mock_image_open = mocker.patch("PIL.Image.open")
 ```
+
+NEVER use `from unittest.mock`. Only use `pytest_mock.plugin.MockerFixture` for patching.

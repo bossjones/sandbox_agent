@@ -123,7 +123,9 @@ class SandboxAgent(DiscordClient):
             tenor_url = message_content[start_index:] if end_index == -1 else message_content[start_index:end_index]
             words = tenor_url.split("/")[-1].split("-")[:-1]
             sentence = " ".join(words)
-            message_content = f"{message_content.replace(tenor_url, '')} [{message.author.display_name} posts an animated {sentence}]"
+            message_content = (
+                f"{message_content.replace(tenor_url, '')} [{message.author.display_name} posts an animated {sentence}]"
+            )
             return message_content.strip()
         elif url_pattern.search(message_content):
             # Process image URL

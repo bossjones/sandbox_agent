@@ -266,7 +266,7 @@ def bordered(*columns: Sequence[str], ascii_border: bool = False) -> str:
         lines.append(sep.join(row))
 
     final_row = []
-    for width, done in zip(widths, colsdone):
+    for width, done in zip(widths, colsdone, strict=False):
         if not done:
             final_row.append("{BL}" + "{HZ}" * width + "{BR}")
         else:

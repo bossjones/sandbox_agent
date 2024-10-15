@@ -50,6 +50,7 @@ repos:
   #       additional_dependencies: [tomli]
   #       args: [--in-place, --config, ./pyproject.toml]
 
+  # When running with --fix, Ruff's lint hook should be placed before Ruff's formatter hook, and before Black, isort, and other formatting tools, as Ruff's fix behavior can output code changes that require reformatting.
   # SOURCE: https://github.com/astral-sh/ruff-pre-commit
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.3
@@ -71,6 +72,10 @@ repos:
       # Run the formatter.
       - id: ruff-format
         # entry: ruff format --force-exclude
+        types_or:
+          - python
+          - pyi
+          - jupyter
         args:
           - --config=pyproject.toml
         files: ^((src|tests|notebooks)/.+)?[^/]+\.(py|pyi|ipynb)$

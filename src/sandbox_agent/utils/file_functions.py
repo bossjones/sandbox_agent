@@ -612,7 +612,7 @@ def rich_display_meme_pull_list(df: DataFrame) -> None:  # noqa
     table.add_column("Average Comments")
     table.add_column("Links")
 
-    for index, row in df.iterrows():
+    for _index, row in df.iterrows():
         account = f"[bold blue]{row['Account']}[/bold blue]"
         social = f"[bold]{row['Social']}[/bold]"
         total_followers = rich_format_followers(row["Total Followers"])
@@ -669,7 +669,7 @@ def rich_display_popstars_analytics(df: DataFrame) -> None:  # noqa
     table.add_column("Date")
     table.add_column("Media 1")
 
-    for index, row in df.iterrows():
+    for _index, row in df.iterrows():
         social = f"[bold]{row['Social']}[/bold]"
         author = f"[bold]{row['Author']}[/bold]"
         url = f"[bold]{row['Url']}[/bold]"

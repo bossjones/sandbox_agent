@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from langchain_community.vectorstores import FAISS, Chroma, PGVector, Redis as RedisVectorStore
+from langchain_community.vectorstores import FAISS, Chroma, PGVector
+from langchain_community.vectorstores import Redis as RedisVectorStore
 
 
 class VectorStoreFactory:

@@ -20,8 +20,6 @@ from PIL import Image, UnidentifiedImageError
 from torchvision.transforms import transforms
 
 
-# from IPython.core.display import HTML
-
 _last_search_wrapper = None
 N_WORKERS = min(10, os.cpu_count())
 
@@ -657,7 +655,6 @@ def wrap(
             return ImageWrapper(images, "pt", labels)
 
     raise Exception("not implemented!")
-    # Raise an exception if the input data type is not supported.
 
 
 def from_dir(dir_path: str) -> ImageWrapper:
@@ -730,181 +727,6 @@ def from_path(input_data: Union[str, Path]) -> ImageWrapper:
     return ImageWrapper([pil_image], "pil")
 
 
-# class LivePlotter:
-#     def __init__(self, cols: int = 2, figsize: tuple[int, int] = (15, 4)) -> None:
-#         """
-#         Initialize the LivePlotter class.
-
-#         Args:
-#             cols (int, optional): The number of columns in the plot. Defaults to 2.
-#             figsize (tuple[int, int], optional): The size of the figure. Defaults to (15, 4).
-
-#         Attributes:
-#             cols (int): The number of columns in the plot.
-#             fig (Figure): The matplotlib figure object.
-#             out (DisplayHandle): The display handle for updating the plot.
-#             subplots (Axes or array of Axes): The subplots in the figure.
-#             queue (list): The queue of plot commands.
-#         """
-#         fig, subplots = plt.subplots(1, cols, figsize=(20, 5))
-#         fig.patch.set_facecolor("white")
-#         fig.tight_layout()
-#         out = display(fig, display_id=True)
-
-#         self.cols = cols
-#         self.fig = fig
-#         self.out = out
-#         self.subplots = subplots
-
-#         self.queue = []
-
-#     def plot(self, subplot_id: int, *args: Any, **kwargs: Any) -> LivePlotter:
-#         """
-#         Plot data on the specified subplot.
-
-#         This method queues a command to plot data on the specified subplot.
-#         The data to be plotted and any additional keyword arguments are passed
-#         to the matplotlib plot function.
-
-#         Args:
-#             subplot_id (int): The ID of the subplot where the data will be plotted.
-#             *args (Any): Positional arguments to be passed to the matplotlib plot function.
-#             **kwargs (Any): Keyword arguments to be passed to the matplotlib plot function.
-
-#         Returns:
-#             LivePlotter: The LivePlotter instance with the queued command.
-#         """
-#         self.queue.append(("plot", subplot_id, args, kwargs))
-#         return self
-
-#     def title(self, subplot_id: int, title: str) -> LivePlotter:
-#         """
-#         Set the title of a subplot.
-
-#         This method queues a command to set the title of the specified subplot.
-
-#         Args:
-#             subplot_id (int): The ID of the subplot where the title will be set.
-#             title (str): The title text to be set for the subplot.
-
-#         Returns:
-#             LivePlotter: The LivePlotter instance with the queued command.
-#         """
-#         self.queue.append(("title", subplot_id, title))
-#         return self
-
-#     def imshow(self, subplot_id: int, image: Union[Image.Image, torch.Tensor]) -> LivePlotter:
-#         """
-#         Display an image in the specified subplot.
-
-#         This method queues a command to display an image in the specified subplot.
-#         The image can be a PIL Image or a PyTorch tensor.
-
-#         Args:
-#             subplot_id (int): The ID of the subplot where the image will be displayed.
-#             image (Union[Image.Image, torch.Tensor]): The image to be displayed.
-
-#         Returns:
-#             LivePlotter: The LivePlotter instance with the queued command.
-#         """
-#         self.queue.append(("imshow", subplot_id, image))
-#         return self
-
-#     def update(self) -> None:
-#         """
-#         Update the live plot with the queued commands.
-
-#         This method processes the queued commands to update the live plot.
-#         It clears the subplots, executes the queued commands (imshow, plot, title),
-#         and updates the display with the new plot.
-
-#         Returns:
-#             None
-#         """
-#         for col in range(self.cols):
-#             if self.cols == 1:
-#                 self.subplots.clear()
-#             else:
-#                 self.subplots[col].clear()
-
-#         for item in self.queue:
-#             if item[0] == "imshow":
-#                 _, subplot_id, image = item
-#                 if self.cols == 1:
-#                     self.subplots.imshow(wrap(image).pt().detach().cpu()[0].permute(1, 2, 0))
-#                     self.subplots.axis("off")
-#                 else:
-#                     self.subplots[subplot_id].imshow(wrap(image).pt().detach().cpu()[0].permute(1, 2, 0))
-#                     self.subplots[subplot_id].axis("off")
-
-#             if item[0] == "plot":
-#                 _, subplot_id, args, kwargs = item
-#                 self.subplots[subplot_id].plot(*args, **kwargs)
-#                 if "label" in kwargs:
-#                     self.subplots[subplot_id].legend()
-
-#             if item[0] == "title":
-#                 _, subplot_id, title = item
-#                 self.subplots[subplot_id].title.set_text(title)
-
-#         self.queue = []
-#         self.out.update(self.fig)
-#         for col in range(self.cols):
-#             if self.cols == 1:
-#                 self.subplots.clear()
-#             else:
-#                 self.subplots[col].clear()
-
-#         for item in self.queue:
-#             if item[0] == "imshow":
-#                 _, subplot_id, image = item
-#                 if self.cols == 1:
-#                     self.subplots.imshow(wrap(image).pt().detach().cpu()[0].permute(1, 2, 0))
-#                     self.subplots.axis("off")
-#                 else:
-#                     self.subplots[subplot_id].imshow(wrap(image).pt().detach().cpu()[0].permute(1, 2, 0))
-#                     self.subplots[subplot_id].axis("off")
-
-#             if item[0] == "plot":
-#                 _, subplot_id, args, kwargs = item
-#                 self.subplots[subplot_id].plot(*args, **kwargs)
-#                 if "label" in kwargs:
-#                     self.subplots[subplot_id].legend()
-
-#             if item[0] == "title":
-#                 _, subplot_id, title = item
-#                 self.subplots[subplot_id].title.set_text(title)
-
-#         self.queue = []
-#         self.out.update(self.fig)
-
-#     def close(self) -> None:
-#         """
-#         Close the matplotlib figure.
-
-#         This method closes the figure associated with the LivePlotter instance,
-#         freeing up the resources used by the figure.
-#         """
-#         plt.close()
-
-
-# def live_plot(*args: Any, **kwargs: Any) -> LivePlotter:
-#     """
-#     Create a LivePlotter instance for live plotting.
-
-#     This function initializes a LivePlotter instance with the given arguments and keyword arguments.
-#     The LivePlotter instance can be used to create and update live plots.
-
-#     Args:
-#         *args (Any): Positional arguments to be passed to the LivePlotter constructor.
-#         **kwargs (Any): Keyword arguments to be passed to the LivePlotter constructor.
-
-#     Returns:
-#         LivePlotter: An instance of the LivePlotter class for live plotting.
-#     """
-#     return LivePlotter(*args, **kwargs)
-
-
 def download(image_urls: Union[str, list[str]]) -> ImageWrapper:
     """
     Download images from the given URLs.
@@ -949,69 +771,6 @@ def download(image_urls: Union[str, list[str]]) -> ImageWrapper:
     return wrap(images)
 
 
-# def merge(
-#     *args: Union[
-#         ImageWrapper, List[ImageWrapper], List[Image.Image], List[torch.Tensor], ImageWrapper, torch.Tensor, Image.Image
-#     ],
-# ) -> ImageWrapper:
-#     """
-#     Merge multiple image data sources into a single ImageWrapper instance.
-
-#     This function takes multiple image data sources, which can be ImageWrapper instances,
-#     lists of ImageWrapper instances, lists of PIL Images, lists of PyTorch tensors, or
-#     individual PIL Images or PyTorch tensors. It merges these sources into a single
-#     ImageWrapper instance.
-
-#     Args:
-#         *args (Union[ImageWrapper, List[ImageWrapper], List[Image.Image], List[torch.Tensor], ImageWrapper, torch.Tensor, Image.Image]):
-#             The image data sources to be merged.
-
-#     Returns:
-#         ImageWrapper: An ImageWrapper instance containing the merged image data.
-
-#     Raises:
-#         Exception: If the input data type is not supported.
-#     """
-#     args = list(args)
-#     if isinstance(args[0], list) and not isinstance(args[0][0], Image.Image):
-#         args = args[0]
-
-#     wrappers = [wrap(i) for i in args]
-
-#     if wrappers[0].image_type == "pil":
-#         images = []
-#         for w in wrappers:
-#             convered = w.cpil()
-#             for i in convered.data:
-#                 images.append(i)
-
-#         return ImageWrapper(images, "pil")
-
-#     if wrappers[0].image_type == "pt":
-#         tensor_list = [w.pt() for w in wrappers]
-#         return ImageWrapper(torch.cat(tensor_list, dim=0), "pt")
-
-
-# def search_images(prompt: str, max_results: int = 10) -> ImageWrapper:
-#     """
-#     Search for images using a given prompt.
-
-#     This function uses the DuckDuckGo search engine to find images based on the provided prompt.
-#     It returns an ImageWrapper instance containing the downloaded images.
-
-#     Args:
-#         prompt (str): The search query to find images.
-#         max_results (int, optional): The maximum number of images to retrieve. Defaults to 10.
-
-#     Returns:
-#         ImageWrapper: An ImageWrapper instance containing the downloaded images.
-#     """
-#     image_urls = [item["image"] for item in ddg_images(prompt, max_results=max_results)]
-#     global _last_search_wrapper
-#     _last_search_wrapper = download(image_urls)
-#     return _last_search_wrapper
-
-
 def search_history() -> ImageWrapper | None:
     """
     Retrieve the last searched images.
@@ -1027,35 +786,3 @@ def search_history() -> ImageWrapper | None:
 
     """
     return _last_search_wrapper
-
-
-# class ImiTools:
-#     def __init__(self):
-#         self.defaults = defaults
-
-#     def wrap(self, data, labels=None) -> ImageWrapper:
-#         return wrap(data, labels)
-
-#     def from_path(self, path) -> ImageWrapper:
-#         return from_path(path)
-
-#     def from_dir(self, path) -> ImageWrapper:
-#         return from_dir(path)
-
-#     def live_plot(self, *args, **kwargs) -> LivePlotter:
-#         return live_plot(*args, **kwargs)
-
-#     def download(self, img_urls) -> ImageWrapper:
-#         return download(img_urls)
-
-#     def merge(self, *args) -> ImageWrapper:
-#         return merge(*args)
-
-# I = ImiTools()
-# I.defaults.device = device
-
-
-# from duckduckgo_search import ddg_images
-# from IPython.display import HTML, display
-# if parse_version(pil.__version__)>=parse_version('10.0.0'):
-#     Image.Resampling.BILINEAR=Image.LANCZOS

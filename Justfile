@@ -263,10 +263,10 @@ delete-cassettes:
 # find tests -type d -name "*cassettes*" -print0 | xargs -0 -I {} rm -rfv {}
 
 
-regenerate-cassettes:
-	fd -td cassettes -X rm -ri
-	rye run unittests-vcr-record-final
-	rye run unittests-debug
+# regenerate-cassettes:
+# 	fd -td cassettes -X rm -ri
+# 	rye run unittests-vcr-record-final
+# 	rye run unittests-debug
 
 brew-deps:
 	brew install libmagic poppler tesseract pandoc qpdf tesseract-lang
@@ -284,7 +284,30 @@ init-aicommits:
 aider:
 	aider -c .aider.conf.yml --aiderignore .aiderignore
 
+aider-claude:
+	aider -c .aider.conf.yml --aiderignore .aiderignore --model 'claude-3-5-sonnet-20240620'
+
 pur:
 	cp -a .github/dependabot/requirements-dev.txt pur.before.txt
 	rye run pur -d -r .github/dependabot/requirements-dev.txt > pur.after.txt
 	diff pur.before.txt pur.after.txt | colordiff
+
+
+# In order to properly create new cassette files, you must first delete the existing cassette files and directories. This will regenerate all cassette files and rerun tests.
+delete-existing-cassettes:
+	./scripts/delete-existing-cassettes.sh
+
+# delete all cassette files and directories, regenerate all cassette files and rerun tests
+local-regenerate-cassettes:
+	@echo -e "\nDelete all cassette files and directories\n"
+	./scripts/delete-existing-cassettes.sh
+	@echo -e "\nRegenerate all cassette files using --record-mode=all\n"
+	@echo -e "\nNOTE: This is expected to FAIL the first time when it is recording the cassette files!\n"
+	rye run unittests-vcr-record-final || true
+	@echo -e "\nrun regulate tests to verify that the cassettes are working\n"
+	rye run ci-debug
+
+# (alias) delete all cassette files and directories, regenerate all cassette files and rerun tests
+local-regenerate-vcr: local-regenerate-cassettes
+
+regenerate-cassettes: local-regenerate-cassettes

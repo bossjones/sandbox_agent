@@ -1,3 +1,9 @@
+# pyright: reportMissingTypeStubs=false
+# pylint: disable=no-member
+# pylint: disable=no-value-for-parameter
+# pyright: reportAttributeAccessIssue=false
+# pyright: reportImportCycles=false
+
 """sandbox_agent: A Python package for gooby things."""
 
 from __future__ import annotations

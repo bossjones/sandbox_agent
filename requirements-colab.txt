@@ -37,7 +37,6 @@ aiohttp==3.10.5
     # via fsspec
     # via langchain
     # via langchain-community
-    # via langchain-pinecone
     # via litellm
     # via sandbox-agent
 aiomonitor==0.7.0
@@ -166,7 +165,7 @@ charset-normalizer==3.3.2
     # via requests
 chroma-hnswlib==0.7.6
     # via chromadb
-chromadb==0.5.5
+chromadb==0.5.13
     # via langchain-chroma
     # via sandbox-agent
 click==8.1.7
@@ -318,7 +317,7 @@ gitpython==3.1.43
     # via wandb
 google==3.0.0
     # via pyinspect
-google-ai-generativelanguage==0.6.6
+google-ai-generativelanguage==0.6.10
     # via google-generativeai
 google-api-core==2.19.2
     # via google-ai-generativelanguage
@@ -339,7 +338,7 @@ google-auth-httplib2==0.2.0
     # via google-api-python-client
 google-auth-oauthlib==1.2.1
     # via sandbox-agent
-google-generativeai==0.7.2
+google-generativeai==0.8.3
     # via langchain-google-genai
 googleapis-common-protos==1.65.0
     # via google-api-core
@@ -390,10 +389,14 @@ httpx==0.27.2
     # via fastapi
     # via groq
     # via jupyterlab
+    # via langgraph-sdk
     # via langserve
     # via langsmith
     # via openai
     # via sandbox-agent
+    # via tavily-python
+httpx-sse==0.4.0
+    # via langgraph-sdk
 huggingface-hub==0.25.0
     # via aider-chat
     # via datasets
@@ -483,7 +486,6 @@ jsonschema==4.23.0
     # via jupyterlab-server
     # via litellm
     # via nbformat
-    # via pyproject-toml
 jsonschema-specifications==2023.12.1
     # via aider-chat
     # via jsonschema
@@ -524,16 +526,16 @@ kiwisolver==1.4.5
     # via matplotlib
 kubernetes==30.1.0
     # via chromadb
-langchain==0.2.15
+langchain==0.3.3
     # via langchain-community
     # via sandbox-agent
-langchain-anthropic==0.1.23
+langchain-anthropic==0.2.3
     # via sandbox-agent
-langchain-chroma==0.1.2
+langchain-chroma==0.1.4
     # via sandbox-agent
-langchain-community==0.2.15
+langchain-community==0.3.2
     # via sandbox-agent
-langchain-core==0.2.37
+langchain-core==0.3.10
     # via langchain
     # via langchain-anthropic
     # via langchain-chroma
@@ -541,34 +543,33 @@ langchain-core==0.2.37
     # via langchain-google-genai
     # via langchain-groq
     # via langchain-openai
-    # via langchain-pinecone
     # via langchain-postgres
     # via langchain-text-splitters
     # via langgraph
     # via langgraph-checkpoint
     # via langserve
     # via sandbox-agent
-langchain-google-genai==1.0.10
+langchain-google-genai==2.0.1
     # via sandbox-agent
-langchain-groq==0.1.9
+langchain-groq==0.2.0
     # via sandbox-agent
-langchain-openai==0.1.23
+langchain-openai==0.2.2
     # via sandbox-agent
-langchain-pinecone==0.1.3
+langchain-postgres==0.0.12
     # via sandbox-agent
-langchain-postgres==0.0.9
-    # via sandbox-agent
-langchain-text-splitters==0.2.2
+langchain-text-splitters==0.3.0
     # via langchain
 langchainhub==0.1.21
     # via sandbox-agent
-langgraph==0.2.16
+langgraph==0.2.38
     # via sandbox-agent
-langgraph-checkpoint==1.0.8
+langgraph-checkpoint==2.0.1
     # via langgraph
-langserve==0.2.3
+langgraph-sdk==0.1.33
+    # via langgraph
+langserve==0.3.0
     # via sandbox-agent
-langsmith==0.1.108
+langsmith==0.1.135
     # via langchain
     # via langchain-community
     # via langchain-core
@@ -642,6 +643,8 @@ moviepy==1.0.3
     # via sandbox-agent
 mpmath==1.3.0
     # via sympy
+msgpack==1.1.0
+    # via langgraph-checkpoint
 multidict==6.1.0
     # via aider-chat
     # via aiohttp
@@ -689,7 +692,6 @@ numpy==1.26.4
     # via langchain
     # via langchain-chroma
     # via langchain-community
-    # via langchain-pinecone
     # via langchain-postgres
     # via matplotlib
     # via moviepy
@@ -765,6 +767,7 @@ orjson==3.10.7
     # via aioprometheus
     # via chromadb
     # via fastapi
+    # via langgraph-sdk
     # via langserve
     # via langsmith
 overrides==7.7.0
@@ -839,7 +842,6 @@ pillow==10.4.0
     # via torchvision
     # via weasyprint
 pinecone-client==5.0.1
-    # via langchain-pinecone
     # via sandbox-agent
 pinecone-plugin-inference==1.0.3
     # via pinecone-client
@@ -936,7 +938,9 @@ pydantic==2.9.2
     # via google-generativeai
     # via groq
     # via langchain
+    # via langchain-anthropic
     # via langchain-core
+    # via langchain-google-genai
     # via langserve
     # via langsmith
     # via litellm
@@ -951,6 +955,7 @@ pydantic-extra-types==2.9.0
     # via fastapi
 pydantic-settings==2.4.0
     # via fastapi
+    # via langchain-community
     # via sandbox-agent
 pydeck==0.9.1
     # via streamlit
@@ -1001,8 +1006,6 @@ pypika==0.48.9
     # via chromadb
 pyproject-hooks==1.1.0
     # via build
-pyproject-toml==0.0.10
-    # via langserve
 pysocks==1.7.1
     # via pyowm
     # via requests
@@ -1113,6 +1116,7 @@ requests==2.32.3
     # via sandbox-agent
     # via simpletransformers
     # via streamlit
+    # via tavily-python
     # via tiktoken
     # via transformers
     # via wandb
@@ -1125,12 +1129,14 @@ requests-oauthlib==2.0.0
     # via google-auth-oauthlib
     # via kubernetes
 requests-toolbelt==1.0.0
+    # via langsmith
     # via sandbox-agent
 responses==0.18.0
     # via datasets
 rich==13.8.1
     # via aider-chat
     # via bump-pydantic
+    # via chromadb
     # via pyinspect
     # via pypi-command-line
     # via rich-click
@@ -1179,7 +1185,6 @@ setproctitle==1.3.3
     # via imageio-ffmpeg
     # via jupyterlab
     # via opentelemetry-instrumentation
-    # via pyproject-toml
     # via pytablewriter
     # via tensorboard
     # via torch
@@ -1242,6 +1247,8 @@ sympy==1.13.2
     # via torch
 tabledata==1.3.3
     # via pytablewriter
+tavily-python==0.5.0
+    # via sandbox-agent
 tcolorpy==0.1.6
     # via pytablewriter
 telnetlib3==2.0.4
@@ -1274,6 +1281,7 @@ tiktoken==0.7.0
     # via aider-chat
     # via langchain-openai
     # via litellm
+    # via tavily-python
 timm==1.0.9
     # via sandbox-agent
 tinycss2==1.3.0
@@ -1290,7 +1298,6 @@ tokenizers==0.19.1
     # via simpletransformers
     # via transformers
 toml==0.10.2
-    # via pyproject-toml
     # via streamlit
 tomli==2.0.1
     # via nbqa
@@ -1418,7 +1425,7 @@ urllib3==2.2.3
     # via responses
     # via sentry-sdk
     # via types-requests
-uvicorn==0.30.6
+uvicorn==0.32.0
     # via chromadb
     # via fastapi
     # via fastapi-cli
@@ -1456,8 +1463,6 @@ websockets==13.0.1
 werkzeug==3.0.4
     # via gutter
     # via tensorboard
-wheel==0.44.0
-    # via pyproject-toml
 wheel-filename==1.4.1
     # via pypi-command-line
 widgetsnbextension==4.0.13

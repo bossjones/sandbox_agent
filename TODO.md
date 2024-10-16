@@ -1,5 +1,10 @@
 # TODO
 
+### Start here tomorrow (2024-10-15)
+
+- https://github.com/langchain-ai/opengpts/blob/main/docker-compose.yml
+
+
 ### Start here tomorrow (2024-09-02)
 
 - https://github.com/apify/actor-vector-database-integrations (need classes similar to this, and as configurable as this

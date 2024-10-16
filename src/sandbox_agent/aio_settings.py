@@ -351,11 +351,20 @@ class AioSettings(BaseSettings):
 
     # add a comment to each line in model_config explaining what it does
     model_config = SettingsConfigDict(
-        env_prefix="GOOB_AI_CONFIG_",
+        env_prefix="SANDBOX_AGENT_CONFIG_",
         env_file=(".env", ".envrc"),
         env_file_encoding="utf-8",
         extra="allow",
         arbitrary_types_allowed=True,
+        json_schema_extra={
+            "properties": {
+                "llm_retriever_type": {
+                    "type": "string",
+                    "default": "vector_store",
+                    "description": "Type of retriever to use",
+                }
+            }
+        },
     )
 
     monitor_host: str = "localhost"
@@ -502,6 +511,7 @@ class AioSettings(BaseSettings):
         description="unstructured api url",
         default="https://api.unstructured.io/general/v0/general",
     )
+    brave_search_api_key: SecretStr = Field(env="BRAVE_SEARCH_API_KEY", description="Brave Search API key", default="")
 
     anthropic_api_key: SecretStr = Field(env="ANTHROPIC_API_KEY", description="claude api key", default="")
     groq_api_key: SecretStr = Field(env="GROQ_API_KEY", description="groq api key", default="")
@@ -558,6 +568,24 @@ class AioSettings(BaseSettings):
     visual: str = Field(env="VISUAL", description="VISUAL", default="vim")
     git_editor: str = Field(env="GIT_EDITOR", description="GIT_EDITOR", default="vim")
 
+    llm_streaming: bool = Field(env="LLM_STREAMING", description="Enable streaming for LLM", default=False)
+    llm_provider: str = Field(
+        env="LLM_PROVIDER", description="LLM provider (e.g., openai, anthropic)", default="openai"
+    )
+    llm_max_retries: int = Field(
+        env="LLM_MAX_RETRIES", description="Maximum number of retries for LLM API calls", default=3
+    )
+    llm_document_loader_type: str = Field(
+        env="LLM_DOCUMENT_LOADER_TYPE", description="Document loader type", default="pymupdf"
+    )
+    llm_vectorstore_type: str = Field(env="LLM_VECTORSTORE_TYPE", description="Vector store type", default="pgvector")
+    llm_embedding_model_type: str = Field(
+        env="LLM_EMBEDDING_MODEL_TYPE", description="Embedding model type", default="text-embedding-3-large"
+    )
+    llm_key_value_stores_type: str = Field(
+        env="LLM_KEY_VALUE_STORES_TYPE", description="Key-value stores type", default="redis"
+    )
+
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
     #     driver=os.environ.get("PGVECTOR_DRIVER", "psycopg"),
@@ -606,7 +634,7 @@ class AioSettings(BaseSettings):
         env="EVAL_MAX_CONCURRENCY", description="Maximum number of concurrent evaluations", default=4
     )
     llm_model_name: str = Field(
-        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
+        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o", init=True
     )
     provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
     chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)
@@ -618,6 +646,11 @@ class AioSettings(BaseSettings):
         env="LLM_EMBEDDING_MODEL_NAME",
         description="Name of the embedding model to use",
         default="text-embedding-3-large",
+    )
+    llm_retriever_type: str = Field(
+        env="LLM_RETRIEVER_TYPE",
+        description="Type of retriever to use",
+        default="vector_store",
     )
     default_search_kwargs: dict[str, int] = Field(
         env="DEFAULT_SEARCH_KWARGS",
@@ -671,6 +704,14 @@ class AioSettings(BaseSettings):
         description="Enable evaluating RAG string embedding distance metrics",
         default=False,
     )
+
+    # Tool allowlist
+    tool_allowlist: list[str] = ["tavily_search"]
+
+    # Tool-specific configuration
+    tavily_search_max_results: int = 3
+
+    agent_type: str = Field(env="AGENT_TYPE", description="Type of agent to use", default="plan_and_execute")
 
     @model_validator(mode="before")
     @classmethod

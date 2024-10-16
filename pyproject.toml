@@ -7,17 +7,16 @@ authors = [
 ]
 dependencies = [
     "langchain-anthropic>=0.1.15",
-    "langchain-chroma>=0.1.2",
+    "langchain-chroma>=0.1.4",
     "langchain-community>=0.2.15",
-    "langchain-core>=0.2.37",
+    "langchain-core>=0.3.10",
     "langchain-google-genai>=1.0.6",
     "langchain-groq>=0.1.6",
     "langchain-openai>=0.1.23",
-    "langchain-pinecone>=0.1.3",
     "langchain-postgres>=0.0.9",
     "langchain>=0.2.15",
     "langchainhub>=0.1.20",
-    "langgraph>=0.1.10",
+    "langgraph>=0.2.38",
     "langserve[all]>=0.1.1",
     "discord-py>=2.3.2",
     "better-exceptions>=0.3.3",
@@ -90,7 +89,7 @@ dependencies = [
     "typer[all]>=0.12.3",
     "uritemplate>=4.1.1",
     "uritools>=4.0.2",
-    "uvicorn>=0.29.0",
+    "uvicorn>=0.32.0",
     "validators>=0.28.1",
     "watchdog[watchmedo]>=4.0.0",
     "webcolors==1.13",
@@ -122,7 +121,7 @@ dependencies = [
     "docutils>=0.21.2",
     "pathlib-mate>=1.3.2",
     "httpx[http2]>=0.27.0",
-    "chromadb==0.5.5",
+    "chromadb>=0.5.13",
     "duckduckgo-search>=6.1.6",
     "pandas>=2.2.2",
     "dask>=2024.5.0",
@@ -146,6 +145,7 @@ dependencies = [
     "psycopg2-binary>=2.9.9",
     "aider-chat>=0.59.1",
     "pur>=7.3.2",
+    "tavily-python>=0.5.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -543,10 +543,13 @@ markers = [
     "visiontoolonly: marks tests that run code that utilizes vision_tool.py (deselect with '-m \"not visiontoolonly\"')",
     "webpagetoolonly: marks tests that run code that utilizes the fetch_webpage_tool module (deselect with '-m \"not webpagetoolonly\"')",
     "vcronly: marks tests that run code that utilizes the vcr module (deselect with '-m \"not vcronly\"')",
+    "vcrcanary: marks tests that run code that utilizes the vcr test canary module (deselect with '-m \"not vcrcanary\"')",
     "pgvectoronly: marks tests that run code that utilizes the pgvector module (deselect with '-m \"not pgvectoronly\"')",
     "services: marks tests that run code that belongs to the services module  (deselect with '-m \"not services\"')",
     "slower: marks tests that run code that belongs to the slower calls at end of pytest run module  (deselect with '-m \"not slower\"')",
     "discordonly: marks tests that run code that belongs to the discordonly calls at end of pytest run module  (deselect with '-m \"not discordonly\"')",
+    "cursorgenerated: marks tests that are cursor generated (deselect with '-m \"not cursorgenerated\"')",
+    "aidergenerated: marks tests that are aider generated (deselect with '-m \"not aidergenerated\"')",
 ]
 # filterwarnings = [
 #     "error",
@@ -591,8 +594,10 @@ source = ["sandbox_agent"]
 # NOTE: This might break some SHIT (5/8/2024)
 # SOURCE: https://github.com/anthonycorletti/snok/blob/039ae9aaf403485ce9b7fedb0e1943c25a250eed/snok/templates/__shared/_pyproject_toml#L130
 concurrency = ["thread", "greenlet", "multiprocessing"]
-
-# dd=======================[ BLACK ]========================
+omit = [
+    "**/src/sandbox_agent/tutorials/**",
+]
+# =========================[ BLACK ]========================
 [tool.black]
 line-length = 120
 target-version = ["py39", "py310", "py311", "py312"]

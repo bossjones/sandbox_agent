@@ -609,7 +609,7 @@ langchain==0.2.15
     # via sandbox-agent
 langchain-anthropic==0.1.23
     # via sandbox-agent
-langchain-chroma==0.1.2
+langchain-chroma==0.1.4
     # via sandbox-agent
 langchain-community==0.2.15
     # via sandbox-agent

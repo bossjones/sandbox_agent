@@ -18,7 +18,7 @@ from typing import runtime_checkable as runtime_checkable
 import httpx
 import numpy as np
 
-from langchain.pydantic_v1 import BaseModel
+from pydantic import BaseModel, Field
 from typing_extensions import Literal as Literal
 from typing_extensions import NewType
 from typing_extensions import Protocol as Protocol

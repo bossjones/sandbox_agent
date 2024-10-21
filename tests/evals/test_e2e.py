@@ -61,7 +61,7 @@
 # from langchain.agents import AgentExecutor
 # from langchain.chains.combine_documents import create_stuff_documents_chain
 # from langchain.chains.question_answering import load_qa_chain
-# from langchain.pydantic_v1 import BaseModel
+# from pydantic import BaseModel, Field
 # from langchain_anthropic import ChatAnthropic
 # from langchain_chroma import Chroma
 # from langchain_community.document_loaders import WebBaseLoader
@@ -69,7 +69,7 @@
 # from langchain_core.messages import AIMessage
 # from langchain_core.output_parsers import StrOutputParser
 # from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
-# from langchain_core.pydantic_v1 import BaseModel, Field
+# from pydantic import BaseModel, Field
 # from langchain_core.runnables import (
 #     ConfigurableField,
 #     Runnable,

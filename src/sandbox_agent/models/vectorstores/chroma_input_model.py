@@ -11,8 +11,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from langchain.pydantic_v1 import BaseModel, ConfigDict, Field
-from pydantic import SecretStr
+from pydantic import BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from sandbox_agent.aio_settings import aiosettings

@@ -311,3 +311,7 @@ local-regenerate-cassettes:
 local-regenerate-vcr: local-regenerate-cassettes
 
 regenerate-cassettes: local-regenerate-cassettes
+
+# This applies the ruff fixer to the target file and shows the fixes using a more aggressive formatter.
+superfmt target:
+	rye run ruff check --fix --show-fixes --select "E4,E7,E9,F" --config=pyproject.toml {{ target }}

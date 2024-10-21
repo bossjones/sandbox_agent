@@ -1,8 +1,7 @@
-# %% [markdown]
 # # Source: https://langchain-ai.github.io/langgraph/tutorials/customer-support/customer-support/#example-conversation
 #
 
-# %%
+
 # pyright: reportMissingTypeStubs=false
 # pyright: reportMissingTypeStubs=false
 # pyright: reportInvalidTypeForm=false
@@ -19,8 +18,9 @@ import shutil
 import sqlite3
 import uuid
 
+from collections.abc import Sequence
 from datetime import date, datetime
-from typing import TYPE_CHECKING, Annotated, Callable, Literal, Optional, Union
+from typing import Annotated, Any, Callable, Literal, Optional, Union, cast
 
 import numpy as np
 import openai
@@ -35,6 +35,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import ToolMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import Runnable, RunnableConfig, RunnableLambda
+from langchain_core.runnables.schema import StreamEvent
 from langchain_core.tools import tool
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
@@ -46,17 +47,6 @@ from typing_extensions import TypedDict
 
 # Load environment variables from .env file
 load_dotenv()
-
-# %%
-from collections.abc import AsyncIterator, Iterable, Iterator, Sequence
-from typing import Any, Dict, List, Optional, cast
-
-import rich
-
-from langchain_core.runnables.schema import StreamEvent
-from loguru import logger as LOGGER
-
-from sandbox_agent import debugger
 
 
 class AnyStr(str):
@@ -77,27 +67,6 @@ def _with_nulled_run_id(events: Sequence[StreamEvent]) -> list[StreamEvent]:
         [{**event, "run_id": "", "parent_ids": []} for event in events],
     )
 
-
-async def _as_async_iterator(iterable: list) -> AsyncIterator:
-    """Converts an iterable into an async iterator."""
-    for item in iterable:
-        yield item
-
-
-async def _collect_events(events: AsyncIterator[StreamEvent], with_nulled_ids: bool = True) -> list[StreamEvent]:
-    """Collect the events and remove the run ids."""
-    materialized_events = [event async for event in events]
-
-    if with_nulled_ids:
-        events_ = _with_nulled_run_id(materialized_events)
-    else:
-        events_ = materialized_events
-    for event in events_:
-        event["tags"] = sorted(event["tags"])
-    return events_
-
-
-# %%
 
 db_url = "https://storage.googleapis.com/benchmarks-artifacts/travel-db/travel2.sqlite"
 local_file = "travel2.sqlite"
@@ -152,19 +121,6 @@ def update_dates(file):
 
 
 db = update_dates(local_file)
-
-# %% [markdown]
-# # Tools¶
-#
-# # Next, define our assistant's tools to search the airline's policy manual and search and manage reservations for flights, hotels, car rentals, and excursions. We will reuse these tools throughout the tutorial. The exact implementations aren't important, so feel free to run the code below and jump to Part 1.
-#
-# # Lookup Company Policies¶
-#
-# The assistant retrieve policy information to answer user questions. Note that enforcement of these policies still must be done within the tools/APIs themselves, since the LLM can always ignore this.
-
-# %%
-
-
 response = requests.get("https://storage.googleapis.com/benchmarks-artifacts/travel-db/swiss_faq.md")
 response.raise_for_status()
 faq_text = response.text
@@ -204,15 +160,6 @@ def lookup_policy(query: str) -> str:
     Use this before making any flight changes performing other 'write' events."""
     docs = retriever.query(query, k=2)
     return "\n\n".join([doc["page_content"] for doc in docs])
-
-
-# %% [markdown]
-# Flights¶
-# Define the (fetch_user_flight_information) tool to let the agent see the current user's flight information. Then define tools to search for flights and manage the passenger's bookings stored in the SQL database.
-#
-# We the can access the RunnableConfig for a given run to check the passenger_id of the user accessing this application. The LLM never has to provide these explicitly, they are provided for a given invocation of the graph so that each user cannot access other passengers' booking information.
-
-# %%
 
 
 @tool
@@ -397,18 +344,6 @@ def cancel_ticket(ticket_no: str, *, config: RunnableConfig) -> str:
     return "Ticket successfully cancelled."
 
 
-# %% [markdown]
-# Car Rental Tools¶
-# Once a user books a flight, they likely will want to organize transportation. Define some "car rental" tools to let the user search for and reserve a car at their destination.
-#
-#
-#
-
-# %%
-from datetime import date, datetime
-from typing import Optional, Union
-
-
 @tool
 def search_car_rentals(
     location: Optional[str] = None,
@@ -540,11 +475,9 @@ def cancel_car_rental(rental_id: int) -> str:
         return f"No car rental found with ID {rental_id}."
 
 
-# %% [markdown]
 # hotels
 
 
-# %%
 @tool
 def search_hotels(
     location: Optional[str] = None,
@@ -675,11 +608,9 @@ def cancel_hotel(hotel_id: int) -> str:
         return f"No hotel found with ID {hotel_id}."
 
 
-# %% [markdown]
 # excursions
 
 
-# %%
 @tool
 def search_trip_recommendations(
     location: Optional[str] = None,
@@ -802,13 +733,7 @@ def cancel_excursion(recommendation_id: int) -> str:
         return f"No trip recommendation found with ID {recommendation_id}."
 
 
-# %% [markdown]
 # utilities
-
-# %%
-
-
-# %%
 
 
 def handle_tool_error(state) -> dict:
@@ -843,28 +768,6 @@ def _print_event(event: dict, _printed: set, max_length=1500):
                 msg_repr = msg_repr[:max_length] + " ... (truncated)"
             print(msg_repr)
             _printed.add(message.id)
-
-
-# %% [markdown]
-# Part 1: Zero-shot Agent¶
-# When building, it's best to start with the simplest working implementation and use an evaluation tool like LangSmith to measure its efficacy. All else equal, prefer simple, scalable solutions to complicated ones. In this case, the single-graph approach has limitations. The bot may take undesired actions without user confirmation, struggle with complex queries, and lack focus in its responses. We'll address these issues later.
-#
-# In this section, we will define a simple Zero-shot agent as the assistant, give the agent all of our tools, and prompt it to use them judiciously to assist the user.
-#
-# The simple 2-node graph will look like the following:
-
-# %% [markdown]
-# state
-
-# %%
-# state
-# pyright: reportMissingTypeStubs=false
-# pyright: reportMissingTypeStubs=false
-# pyright: reportInvalidTypeForm=false
-# pylint: disable=no-member
-# pylint: disable=no-value-for-parameter
-# pyright: reportAttributeAccessIssue=false
-# pyright: reportImportCycles=false
 
 
 class State(TypedDict):
@@ -945,551 +848,13 @@ part_1_tools = [
 ]
 part_1_assistant_runnable = primary_assistant_prompt | llm.bind_tools(part_1_tools)
 
-# %% [markdown]
-# define graph
 
-# %%
-# pyright: reportMissingTypeStubs=false
-# pyright: reportMissingTypeStubs=false
-# pyright: reportInvalidTypeForm=false
-# pylint: disable=no-member
-# pylint: disable=no-value-for-parameter
-# pyright: reportAttributeAccessIssue=false
-# pyright: reportImportCycles=false
-
-
-builder = StateGraph(State)
-
-
-# Define nodes: these do the work
-builder.add_node("assistant", Assistant(part_1_assistant_runnable))
-builder.add_node("tools", create_tool_node_with_fallback(part_1_tools))
-# Define edges: these determine how the control flow moves
-builder.add_edge(START, "assistant")
-builder.add_conditional_edges(
-    "assistant",
-    tools_condition,
-)
-builder.add_edge("tools", "assistant")
-
-# The checkpointer lets the graph persist its state
-# this is a complete memory for the entire graph.
-memory = MemorySaver()
-part_1_graph = builder.compile(checkpointer=memory, debug=True)
-
-
-# %%
-from rich.__main__ import make_test_card
-from rich.console import Console
-from rich.jupyter import print as rprint
-from rich.theme import Theme
-
-
-custom_theme = Theme(
-    {
-        "inspect.attr_name": "bold magenta",
-        "inspect.attr_value": "green",
-        "inspect.callable_name": "bold cyan",
-        "inspect.callable_value": "blue",
-        "inspect.error": "red",
-        "inspect.help": "dim",
-        "inspect.number": "yellow",
-        "inspect.string": "italic green",
-    }
-)
-
-console = Console(soft_wrap=False, style="magenta", width=220, height=40, theme=custom_theme)
-# console.print(workflow)
-from IPython.display import Image, display
-
-
-try:
-    display(Image(part_1_graph.get_graph(xray=True).draw_mermaid_png()))
-except Exception:
-    # This requires some extra dependencies and is optional
-    pass
-
-
-rich.inspect(part_1_graph, console=console, all=True)
-rich.inspect(memory, console=console, all=True)
-
-
-# %% [markdown]
-# # example conversation
-#
-
-# %%
-# import shutil
-# import uuid
-
-# # Let's create an example conversation a user might have with the assistant
-# tutorial_questions = [
-#     "Hi there, what time is my flight?",
-#     "Am i allowed to update my flight to something sooner? I want to leave later today.",
-#     "Update my flight to sometime next week then",
-#     "The next available option is great",
-#     "what about lodging and transportation?",
-#     "Yeah i think i'd like an affordable hotel for my week-long stay (7 days). And I'll want to rent a car.",
-#     "OK could you place a reservation for your recommended hotel? It sounds nice.",
-#     "yes go ahead and book anything that's moderate expense and has availability.",
-#     "Now for a car, what are my options?",
-#     "Awesome let's just get the cheapest option. Go ahead and book for 7 days",
-#     "Cool so now what recommendations do you have on excursions?",
-#     "Are they available while I'm there?",
-#     "interesting - i like the museums, what options are there? ",
-#     "OK great pick one and book it for my second day there.",
-# ]
-
-# # Update with the backup file so we can restart from the original place in each section
-# db = update_dates(db)
-# thread_id = str(uuid.uuid4())
-
-# config = {
-#     "configurable": {
-#         # The passenger_id is used in our flight tools to
-#         # fetch the user's flight information
-#         "passenger_id": "3442 587242",
-#         # Checkpoints are accessed by thread_id
-#         "thread_id": thread_id,
-#     }
-# }
-
-
-# _printed = set()
-# for question in tutorial_questions:
-#     events = part_1_graph.stream(
-#         {"messages": ("user", question)}, config, stream_mode="values"
-#     )
-#     for event in events:
-#         _print_event(event, _printed)
-
-# %% [markdown]
-# Part 2: Add confirmation
-
-# %%
-
-
-class State(TypedDict):
-    messages: Annotated[list[AnyMessage], add_messages]
-    user_info: str
-
-
-class Assistant:
-    def __init__(self, runnable: Runnable):
-        self.runnable = runnable
-
-    def __call__(self, state: State, config: RunnableConfig):
-        while True:
-            result = self.runnable.invoke(state)
-            # If the LLM happens to return an empty response, we will re-prompt it
-            # for an actual response.
-            if not result.tool_calls and (
-                not result.content or isinstance(result.content, list) and not result.content[0].get("text")
-            ):
-                messages = state["messages"] + [("user", "Respond with a real output.")]
-                state = {**state, "messages": messages}
-            else:
-                break
-        return {"messages": result}
-
-
-# Haiku is faster and cheaper, but less accurate
-# llm = ChatAnthropic(model="claude-3-haiku-20240307")
-llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
-# You could also use OpenAI or another model, though you will likely have
-# to adapt the prompts
-# from langchain_openai import ChatOpenAI
-
-# llm = ChatOpenAI(model="gpt-4-turbo-preview")
-
-assistant_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            "You are a helpful customer support assistant for Swiss Airlines. "
-            " Use the provided tools to search for flights, company policies, and other information to assist the user's queries. "
-            " When searching, be persistent. Expand your query bounds if the first search returns no results. "
-            " If a search comes up empty, expand your search before giving up."
-            "\n\nCurrent user:\n<User>\n{user_info}\n</User>"
-            "\nCurrent time: {time}.",
-        ),
-        ("placeholder", "{messages}"),
-    ]
-).partial(time=datetime.now())
-
-part_2_tools = [
-    TavilySearchResults(max_results=1),
-    fetch_user_flight_information,
-    search_flights,
-    lookup_policy,
-    update_ticket_to_new_flight,
-    cancel_ticket,
-    search_car_rentals,
-    book_car_rental,
-    update_car_rental,
-    cancel_car_rental,
-    search_hotels,
-    book_hotel,
-    update_hotel,
-    cancel_hotel,
-    search_trip_recommendations,
-    book_excursion,
-    update_excursion,
-    cancel_excursion,
-]
-part_2_assistant_runnable = assistant_prompt | llm.bind_tools(part_2_tools)
-
-# %% [markdown]
-# define graph
-
-# %%
-
-
-builder = StateGraph(State)
-
-
-def user_info(state: State):
-    return {"user_info": fetch_user_flight_information.invoke({})}
-
-
-# NEW: The fetch_user_info node runs first, meaning our assistant can see the user's flight information without
-# having to take an action
-builder.add_node("fetch_user_info", user_info)
-builder.add_edge(START, "fetch_user_info")
-builder.add_node("assistant", Assistant(part_2_assistant_runnable))
-builder.add_node("tools", create_tool_node_with_fallback(part_2_tools))
-builder.add_edge("fetch_user_info", "assistant")
-builder.add_conditional_edges(
-    "assistant",
-    tools_condition,
-)
-builder.add_edge("tools", "assistant")
-
-memory = MemorySaver()
-part_2_graph = builder.compile(
-    checkpointer=memory,
-    # NEW: The graph will always halt before executing the "tools" node.
-    # The user can approve or reject (or even alter the request) before
-    # the assistant continues
-    interrupt_before=["tools"],
-)
-
-# %%
-
-
-# %%
-
-
-try:
-    display(Image(part_2_graph.get_graph(xray=True).draw_mermaid_png()))
-except Exception:
-    # This requires some extra dependencies and is optional
-    pass
-
-# %% [markdown]
-# # example conversation
-#
-
-# %%
-
-
-# # Update with the backup file so we can restart from the original place in each section
-# db = update_dates(db)
-# thread_id = str(uuid.uuid4())
-
-# config = {
-#     "configurable": {
-#         # The passenger_id is used in our flight tools to
-#         # fetch the user's flight information
-#         "passenger_id": "3442 587242",
-#         # Checkpoints are accessed by thread_id
-#         "thread_id": thread_id,
-#     }
-# }
-
-
-# _printed = set()
-# # We can reuse the tutorial questions from part 1 to see how it does.
-# for question in tutorial_questions:
-#     events = part_2_graph.stream({"messages": ("user", question)}, config, stream_mode="values")
-#     for event in events:
-#         _print_event(event, _printed)
-#     snapshot = part_2_graph.get_state(config)
-#     while snapshot.next:
-#         # We have an interrupt! The agent is trying to use a tool, and the user can approve or deny it
-#         # Note: This code is all outside of your graph. Typically, you would stream the output to a UI.
-#         # Then, you would have the frontend trigger a new run via an API call when the user has provided input.
-#         try:
-#             user_input = input(
-#                 "Do you approve of the above actions? Type 'y' to continue;"
-#                 " otherwise, explain your requested changed.\n\n"
-#             )
-#         except:
-#             user_input = "y"
-#         if user_input.strip() == "y":
-#             # Just continue
-#             result = part_2_graph.invoke(
-#                 None,
-#                 config,
-#             )
-#         else:
-#             # Satisfy the tool invocation by
-#             # providing instructions on the requested changes / change of mind
-#             result = part_2_graph.invoke(
-#                 {
-#                     "messages": [
-#                         ToolMessage(
-#                             tool_call_id=event["messages"][-1].tool_calls[0]["id"],
-#                             content=f"API call denied by user. Reasoning: '{user_input}'. Continue assisting, accounting for the user's input.",
-#                         )
-#                     ]
-#                 },
-#                 config,
-#             )
-#         snapshot = part_2_graph.get_state(config)
-
-# %% [markdown]
-# # Part 3: Conditional Interrupt
-
-# %%
-
-
-class State(TypedDict):
-    messages: Annotated[list[AnyMessage], add_messages]
-    user_info: str
-
-
-class Assistant:
-    def __init__(self, runnable: Runnable):
-        self.runnable = runnable
-
-    def __call__(self, state: State, config: RunnableConfig):
-        while True:
-            result = self.runnable.invoke(state)
-            # If the LLM happens to return an empty response, we will re-prompt it
-            # for an actual response.
-            if not result.tool_calls and (
-                not result.content or isinstance(result.content, list) and not result.content[0].get("text")
-            ):
-                messages = state["messages"] + [("user", "Respond with a real output.")]
-                state = {**state, "messages": messages}
-            else:
-                break
-        return {"messages": result}
-
-
-# Haiku is faster and cheaper, but less accurate
-# llm = ChatAnthropic(model="claude-3-haiku-20240307")
-llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
-# You can update the LLMs, though you may need to update the prompts
-# from langchain_openai import ChatOpenAI
-
-# llm = ChatOpenAI(model="gpt-4-turbo-preview")
-
-assistant_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            "You are a helpful customer support assistant for Swiss Airlines. "
-            " Use the provided tools to search for flights, company policies, and other information to assist the user's queries. "
-            " When searching, be persistent. Expand your query bounds if the first search returns no results. "
-            " If a search comes up empty, expand your search before giving up."
-            "\n\nCurrent user:\n<User>\n{user_info}\n</User>"
-            "\nCurrent time: {time}.",
-        ),
-        ("placeholder", "{messages}"),
-    ]
-).partial(time=datetime.now())
-
-
-# "Read"-only tools (such as retrievers) don't need a user confirmation to use
-part_3_safe_tools = [
-    TavilySearchResults(max_results=1),
-    fetch_user_flight_information,
-    search_flights,
-    lookup_policy,
-    search_car_rentals,
-    search_hotels,
-    search_trip_recommendations,
-]
-
-# These tools all change the user's reservations.
-# The user has the right to control what decisions are made
-part_3_sensitive_tools = [
-    update_ticket_to_new_flight,
-    cancel_ticket,
-    book_car_rental,
-    update_car_rental,
-    cancel_car_rental,
-    book_hotel,
-    update_hotel,
-    cancel_hotel,
-    book_excursion,
-    update_excursion,
-    cancel_excursion,
-]
-sensitive_tool_names = {t.name for t in part_3_sensitive_tools}
-# Our LLM doesn't have to know which nodes it has to route to. In its 'mind', it's just invoking functions.
-part_3_assistant_runnable = assistant_prompt | llm.bind_tools(part_3_safe_tools + part_3_sensitive_tools)
-
-# %% [markdown]
-# # define graph
-#
-
-# %%
-
-
-builder = StateGraph(State)
-
-
-def user_info(state: State):
-    return {"user_info": fetch_user_flight_information.invoke({})}
-
-
-# NEW: The fetch_user_info node runs first, meaning our assistant can see the user's flight information without
-# having to take an action
-builder.add_node("fetch_user_info", user_info)
-builder.add_edge(START, "fetch_user_info")
-builder.add_node("assistant", Assistant(part_3_assistant_runnable))
-builder.add_node("safe_tools", create_tool_node_with_fallback(part_3_safe_tools))
-builder.add_node("sensitive_tools", create_tool_node_with_fallback(part_3_sensitive_tools))
-# Define logic
-builder.add_edge("fetch_user_info", "assistant")
-
-
-def route_tools(state: State):
-    next_node = tools_condition(state)
-    # If no tools are invoked, return to the user
-    if next_node == END:
-        return END
-    ai_message = state["messages"][-1]
-    # This assumes single tool calls. To handle parallel tool calling, you'd want to
-    # use an ANY condition
-    first_tool_call = ai_message.tool_calls[0]
-    if first_tool_call["name"] in sensitive_tool_names:
-        return "sensitive_tools"
-    return "safe_tools"
-
-
-builder.add_conditional_edges("assistant", route_tools, ["safe_tools", "sensitive_tools", END])
-builder.add_edge("safe_tools", "assistant")
-builder.add_edge("sensitive_tools", "assistant")
-
-memory = MemorySaver()
-part_3_graph = builder.compile(
-    checkpointer=memory,
-    # NEW: The graph will always halt before executing the "tools" node.
-    # The user can approve or reject (or even alter the request) before
-    # the assistant continues
-    interrupt_before=["sensitive_tools"],
-)
-
-# %%
-
-
-try:
-    display(Image(part_3_graph.get_graph(xray=True).draw_mermaid_png()))
-except Exception:
-    # This requires some extra dependencies and is optional
-    pass
-
-# %% [markdown]
-# # Example Conversation¶
-#
-# Now it's time to try out our newly revised chatbot! Let's run it over the following list of dialog turns. This time, we'll have many fewer confirmations.
-
-# %%
-
-
-# # Update with the backup file so we can restart from the original place in each section
-# db = update_dates(db)
-# thread_id = str(uuid.uuid4())
-
-# config = {
-#     "configurable": {
-#         # The passenger_id is used in our flight tools to
-#         # fetch the user's flight information
-#         "passenger_id": "3442 587242",
-#         # Checkpoints are accessed by thread_id
-#         "thread_id": thread_id,
-#     }
-# }
-
-# tutorial_questions = [
-#     "Hi there, what time is my flight?",
-#     "Am i allowed to update my flight to something sooner? I want to leave later today.",
-#     "Update my flight to sometime next week then",
-#     "The next available option is great",
-#     "what about lodging and transportation?",
-#     "Yeah i think i'd like an affordable hotel for my week-long stay (7 days). And I'll want to rent a car.",
-#     "OK could you place a reservation for your recommended hotel? It sounds nice.",
-#     "yes go ahead and book anything that's moderate expense and has availability.",
-#     "Now for a car, what are my options?",
-#     "Awesome let's just get the cheapest option. Go ahead and book for 7 days",
-#     "Cool so now what recommendations do you have on excursions?",
-#     "Are they available while I'm there?",
-#     "interesting - i like the museums, what options are there? ",
-#     "OK great pick one and book it for my second day there.",
-# ]
-
-
-# _printed = set()
-# # We can reuse the tutorial questions from part 1 to see how it does.
-# for question in tutorial_questions:
-#     events = part_3_graph.stream({"messages": ("user", question)}, config, stream_mode="values")
-#     for event in events:
-#         _print_event(event, _printed)
-#     snapshot = part_3_graph.get_state(config)
-#     while snapshot.next:
-#         # We have an interrupt! The agent is trying to use a tool, and the user can approve or deny it
-#         # Note: This code is all outside of your graph. Typically, you would stream the output to a UI.
-#         # Then, you would have the frontend trigger a new run via an API call when the user has provided input.
-#         try:
-#             user_input = input(
-#                 "Do you approve of the above actions? Type 'y' to continue;"
-#                 " otherwise, explain your requested changed.\n\n"
-#             )
-#         except:
-#             user_input = "y"
-#         if user_input.strip() == "y":
-#             # Just continue
-#             result = part_3_graph.invoke(
-#                 None,
-#                 config,
-#             )
-#         else:
-#             # Satisfy the tool invocation by
-#             # providing instructions on the requested changes / change of mind
-#             result = part_3_graph.invoke(
-#                 {
-#                     "messages": [
-#                         ToolMessage(
-#                             tool_call_id=event["messages"][-1].tool_calls[0]["id"],
-#                             content=f"API call denied by user. Reasoning: '{user_input}'. Continue assisting, accounting for the user's input.",
-#                         )
-#                     ]
-#                 },
-#                 config,
-#             )
-#         snapshot = part_3_graph.get_state(config)
-
-# %% [markdown]
-# One problem with this design is that we're putting a lot of pressure on a single prompt. If we want to add more tools, or if each tool gets more complicated (more filters, more business logic constraining behavior, etc), it's likely the tool usage and overall behavior of the bot will start to suffer.
-#
-# In the next section, we show how you can take more control over different user experiences by routing to specialist agents or sub-graphs based on the user's intent.
-
-# %% [markdown]
-# ![image.png](attachment:image.png)
-
-# %% [markdown]
 # Part 4: Specialized Workflows¶
 # In the previous sections, we saw how "wide" chat-bots, relying on a single prompt and LLM to handle various user intents, can get us far. However, it's difficult to create predictably great user experiences for known intents with this approach.
 #
 # Alternatively, your graph can detect userintent and select the appropriate workflow or "skill" to satisfy the user's needs. Each workflow can focus on its domain, allowing for isolated improvements without degrading the overall assistant.
 #
 # In this section, we'll split user experiences into separate sub-graphs, resulting in a structure like this:
-
-# %%
 
 
 def update_dialog_stack(left: list[str], right: Optional[str]) -> list[str]:
@@ -1518,7 +883,6 @@ class State(TypedDict):
     ]
 
 
-# %% [markdown]
 # # Assistants¶
 #
 # This time we will create an assistant for every workflow. That means:
@@ -1531,8 +895,6 @@ class State(TypedDict):
 # If you're paying attention, you may recognize this as an example of the supervisor design pattern from our Multi-agent examples.
 #
 # Below, define the Runnable objects to power each assistant. Each Runnable has a prompt, LLM, and schemas for the tools scoped to that assistant. Each specialized / delegated assistant additionally can call the CompleteOrEscalate tool to indicate that the control flow should be passed back to the primary assistant. This happens if it has successfully completed its work or if the user has changed their mind or needs assistance on something that beyond the scope of that particular workflow.
-
-# %%
 
 
 class Assistant:
@@ -1802,14 +1164,12 @@ assistant_runnable = primary_assistant_prompt | llm.bind_tools(
     ]
 )
 
-# %% [markdown]
+
 # Create Assistant¶
 # We're about ready to create the graph. In the previous section, we made the design decision to have a shared messages state between all the nodes. This is powerful in that each delegated assistant can see the entire user journey and have a shared context. This, however, means that weaker LLMs can easily get mixed up about there specific scope. To mark the "handoff" between the primary assistant and one of the delegated workflows (and complete the tool call from the router), we will add a ToolMessage to the state.
 #
 # Utility¶
 # Create a function to make an "entry" node for each workflow, stating "the current assistant ix assistant_name".
-
-# %%
 
 
 def create_entry_node(assistant_name: str, new_dialog_state: str) -> Callable:
@@ -1832,11 +1192,8 @@ def create_entry_node(assistant_name: str, new_dialog_state: str) -> Callable:
     return entry_node
 
 
-# %% [markdown]
 # Define Graph¶
 # Now it's time to start building our graph. As before, we'll start with a node to pre-populate the state with the user's current information.
-
-# %%
 
 
 builder = StateGraph(State)
@@ -1849,7 +1206,7 @@ def user_info(state: State):
 builder.add_node("fetch_user_info", user_info)
 builder.add_edge(START, "fetch_user_info")
 
-# %% [markdown]
+
 # Now we'll start adding our specialized workflows. Each mini-workflow looks very similar to our full graph in Part 3, employing 5 nodes:
 #
 # enter_*: use the create_entry_node utility you defined above to add a ToolMessage signaling that the new specialized assistant is at the helm
@@ -1861,7 +1218,7 @@ builder.add_edge(START, "fetch_user_info")
 #
 # First, make the flight booking assistant dedicated to managing the user journey for updating and canceling flights.
 
-# %%
+
 # Flight booking assistant
 builder.add_node(
     "enter_update_flight",
@@ -1929,10 +1286,10 @@ def pop_dialog_state(state: State) -> dict:
 builder.add_node("leave_skill", pop_dialog_state)
 builder.add_edge("leave_skill", "primary_assistant")
 
-# %% [markdown]
+
 # Next, create the car rental assistant graph to own all car rental needs.
 
-# %%
+
 # Car rental assistant
 
 builder.add_node(
@@ -1980,10 +1337,10 @@ builder.add_conditional_edges(
     ],
 )
 
-# %% [markdown]
+
 # Then define the hotel booking workflow.
 
-# %%
+
 # Hotel booking assistant
 builder.add_node("enter_book_hotel", create_entry_node("Hotel Booking Assistant", "book_hotel"))
 builder.add_node("book_hotel", Assistant(book_hotel_runnable))
@@ -2022,10 +1379,10 @@ builder.add_conditional_edges(
     ["leave_skill", "book_hotel_safe_tools", "book_hotel_sensitive_tools", END],
 )
 
-# %% [markdown]
+
 # After that, define the excursion assistant.
 
-# %%
+
 # Excursion assistant
 builder.add_node(
     "enter_book_excursion",
@@ -2067,10 +1424,10 @@ builder.add_conditional_edges(
     ["book_excursion_safe_tools", "book_excursion_sensitive_tools", "leave_skill", END],
 )
 
-# %% [markdown]
+
 # Finally, create the primary assistant.
 
-# %%
+
 # Primary assistant
 builder.add_node("primary_assistant", Assistant(assistant_runnable))
 builder.add_node("primary_assistant_tools", create_tool_node_with_fallback(primary_assistant_tools))
@@ -2146,9 +1503,6 @@ part_4_graph = builder.compile(
     ],
 )
 
-# %%
-from IPython.display import Image, display
-
 
 try:
     display(Image(part_4_graph.get_graph(xray=True).draw_mermaid_png()))
@@ -2156,11 +1510,27 @@ except Exception:
     # This requires some extra dependencies and is optional
     pass
 
-# %% [markdown]
+# Let's create an example conversation a user might have with the assistant
+tutorial_questions = [
+    "Hi there, what time is my flight?",
+    "Am i allowed to update my flight to something sooner? I want to leave later today.",
+    "Update my flight to sometime next week then",
+    "The next available option is great",
+    "what about lodging and transportation?",
+    "Yeah i think i'd like an affordable hotel for my week-long stay (7 days). And I'll want to rent a car.",
+    "OK could you place a reservation for your recommended hotel? It sounds nice.",
+    "yes go ahead and book anything that's moderate expense and has availability.",
+    "Now for a car, what are my options?",
+    "Awesome let's just get the cheapest option. Go ahead and book for 7 days",
+    "Cool so now what recommendations do you have on excursions?",
+    "Are they available while I'm there?",
+    "interesting - i like the museums, what options are there? ",
+    "OK great pick one and book it for my second day there.",
+]
+
+
 # # Conversation 4
 #
-
-# %%
 
 
 # Update with the backup file so we can restart from the original place in each section

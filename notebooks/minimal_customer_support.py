@@ -2,7 +2,7 @@
 #
 
 
-# pyright: reportMissingTypeStubs=false
+# pyright: reportUndefinedVariable=false
 # pyright: reportMissingTypeStubs=false
 # pyright: reportInvalidTypeForm=false
 # pylint: disable=no-member
@@ -12,6 +12,7 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import re
 import shutil
@@ -20,16 +21,18 @@ import uuid
 
 from collections.abc import Sequence
 from datetime import date, datetime
-from typing import Annotated, Any, Callable, Literal, Optional, Union, cast
+from typing import Annotated, Any, Callable, List, Literal, Optional, Union, cast, get_type_hints
 
 import numpy as np
 import openai
 import pandas as pd
 import pytz
 import requests
+import rich
 
 from dotenv import load_dotenv
 from IPython.display import Image, display
+from langchain.globals import set_debug, set_verbose
 from langchain_anthropic import ChatAnthropic
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import ToolMessage
@@ -41,12 +44,29 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import AnyMessage, add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
+from loguru import logger as LOGGER
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
 
+from sandbox_agent.aio_settings import aiosettings, get_rich_console
+from sandbox_agent.bot_logger import get_logger, global_log_config
+
+
+# SOURCE: https://python.langchain.com/v0.2/docs/how_to/debugging/
+if aiosettings.debug_langchain:
+    # Setting the global debug flag will cause all LangChain components with callback support (chains, models, agents, tools, retrievers) to print the inputs they receive and outputs they generate. This is the most verbose setting and will fully log raw inputs and outputs.
+    set_debug(True)
+    # Setting the verbose flag will print out inputs and outputs in a slightly more readable format and will skip logging certain raw outputs (like the token usage stats for an LLM call) so that you can focus on application logic.
+    set_verbose(True)
+
+global_log_config(
+    log_level=logging.getLevelName("DEBUG"),
+    json=False,
+)
+
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(dotenv_path=".env", verbose=True)
 
 
 class AnyStr(str):
@@ -83,7 +103,22 @@ if overwrite or not os.path.exists(local_file):
 
 
 # Convert the flights to present time for our tutorial
-def update_dates(file):
+def update_dates(file: str) -> str:
+    """
+    Update the dates in the SQLite database to the current time.
+
+    This function copies the backup database file to the specified file,
+    reads the data from the tables into pandas DataFrames, updates the
+    date and time columns by adding the difference between the current
+    time and the latest time in the 'flights' table, and then writes the
+    updated data back to the database.
+
+    Args:
+        file (str): The path to the SQLite database file to be updated.
+
+    Returns:
+        str: The path to the updated SQLite database file.
+    """
     shutil.copy(backup_file, file)
     conn = sqlite3.connect(file)
     cursor = conn.cursor()
@@ -129,22 +164,54 @@ docs = [{"page_content": txt} for txt in re.split(r"(?=\n##)", faq_text)]
 
 
 class VectorStoreRetriever:
-    def __init__(self, docs: list, vectors: list, oai_client):
+    def __init__(self, docs: list[dict[str, str]], vectors: list[list[float]], oai_client: openai.Client):
+        """
+        Initialize a VectorStoreRetriever instance.
+
+        Args:
+            docs (list[dict[str, str]]): A list of documents, where each document is a dictionary
+                with a 'page_content' key containing the text content.
+            vectors (list[list[float]]): A list of embedding vectors corresponding to the documents.
+            oai_client (openai.Client): An instance of the OpenAI client for embedding creation.
+        """
         self._arr = np.array(vectors)
         self._docs = docs
         self._client = oai_client
 
     @classmethod
-    def from_docs(cls, docs, oai_client):
+    def from_docs(cls, docs: list[dict[str, str]], oai_client: openai.Client) -> VectorStoreRetriever:
+        """
+        Create a VectorStoreRetriever instance from a list of documents.
+
+        Args:
+            docs (list[dict[str, str]]): A list of documents, where each document is a dictionary
+                with a 'page_content' key containing the text content.
+            oai_client (openai.Client): An instance of the OpenAI client for embedding creation.
+
+        Returns:
+            VectorStoreRetriever: An instance of VectorStoreRetriever initialized with the
+                provided documents and their corresponding embeddings.
+        """
         embeddings = oai_client.embeddings.create(
             model="text-embedding-3-small", input=[doc["page_content"] for doc in docs]
         )
         vectors = [emb.embedding for emb in embeddings.data]
         return cls(docs, vectors, oai_client)
 
-    def query(self, query: str, k: int = 5) -> list[dict]:
+    def query(self, query: str, k: int = 5) -> list[dict[str, str | float]]:
+        """
+        Find the top k most similar documents to the given query.
+
+        Args:
+            query (str): The query text to find similar documents for.
+            k (int): The number of top similar documents to return. Defaults to 5.
+
+        Returns:
+            list[dict[str, str | float]]: A list of the top k most similar documents, where each
+                document is a dictionary with the original document fields and an additional
+                'similarity' key containing the cosine similarity score.
+        """
         embed = self._client.embeddings.create(model="text-embedding-3-small", input=[query])
-        # "@" is just a matrix multiplication in python
         scores = np.array(embed.data[0].embedding) @ self._arr.T
         top_k_idx = np.argpartition(scores, -k)[-k:]
         top_k_idx_sorted = top_k_idx[np.argsort(-scores[top_k_idx])]
@@ -176,6 +243,7 @@ def fetch_user_flight_information(config: RunnableConfig) -> list[dict]:
     if not passenger_id:
         raise ValueError("No passenger ID configured.")
 
+    LOGGER.info(f"Fetching user flight information... w/ config: {config} and passenger_id: {passenger_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -212,6 +280,9 @@ def search_flights(
     limit: int = 20,
 ) -> list[dict]:
     """Search for flights based on departure airport, arrival airport, and departure time range."""
+    LOGGER.info(
+        f"Searching for flights... w/ departure_airport: {departure_airport}, arrival_airport: {arrival_airport}, start_time: {start_time}, end_time: {end_time}, limit: {limit}"
+    )
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -249,6 +320,9 @@ def search_flights(
 @tool
 def update_ticket_to_new_flight(ticket_no: str, new_flight_id: int, *, config: RunnableConfig) -> str:
     """Update the user's ticket to a new valid flight."""
+    LOGGER.info(
+        f"Updating ticket to new flight... w/ ticket_no: {ticket_no}, new_flight_id: {new_flight_id}, config: {config}"
+    )
     configuration = config.get("configurable", {})
     passenger_id = configuration.get("passenger_id", None)
     if not passenger_id:
@@ -314,6 +388,9 @@ def cancel_ticket(ticket_no: str, *, config: RunnableConfig) -> str:
     """Cancel the user's ticket and remove it from the database."""
     configuration = config.get("configurable", {})
     passenger_id = configuration.get("passenger_id", None)
+    LOGGER.info(
+        f"Cancelling ticket... w/ ticket_no: {ticket_no}, config: {config} and passenger_id: {passenger_id} and ticket_no: {ticket_no}"
+    )
     if not passenger_id:
         raise ValueError("No passenger ID configured.")
     conn = sqlite3.connect(db)
@@ -366,6 +443,9 @@ def search_car_rentals(
     Returns:
         list[dict]: A list of car rental dictionaries matching the search criteria.
     """
+    LOGGER.info(
+        f"Searching for car rentals... w/ location: {location}, name: {name}, price_tier: {price_tier}, start_date: {start_date}, end_date: {end_date}"
+    )
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -399,6 +479,7 @@ def book_car_rental(rental_id: int) -> str:
     Returns:
         str: A message indicating whether the car rental was successfully booked or not.
     """
+    LOGGER.info(f"Booking car rental... w/ rental_id: {rental_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -430,6 +511,7 @@ def update_car_rental(
     Returns:
         str: A message indicating whether the car rental was successfully updated or not.
     """
+    LOGGER.info(f"Updating car rental... w/ rental_id: {rental_id}, start_date: {start_date}, end_date: {end_date}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -462,6 +544,7 @@ def cancel_car_rental(rental_id: int) -> str:
     Returns:
         str: A message indicating whether the car rental was successfully cancelled or not.
     """
+    LOGGER.info(f"Cancelling car rental... w/ rental_id: {rental_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -500,6 +583,9 @@ def search_hotels(
     Returns:
         list[dict]: A list of hotel dictionaries matching the search criteria.
     """
+    LOGGER.info(
+        f"Searching for hotels... w/ location: {location}, name: {name}, price_tier: {price_tier}, checkin_date: {checkin_date}, checkout_date: {checkout_date}"
+    )
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -532,6 +618,7 @@ def book_hotel(hotel_id: int) -> str:
     Returns:
         str: A message indicating whether the hotel was successfully booked or not.
     """
+    LOGGER.info(f"Booking hotel... w/ hotel_id: {hotel_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -563,6 +650,9 @@ def update_hotel(
     Returns:
         str: A message indicating whether the hotel was successfully updated or not.
     """
+    LOGGER.info(
+        f"Updating hotel... w/ hotel_id: {hotel_id}, checkin_date: {checkin_date}, checkout_date: {checkout_date}"
+    )
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -595,6 +685,7 @@ def cancel_hotel(hotel_id: int) -> str:
     Returns:
         str: A message indicating whether the hotel was successfully cancelled or not.
     """
+    LOGGER.info(f"Cancelling hotel... w/ hotel_id: {hotel_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -629,6 +720,7 @@ def search_trip_recommendations(
     Returns:
         list[dict]: A list of trip recommendation dictionaries matching the search criteria.
     """
+    LOGGER.info(f"Searching for trip recommendations... w/ location: {location}, name: {name}, keywords: {keywords}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -666,6 +758,7 @@ def book_excursion(recommendation_id: int) -> str:
     Returns:
         str: A message indicating whether the trip recommendation was successfully booked or not.
     """
+    LOGGER.info(f"Booking excursion... w/ recommendation_id: {recommendation_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -692,6 +785,7 @@ def update_excursion(recommendation_id: int, details: str) -> str:
     Returns:
         str: A message indicating whether the trip recommendation was successfully updated or not.
     """
+    LOGGER.info(f"Updating excursion... w/ recommendation_id: {recommendation_id}, details: {details}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -720,6 +814,7 @@ def cancel_excursion(recommendation_id: int) -> str:
     Returns:
         str: A message indicating whether the trip recommendation was successfully cancelled or not.
     """
+    LOGGER.info(f"Cancelling excursion... w/ recommendation_id: {recommendation_id}")
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
 
@@ -738,6 +833,7 @@ def cancel_excursion(recommendation_id: int) -> str:
 
 
 def handle_tool_error(state) -> dict:
+    LOGGER.info(f"Handling tool error... w/ state: {state} and type: {type(state)}")
     error = state.get("error")
     tool_calls = state["messages"][-1].tool_calls
     return {
@@ -752,10 +848,12 @@ def handle_tool_error(state) -> dict:
 
 
 def create_tool_node_with_fallback(tools: list) -> dict:
+    LOGGER.info(f"Creating tool node with fallback... w/ tools: {tools}")
     return ToolNode(tools).with_fallbacks([RunnableLambda(handle_tool_error)], exception_key="error")
 
 
 def _print_event(event: dict, _printed: set, max_length=1500):
+    LOGGER.info(f"Printing event... w/ event: {event} and _printed: {_printed}")
     current_state = event.get("dialog_state")
     if current_state:
         print("Currently in: ", current_state[-1])
@@ -771,7 +869,17 @@ def _print_event(event: dict, _printed: set, max_length=1500):
             _printed.add(message.id)
 
 
+"""
+The first thing you do when you define a graph is define the State of the graph. The State consists of the schema of the graph as well as reducer functions which specify how to apply updates to the state. In our example State is a TypedDict with a single key: messages. The messages key is annotated with the add_messages reducer function, which tells LangGraph to append new messages to the existing list, rather than overwriting it. State keys without an annotation will be overwritten by each update, storing the most recent value. Check out this conceptual guide to learn more about state, reducers and other low-level concepts.
+
+https://langchain-ai.github.io/langgraph/reference/graphs/?h=add+messages#add_messages
+"""
+
+
 class State(TypedDict):
+    # Messages have the type "list". The `add_messages` function
+    # in the annotation defines how this state key should be updated
+    # (in this case, it appends messages to the list, rather than overwriting them)
     messages: Annotated[list[AnyMessage], add_messages]
 
 
@@ -783,9 +891,26 @@ class State(TypedDict):
 
 class Assistant:
     def __init__(self, runnable: Runnable):
+        """
+        Initialize the Assistant with a runnable.
+
+        Args:
+            runnable (Runnable): The runnable to be used by the assistant.
+        """
         self.runnable = runnable
 
     def __call__(self, state: State, config: RunnableConfig):
+        """
+        Call the assistant with the given state and configuration.
+
+        Args:
+            state (State): The current state of the conversation, including the message history.
+            config (RunnableConfig): The configuration for the assistant, including any user-specific information.
+
+        Returns:
+            dict: The updated state after the assistant processes the input, including the assistant's response message(s).
+        """
+        LOGGER.info(f"Calling assistant... w/ state: {state} and config: {config}")
         while True:
             configuration = config.get("configurable", {})
             passenger_id = configuration.get("passenger_id", None)
@@ -805,7 +930,7 @@ class Assistant:
 
 # Haiku is faster and cheaper, but less accurate
 # llm = ChatAnthropic(model="claude-3-haiku-20240307")
-llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
+llm = ChatAnthropic(model="claude-3-sonnet-20240229", max_tokens=4096, max_retries=10, temperature=1)
 # You could swap LLMs, though you will likely want to update the prompts when
 # doing so!
 # from langchain_openai import ChatOpenAI
@@ -895,7 +1020,13 @@ class State(TypedDict):
 # and finally, a "primary assistant" to route between these
 # If you're paying attention, you may recognize this as an example of the supervisor design pattern from our Multi-agent examples.
 #
-# Below, define the Runnable objects to power each assistant. Each Runnable has a prompt, LLM, and schemas for the tools scoped to that assistant. Each specialized / delegated assistant additionally can call the CompleteOrEscalate tool to indicate that the control flow should be passed back to the primary assistant. This happens if it has successfully completed its work or if the user has changed their mind or needs assistance on something that beyond the scope of that particular workflow.
+# Below, define the Runnable objects to power each assistant. Each Runnable has a prompt, LLM, and schemas for the tools scoped to that assistant. Each specialized / delegated assistant additionally can call the CompleteOrEscalate tool to indicate that the control flow should be passed back to the primary assistant,
+#
+# Below, define the Runnable objects to power each assistant. Each Runnable has a prompt, LLM, and schemas for the tools scoped to that assistant. Each specialized / delegated assistant additionally can call the CompleteOrEscalate tool to indicate that the control flow should be passed back to the primary assistant,
+# who can re-route the dialog based on the user's needs.
+#
+# Below, define the Runnable objects to power each assistant. Each Runnable has a prompt, LLM, and schemas for the tools scoped to that assistant. Each specialized / delegated assistant additionally can call the CompleteOrEscalate tool to indicate that the control flow should be passed back to the primary assistant,
+# who can re-route the dialog based on the user's needs.
 
 
 class Assistant:
@@ -1130,7 +1261,7 @@ class ToBookExcursion(BaseModel):
 # The top-level assistant performs general Q&A and delegates specialized tasks to other assistants.
 # The task delegation is a simple form of semantic routing / does simple intent detection
 # llm = ChatAnthropic(model="claude-3-haiku-20240307")
-llm = ChatAnthropic(model="claude-3-sonnet-20240229", temperature=1)
+llm = ChatAnthropic(model="claude-3-sonnet-20240229", max_tokens=4096, max_retries=10, temperature=1)
 
 primary_assistant_prompt = ChatPromptTemplate.from_messages(
     [
@@ -1202,6 +1333,7 @@ builder = StateGraph(State)
 
 
 def user_info(state: State):
+    LOGGER.info("Fetching user info...")
     return {"user_info": fetch_user_flight_information.invoke({})}
 
 
@@ -1511,6 +1643,11 @@ try:
 except Exception:
     # This requires some extra dependencies and is optional
     pass
+# try:
+#     rich.print(Image(part_4_graph.get_graph(xray=True).draw_ascii()()))
+# except Exception:
+#     # This requires some extra dependencies and is optional
+#     pass
 
 # Let's create an example conversation a user might have with the assistant
 tutorial_questions = [
@@ -1550,6 +1687,14 @@ config = {
 }
 
 _printed = set()
+
+rich.print(get_type_hints(route_book_excursion))
+
+# import bpdb
+
+# bpdb.set_trace()
+
+
 # We can reuse the tutorial questions from part 1 to see how it does.
 for question in tutorial_questions:
     events = part_4_graph.stream({"messages": ("user", question)}, config, stream_mode="values")

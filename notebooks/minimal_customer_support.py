@@ -157,7 +157,8 @@ retriever = VectorStoreRetriever.from_docs(docs, openai.Client())
 @tool
 def lookup_policy(query: str) -> str:
     """Consult the company policies to check whether certain options are permitted.
-    Use this before making any flight changes performing other 'write' events."""
+    Use this before making any flight changes performing other 'write' events.
+    """
     docs = retriever.query(query, k=2)
     return "\n\n".join([doc["page_content"] for doc in docs])
 
@@ -194,7 +195,7 @@ def fetch_user_flight_information(config: RunnableConfig) -> list[dict]:
     cursor.execute(query, (passenger_id,))
     rows = cursor.fetchall()
     column_names = [column[0] for column in cursor.description]
-    results = [dict(zip(column_names, row)) for row in rows]
+    results = [dict(zip(column_names, row, strict=False)) for row in rows]
 
     cursor.close()
     conn.close()
@@ -237,7 +238,7 @@ def search_flights(
     cursor.execute(query, params)
     rows = cursor.fetchall()
     column_names = [column[0] for column in cursor.description]
-    results = [dict(zip(column_names, row)) for row in rows]
+    results = [dict(zip(column_names, row, strict=False)) for row in rows]
 
     cursor.close()
     conn.close()
@@ -266,7 +267,7 @@ def update_ticket_to_new_flight(ticket_no: str, new_flight_id: int, *, config: R
         conn.close()
         return "Invalid new flight ID provided."
     column_names = [column[0] for column in cursor.description]
-    new_flight_dict = dict(zip(column_names, new_flight))
+    new_flight_dict = dict(zip(column_names, new_flight, strict=False))
     timezone = pytz.timezone("Etc/GMT-3")
     current_time = datetime.now(tz=timezone)
     departure_time = datetime.strptime(new_flight_dict["scheduled_departure"], "%Y-%m-%d %H:%M:%S.%f%z")
@@ -384,7 +385,7 @@ def search_car_rentals(
 
     conn.close()
 
-    return [dict(zip([column[0] for column in cursor.description], row)) for row in results]
+    return [dict(zip([column[0] for column in cursor.description], row, strict=False)) for row in results]
 
 
 @tool
@@ -517,7 +518,7 @@ def search_hotels(
 
     conn.close()
 
-    return [dict(zip([column[0] for column in cursor.description], row)) for row in results]
+    return [dict(zip([column[0] for column in cursor.description], row, strict=False)) for row in results]
 
 
 @tool
@@ -651,7 +652,7 @@ def search_trip_recommendations(
 
     conn.close()
 
-    return [dict(zip([column[0] for column in cursor.description], row)) for row in results]
+    return [dict(zip([column[0] for column in cursor.description], row, strict=False)) for row in results]
 
 
 @tool
@@ -917,7 +918,8 @@ class Assistant:
 
 class CompleteOrEscalate(BaseModel):
     """A tool to mark the current task as completed and/or to escalate control of the dialog to the main assistant,
-    who can re-route the dialog based on the user's needs."""
+    who can re-route the dialog based on the user's needs.
+    """
 
     cancel: bool = True
     reason: str

@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Creating a GUI Toolkit using the Factory Method.
 

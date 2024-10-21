@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Implementing a Notification System using the Observer Pattern
 

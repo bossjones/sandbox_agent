@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Implementing a Database Connection Pool using the Object Pool Pattern
 

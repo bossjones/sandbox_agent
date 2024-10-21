@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Decorator Pattern
 

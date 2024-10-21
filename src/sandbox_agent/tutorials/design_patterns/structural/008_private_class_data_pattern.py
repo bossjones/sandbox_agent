@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Private Class Data Pattern
 

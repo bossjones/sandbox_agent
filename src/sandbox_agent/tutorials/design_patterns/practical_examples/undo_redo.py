@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Implementing Undo/Redo Functionality using the Memento Pattern
 

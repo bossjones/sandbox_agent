@@ -575,6 +575,7 @@ class AioSettings(BaseSettings):
     llm_max_retries: int = Field(
         env="LLM_MAX_RETRIES", description="Maximum number of retries for LLM API calls", default=3
     )
+    llm_recursion_limit: int = Field(env="LLM_RECURSION_LIMIT", description="Recursion limit for LLM", default=50)
     llm_document_loader_type: str = Field(
         env="LLM_DOCUMENT_LOADER_TYPE", description="Document loader type", default="pymupdf"
     )

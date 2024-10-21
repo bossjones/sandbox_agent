@@ -45,6 +45,6 @@ class AgentExecutorFactory:
         tools = ToolFactory.create_tools()
 
         # Choose the LLM that will drive the agent
-        agent_executor = create_react_agent(llm, tools, state_modifier=prompt)
+        agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)
 
         return agent_executor

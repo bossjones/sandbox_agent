@@ -6,12 +6,12 @@ import logging
 
 import openai
 
-from langchain.pydantic_v1 import BaseModel
 from langchain_core.runnables import ConfigurableField, Runnable, RunnableBranch, RunnableLambda, RunnableMap
 from langchain_openai import ChatOpenAI, OpenAI
 from langsmith import traceable
 from langsmith.wrappers import wrap_openai
 from loguru import logger as LOGGER
+from pydantic import BaseModel, Field
 
 from sandbox_agent.aio_settings import aiosettings
 

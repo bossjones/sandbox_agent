@@ -6,6 +6,7 @@ from typing import List
 
 from langchain.tools import Tool
 from langchain_community.tools import BraveSearch, DuckDuckGoSearchRun, TavilySearchResults
+from loguru import logger as LOGGER
 
 from sandbox_agent.aio_settings import aiosettings
 
@@ -23,15 +24,17 @@ class ToolFactory:
 
         if "tavily_search" in aiosettings.tool_allowlist:
             tools.append(TavilySearchResults(max_results=aiosettings.tavily_search_max_results))
+            LOGGER.info(f"Added TavilySearchResults tool with max_results={aiosettings.tavily_search_max_results}")
 
         if "duckduckgo_search" in aiosettings.tool_allowlist:
             tools.append(DuckDuckGoSearchRun())
+            LOGGER.info("Added DuckDuckGoSearchRun tool")
 
         if "brave_search" in aiosettings.tool_allowlist:
             tools.append(
                 BraveSearch.from_api_key(api_key=aiosettings.brave_search_api_key, search_kwargs={"num_results": 3})
             )
-
+            LOGGER.info("Added BraveSearch tool to agent executor with search_kwargs='num_results': 3")
         # Add more tools based on the allowlist and their respective configurations
 
         return tools

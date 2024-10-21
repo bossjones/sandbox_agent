@@ -431,6 +431,7 @@ path = "src/sandbox_agent/__version__.py"
 
 
 [tool.coverage.report]
+
 exclude_lines = [
     '\(Protocol\):$',
     '\s*\.\.\.$',
@@ -479,6 +480,13 @@ exclude_also = [
 
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
+
+    # 1. Exclude an except clause of a specific form:
+    "except ValueError:\\n\\s*assume\\(False\\)",
+    # 2. Comments to turn coverage on and off:
+    "no cover: start(?s:.)*?no cover: stop",
+    # 3. A pragma comment that excludes an entire file:
+    "\\A(?s:.*# pragma: exclude file.*)\\Z",
 ]
 
 # (boolean, default False) Ignore source code that can't be found, emitting a warning instead of an exception.

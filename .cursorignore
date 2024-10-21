@@ -352,3 +352,5 @@ notebooks/e2e_evals.ipynb
 tests/services/cassettes/.*
 src/sandbox_agent/data/chroma/vectorstorage/
 typingcov_txt
+notebooks/travel2.backup.sqlite
+notebooks/travel2.sqlite

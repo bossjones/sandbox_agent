@@ -6,8 +6,10 @@ from typing import Any, List, Union
 
 from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.tools.simple import Tool
 from langchain_openai import ChatOpenAI
 from langgraph.prebuilt import create_react_agent
+from loguru import logger as LOGGER
 
 from sandbox_agent.ai.graph import Act, Plan
 from sandbox_agent.ai.tools import ToolFactory
@@ -20,7 +22,7 @@ class AgentExecutorFactory:
 
     @staticmethod
     def create_plan_and_execute_agent(
-        llm: ChatOpenAI = None,
+        llm: ChatOpenAI | None = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> Any:
@@ -37,12 +39,13 @@ class AgentExecutorFactory:
         """
         if llm is None:
             llm = ChatModelFactory.create(aiosettings.chat_model)
+            LOGGER.info(f"Creating LLM from {aiosettings.chat_model}. llm: {llm}")
 
         # Get the prompt to use - you can modify this!
         prompt = hub.pull("ih/ih-react-agent-executor")
         prompt.pretty_print()
 
-        tools = ToolFactory.create_tools()
+        tools: list[Tool] = ToolFactory.create_tools()
 
         # Choose the LLM that will drive the agent
         agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)

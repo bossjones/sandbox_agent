@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 
 Behavioral patterns are about identifying common communication patterns between objects and realize these patterns.

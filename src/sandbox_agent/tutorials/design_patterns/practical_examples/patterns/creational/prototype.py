@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *What is this pattern about?
 This patterns aims to reduce the number of classes required by an

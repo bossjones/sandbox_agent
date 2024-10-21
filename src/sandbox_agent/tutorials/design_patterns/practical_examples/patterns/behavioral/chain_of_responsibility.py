@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *What is this pattern about?
 

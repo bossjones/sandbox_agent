@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 https://www.djangospin.com/design-patterns-python/mediator/
 

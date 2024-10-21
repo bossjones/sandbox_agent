@@ -1,3 +1,4 @@
+# pragma: exclude file
 # pylint: disable=no-member
 # pylint: disable=consider-using-tuple
 # pylint: disable=simplifiable-if-expression

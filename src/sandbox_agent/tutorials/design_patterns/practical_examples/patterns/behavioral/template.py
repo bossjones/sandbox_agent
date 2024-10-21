@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 An example of the Template pattern in Python
 

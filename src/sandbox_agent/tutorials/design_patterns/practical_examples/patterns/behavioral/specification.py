@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 @author: Gordeev Andrey <gordeev.and.and@gmail.com>
 

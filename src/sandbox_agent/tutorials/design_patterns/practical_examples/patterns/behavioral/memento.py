@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 http://code.activestate.com/recipes/413838-memento-closure/
 

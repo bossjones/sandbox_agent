@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Implementation of the iterator pattern using the iterator protocol from Python
 

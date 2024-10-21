@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Lazily-evaluated property pattern in Python.
 

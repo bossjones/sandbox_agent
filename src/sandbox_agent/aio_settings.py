@@ -419,6 +419,7 @@ class AioSettings(BaseSettings):
     changelogs_github_api_token: SecretStr = Field(
         env="CHANGELOGS_GITHUB_API_TOKEN", description="GitHub API token for Changelogs", default=""
     )
+    firecrawl_api_key: SecretStr = Field(env="FIRECRAWL_API_KEY", description="Firecrawl API key", default="")
 
     # pylint: disable=redundant-keyword-arg
     better_exceptions: bool = Field(env="BETTER_EXCEPTIONS", description="Enable better exceptions", default=1)
@@ -460,6 +461,8 @@ class AioSettings(BaseSettings):
     # logging tokenization everywhere
     globals_log_tokenization: bool = False
 
+    bot_name: str = "SandboxAgentAI"
+
     # Variables for Redis
     redis_host: str = "localhost"
     redis_port: int = 7600
@@ -488,7 +491,7 @@ class AioSettings(BaseSettings):
     llm_temperature: float = 0.0
     # vision_model: str = "gpt-4-turbo"
     vision_model: str = "gpt-4o"
-    chat_model: str = "gpt-4o"
+    chat_model: str = "gpt-4o-mini"
     # DISABLED: # vision_model: str = "gpt-4-vision-preview"
     # DISABLED: # chat_model: str = "gpt-4o-2024-05-13"
     # chat_model: str = "gpt-3.5-turbo-0125"
@@ -748,9 +751,9 @@ class AioSettings(BaseSettings):
         redis_path = f"/{self.redis_base}" if self.redis_base is not None else ""
         redis_pass = self.redis_pass if self.redis_pass is not None else None
         redis_user = self.redis_user if self.redis_user is not None else None
-        LOGGER.info(f"redis_path: {redis_path}")
-        LOGGER.info(f"redis_pass: {redis_pass}")
-        LOGGER.info(f"redis_user: {redis_user}")
+        LOGGER.info(f"before redis_path: {redis_path}")
+        LOGGER.info(f"before redis_pass: {redis_pass}")
+        LOGGER.info(f"before redis_user: {redis_user}")
         if redis_pass is None and redis_user is None:
             self.redis_url = URL.build(
                 scheme="redis",

@@ -46,6 +46,7 @@ from langgraph.graph.message import AnyMessage, add_messages
 from langgraph.prebuilt import ToolNode, tools_condition
 from loguru import logger as LOGGER
 from pydantic import BaseModel, Field
+from rich.pretty import pprint as rpprint
 from typing_extensions import TypedDict
 
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
@@ -832,7 +833,19 @@ def cancel_excursion(recommendation_id: int) -> str:
 # utilities
 
 
-def handle_tool_error(state) -> dict:
+def handle_tool_error(state: State) -> dict:
+    """
+    Handle errors that occur during tool execution.
+
+    Args:
+        state (dict[str, Any]): The current state of the graph, including the error message
+            and the tool calls that caused the error.
+
+    Returns:
+        dict[str, list[ToolMessage]]: A dictionary containing a list of ToolMessages to be
+            sent back to the user, informing them of the error and asking them to fix their
+    """
+
     LOGGER.info(f"Handling tool error... w/ state: {state} and type: {type(state)}")
     error = state.get("error")
     tool_calls = state["messages"][-1].tool_calls
@@ -856,7 +869,7 @@ def _print_event(event: dict, _printed: set, max_length=1500):
     LOGGER.info(f"Printing event... w/ event: {event} and _printed: {_printed}")
     current_state = event.get("dialog_state")
     if current_state:
-        print("Currently in: ", current_state[-1])
+        rich.print(f"Currently in: {current_state[-1]}")
     message = event.get("messages")
     if message:
         if isinstance(message, list):
@@ -865,7 +878,7 @@ def _print_event(event: dict, _printed: set, max_length=1500):
             msg_repr = message.pretty_repr(html=True)
             if len(msg_repr) > max_length:
                 msg_repr = msg_repr[:max_length] + " ... (truncated)"
-            print(msg_repr)
+            rich.print(msg_repr)
             _printed.add(message.id)
 
 
@@ -1034,6 +1047,16 @@ class Assistant:
         self.runnable = runnable
 
     def __call__(self, state: State, config: RunnableConfig):
+        """
+        Invoke the runnable and handle the output.
+
+        Args:
+            state (State): The current state of the conversation.
+            config (RunnableConfig): The configuration for the runnable.
+
+        Returns:
+            dict: A dictionary containing the updated messages.
+        """
         while True:
             result = self.runnable.invoke(state)
 
@@ -1306,7 +1329,36 @@ assistant_runnable = primary_assistant_prompt | llm.bind_tools(
 
 
 def create_entry_node(assistant_name: str, new_dialog_state: str) -> Callable:
+    """
+    Create an entry node for a specific assistant workflow.
+
+    This function generates a callable that creates an entry node for a given assistant workflow.
+    The entry node adds a ToolMessage to the state, indicating that the specified assistant has taken control.
+    It also updates the dialog_state to reflect the new assistant's workflow.
+
+    Args:
+        assistant_name (str): The name of the assistant workflow.
+        new_dialog_state (str): The new dialog state for the assistant workflow.
+
+    Returns:
+        Callable: A function that creates the entry node for the specified assistant workflow.
+    """
+
     def entry_node(state: State) -> dict:
+        """
+        Create an entry node for a specific assistant workflow.
+
+        This function generates a callable that creates an entry node for a given assistant workflow.
+        The entry node adds a ToolMessage to the state, indicating that the specified assistant has taken control.
+        It also updates the dialog_state to reflect the new assistant's workflow.
+
+        Args:
+            assistant_name (str): The name of the assistant workflow.
+            new_dialog_state (str): The new dialog state for the assistant workflow.
+
+        Returns:
+            Callable: A function that creates the entry node for the specified assistant workflow.
+        """
         tool_call_id = state["messages"][-1].tool_calls[0]["id"]
         return {
             "messages": [
@@ -1333,6 +1385,20 @@ builder = StateGraph(State)
 
 
 def user_info(state: State):
+    """
+    Fetch the user's flight information from the database.
+
+    This function retrieves the user's flight information from the database
+    using the `fetch_user_flight_information` tool. The retrieved information
+    is added to the state under the `user_info` key.
+
+    Args:
+        state (State): The current state of the conversation.
+
+    Returns:
+        dict: A dictionary containing the user's flight information under the
+            `user_info` key.
+    """
     LOGGER.info("Fetching user info...")
     return {"user_info": fetch_user_flight_information.invoke({})}
 
@@ -1643,11 +1709,6 @@ try:
 except Exception:
     # This requires some extra dependencies and is optional
     pass
-# try:
-#     rich.print(Image(part_4_graph.get_graph(xray=True).draw_ascii()()))
-# except Exception:
-#     # This requires some extra dependencies and is optional
-#     pass
 
 # Let's create an example conversation a user might have with the assistant
 tutorial_questions = [
@@ -1733,3 +1794,4 @@ for question in tutorial_questions:
                 config,
             )
         snapshot = part_4_graph.get_state(config)
+        rpprint(snapshot)

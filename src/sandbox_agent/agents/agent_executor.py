@@ -8,6 +8,7 @@ from langchain import hub
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools.simple import Tool
 from langchain_openai import ChatOpenAI
+from langgraph.graph.state import CompiledStateGraph
 from langgraph.prebuilt import create_react_agent
 from loguru import logger as LOGGER
 
@@ -25,14 +26,14 @@ class AgentExecutorFactory:
         llm: ChatOpenAI | None = None,
         verbose: bool = False,
         **kwargs: Any,
-    ) -> Any:
+    ) -> CompiledStateGraph:
         """
         Create a plan-and-execute agent executor.
 
         Args:
             llm (ChatOpenAI, optional): Language model to use for the agent. Defaults to None.
             verbose (bool, optional): Whether to print verbose output. Defaults to False.
-            **kwargs (Any): Additional keyword arguments for the agent.
+            **kwargs (CompiledStateGraph): Additional keyword arguments for the agent.
 
         Returns:
             AgentExecutor: The created plan-and-execute agent executor.
@@ -49,5 +50,7 @@ class AgentExecutorFactory:
 
         # Choose the LLM that will drive the agent
         agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)
+
+        LOGGER.info(f"Created agent executor: {agent_executor} of type {type(agent_executor)}")
 
         return agent_executor

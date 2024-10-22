@@ -264,7 +264,7 @@ class TestSettings:
         assert isinstance(test_settings.rag_doc_relevance_feature_flag, bool)
         assert isinstance(test_settings.rag_string_embedding_distance_metrics_feature_flag, bool)
         assert test_settings.chat_history_buffer == 10
-        assert test_settings.chat_model == "gpt-4o"
+        assert test_settings.chat_model == "gpt-4o-mini"
         assert test_settings.editor in ["lvim", "vim", "nvim"]
         assert test_settings.eval_max_concurrency == 4
         assert test_settings.git_editor in ["lvim", "vim", "nvim"]

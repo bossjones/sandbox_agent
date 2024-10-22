@@ -155,31 +155,37 @@ def entry():
 
 
 async def run_bot():
-    """Run the bot"""
+    """
+    Run the Discord bot.
+
+    This function starts the Discord bot and handles any exceptions that may occur during the bot's execution.
+    It creates an instance of the SandboxAgent class and starts the bot using the start() method.
+
+    If an exception occurs, it prints the exception details and enters the debugger if the dev_mode setting is enabled.
+
+    Returns:
+        None
+    """
+
     LOGGER.info("Running bot")
-    pass
+    try:
+        async with SandboxAgent() as bot:
+            # if aiosettings.enable_redis:
+            #     bot.pool = pool
+            await bot.start()
+    except Exception as ex:
+        print(f"{ex}")
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        print(f"Error Class: {ex.__class__}")
+        output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
+        print(output)
+        print(f"exc_type: {exc_type}")
+        print(f"exc_value: {exc_value}")
+        traceback.print_tb(exc_traceback)
+        if aiosettings.dev_mode:
+            bpdb.pm()
 
-
-# async def run_bot():
-#     try:
-#         pool: ConnectionPool = db.get_redis_conn_pool()
-#     except Exception as ex:
-#         print(f"{ex}")
-#         exc_type, exc_value, exc_traceback = sys.exc_info()
-#         print(f"Error Class: {ex.__class__}")
-#         output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-#         print(output)
-#         print(f"exc_type: {exc_type}")
-#         print(f"exc_value: {exc_value}")
-#         traceback.print_tb(exc_traceback)
-#         if aiosettings.dev_mode:
-#             bpdb.pm()
-#     async with AsyncGoobBot() as bot:
-#         if aiosettings.enable_redis:
-#             bot.pool = pool
-#         await bot.start()
-
-#     await LOGGER.complete()
+    await LOGGER.complete()
 
 
 async def run_bot_with_redis():
@@ -197,8 +203,6 @@ async def run_bot_with_redis():
         if aiosettings.dev_mode:
             bpdb.pm()
     async with SandboxAgent() as bot:
-        # if aiosettings.enable_redis:
-        #     bot.pool = pool
         await bot.start()
 
     await LOGGER.complete()
@@ -206,15 +210,15 @@ async def run_bot_with_redis():
 
 @APP.command()
 def run_pyright() -> None:
-    """Generate typestubs GoobAI"""
-    typer.echo("Generating type stubs for GoobAI")
+    """Generate typestubs SandboxAgentAI"""
+    typer.echo("Generating type stubs for SandboxAgentAI")
     repo_typing.run_pyright()
 
 
 @APP.command()
 def go() -> None:
-    """Main entry point for GoobAI"""
-    typer.echo("Starting up GoobAI Bot")
+    """Main entry point for SandboxAgentAI"""
+    typer.echo("Starting up SandboxAgentAI Bot")
     asyncio.run(run_bot())
 
 

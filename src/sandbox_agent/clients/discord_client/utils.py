@@ -34,7 +34,7 @@ from pydantic.dataclasses import dataclass
 from sandbox_agent import shell
 from sandbox_agent.base import GoobMessage, GoobThreadConfig
 from sandbox_agent.bot_logger import generate_tree, get_lm_from_tree
-from sandbox_agent.constants import INACTIVATE_THREAD_PREFIX, MAX_CHARS_PER_REPLY_MSG
+from sandbox_agent.constants import CHANNEL_ID, INACTIVATE_THREAD_PREFIX, MAX_CHARS_PER_REPLY_MSG
 from sandbox_agent.factories import guild_factory
 from sandbox_agent.utils import async_
 

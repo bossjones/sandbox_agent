@@ -1,7 +1,6 @@
 # pylint: disable=no-member
 # pylint: disable=possibly-used-before-assignment
 # pyright: reportImportCycles=false
-# pyright: reportAttributeAccessIssue=false
 # pyright: reportUnusedFunction=false
 # pyright: reportInvalidTypeForm=false
 # mypy: disable-error-code="index"
@@ -21,10 +20,10 @@ import sys
 import traceback
 import uuid
 
-from collections import defaultdict
-from collections.abc import AsyncIterator, Iterable
+from collections import Counter, defaultdict
+from collections.abc import AsyncIterator, Coroutine, Iterable
 from io import BytesIO
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Tuple, TypeVar, Union, cast
 
 import aiohttp
 import bpdb
@@ -33,7 +32,15 @@ import rich
 
 from codetiming import Timer
 from discord.ext import commands
+from langchain_chroma import Chroma
+from langchain_community.vectorstores import FAISS, PGVector
+from langchain_community.vectorstores import Redis as RedisVectorStore
+from langchain_core.callbacks import AsyncCallbackHandler, BaseCallbackHandler, StdOutCallbackHandler
+from langchain_openai import ChatOpenAI, OpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langgraph.graph.state import CompiledStateGraph
+from langsmith import traceable
+from logging_tree import printout
 from loguru import logger as LOGGER
 from PIL import Image
 from starlette.responses import JSONResponse
@@ -41,7 +48,7 @@ from starlette.responses import JSONResponse
 import sandbox_agent
 
 from sandbox_agent import shell, utils
-from sandbox_agent.agents.agent_executor import AgentExecutorFactory
+from sandbox_agent.agents.agent_executor import AgentExecutorFactory, AsyncLoggingCallbackHandler
 from sandbox_agent.ai.evaluators import Evaluator
 from sandbox_agent.ai.workflows import WorkflowFactory
 from sandbox_agent.aio_settings import aiosettings
@@ -104,6 +111,20 @@ class ProxyObject(discord.Object):
 
 
 class SandboxAgent(DiscordClient):
+    user: discord.ClientUser
+    command_stats: Counter[str]
+    socket_stats: Counter[str]
+    command_types_used: Counter[bool]
+    logging_handler: Any
+    bot_app_info: discord.AppInfo
+    old_tree_error = Callable[[discord.Interaction, discord.app_commands.AppCommandError], Coroutine[Any, Any, None]]
+
+    chat_model: ChatOpenAI | None
+    embedding_model: OpenAIEmbeddings | None
+    vector_store: type(Chroma) | type[FAISS] | None
+    agent: CompiledStateGraph | None
+    graph: CompiledStateGraph | None
+
     def __init__(self):
         """Initialize the SandboxAgent."""
         super().__init__()
@@ -129,6 +150,9 @@ class SandboxAgent(DiscordClient):
                         detailed error information.
 
         """
+
+        # await super().setup_hook()
+
         self.session = aiohttp.ClientSession()
         self.prefixes: list[str] = [aiosettings.prefix]
 
@@ -423,6 +447,8 @@ class SandboxAgent(DiscordClient):
             None
 
         """
+        await super().on_shard_resumed(shard_id)  # pyright: ignore[reportUnknownMemberType] # type: ignore
+
         LOGGER.info("Shard ID %s has resumed...", shard_id)
         self.resumes[shard_id].append(discord.utils.utcnow())
         await LOGGER.complete()
@@ -444,7 +470,7 @@ class SandboxAgent(DiscordClient):
             str: The updated message content with extracted information.
 
         """
-        message_content: str = message.content
+        message_content: str = message.content  # type: ignore
         url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
 
         if "https://tenor.com/view/" in message_content:
@@ -462,9 +488,9 @@ class SandboxAgent(DiscordClient):
             # Process image URL
             url = url_pattern.search(message_content).group()
             await self.process_image(url)
-        elif message.attachments:
+        elif message.attachments:  # type: ignore
             # Process attached image
-            image_url = message.attachments[0].url
+            image_url = message.attachments[0].url  # type: ignore
             await self.process_image(image_url)
 
         await LOGGER.complete()
@@ -545,6 +571,24 @@ class SandboxAgent(DiscordClient):
 
         return agent_input
 
+    def get_thread_id(self, message: Union[discord.Message, discord.Thread]) -> Optional[int]:
+        """
+        Get the thread ID from a Discord message or thread object.
+
+        Args:
+            message (Union[discord.Message, discord.Thread]): The Discord message or thread object.
+
+        Returns:
+            Optional[int]: The thread ID, or None if the message is not part of a thread.
+        """
+        if isinstance(message, discord.Thread):
+            LOGGER.info(f"message is a thread, id: {message.id}")
+            return message.id
+        elif isinstance(message, discord.Message):
+            LOGGER.info(f"message is a message, thread id: {message.thread.id if message.thread else None}")  # type: ignore
+            return message.thread.id if message.thread else None  # type: ignore
+        return None
+
     def get_session_id(self, message: Union[discord.Message, discord.Thread]) -> str:
         """
         Generate a session ID for the given message.
@@ -616,7 +660,8 @@ class SandboxAgent(DiscordClient):
         user_name = message.author.name  # pyright: ignore[reportAttributeAccessIssue]
         agent_input = self.prepare_agent_input(message, user_name, surface_info_dict)
         session_id = self.get_session_id(message)
-        LOGGER.info(f"session_id: {session_id} Agent input: {json.dumps(agent_input)}")
+        thread_id = self.get_thread_id(message)
+        LOGGER.info(f"session_id: {session_id} thread_id: {thread_id} Agent input: {json.dumps(agent_input)}")
 
         temp_message = (
             "Processing your request, please wait... (this could take up to 1min, depending on the response size)"
@@ -631,7 +676,7 @@ class SandboxAgent(DiscordClient):
         # response_ts = response["ts"]
         # For direct messages, remember chat based on the user:
 
-        agent_response_text = self.ai_agent.process_user_task(session_id, str(agent_input))
+        agent_response_text = self.process_user_task(session_id, str(agent_input), thread_id)
 
         # Update the slack response with the agent response
         # client.chat_update(channel=channel_id, ts=response_ts, text=agent_response_text)
@@ -689,9 +734,10 @@ class SandboxAgent(DiscordClient):
 
         agent_input = self.prepare_agent_input(message, user_name, surface_info_dict)
         session_id = self.get_session_id(message)  # type: ignore
+        thread_id = self.get_thread_id(message)
         LOGGER.info(f"session_id: {session_id} Agent input: {json.dumps(agent_input)}")
 
-        agent_response_text = self.ai_agent.process_user_task(session_id, str(agent_input))
+        agent_response_text = self.process_user_task(session_id, str(agent_input), thread_id)
 
         # Sometimes the response can be over 2000 characters, so we need to split it
         # into multiple messages, and send them one at a time
@@ -841,6 +887,8 @@ class SandboxAgent(DiscordClient):
                 if aiosettings.dev_mode:
                     bpdb.pm()
 
+        # Invokes the command given under the invocation context and
+        # handles all the internal event dispatch mechanisms.
         await self.invoke(ctx)
         await LOGGER.complete()
 
@@ -889,7 +937,7 @@ class SandboxAgent(DiscordClient):
         # Modify the call to process_user_task to pass agent_input
         # if not is_streaming:
         try:
-            agent_response_text = self.ai_agent.process_user_task(REQUEST_ID_CONTEXTVAR.get(), str(agent_input))
+            agent_response_text = self.agent.process_user_task(REQUEST_ID_CONTEXTVAR.get(), str(agent_input))  # type: ignore
             return JSONResponse(content={"response": agent_response_text}, status_code=200)
         except Exception as ex:
             LOGGER.exception(f"Failed to process user task: {ex}")
@@ -1074,12 +1122,12 @@ class SandboxAgent(DiscordClient):
             None
 
         """
-        if len(message.attachments) <= 0:
+        if len(message.attachments) <= 0:  # type: ignore
             return
 
         root_temp_dir = file_operations.create_temp_directory()
         uploaded_file_paths = []
-        for attachment in message.attachments:
+        for attachment in message.attachments:  # type: ignore
             LOGGER.debug(f"Downloading file from {attachment.url}")
             file_path = os.path.join(root_temp_dir, attachment.filename)
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
@@ -1103,7 +1151,7 @@ class SandboxAgent(DiscordClient):
             url (str): The URL of the image to process.
         """
         response = await file_operations.download_image(url)
-        image = Image.open(BytesIO(response.content)).convert("RGB")
+        image = Image.open(BytesIO(response.content)).convert("RGB")  # type: ignore
         # Add any additional image processing logic here
 
     async def write_attachments_to_disk(self, message: discord.Message) -> None:
@@ -1140,7 +1188,7 @@ class SandboxAgent(DiscordClient):
             for some_file in local_attachment_file_list:
                 local_data_dict = file_operations.file_to_local_data_dict(some_file, tmpdirname)
                 local_attachment_data_list_dicts.append(local_data_dict)
-                path_to_image = utils.file_functions.fix_path(local_data_dict["filename"])
+                path_to_image = file_functions.fix_path(local_data_dict["filename"])
                 media_filepaths.append(path_to_image)
 
             try:
@@ -1184,3 +1232,208 @@ class SandboxAgent(DiscordClient):
         await ctx.send(response.generations[0][0].text)
 
     # Add more commands as needed
+
+    @traceable
+    def process_user_task(self, session_id: str, user_task: str, thread_id: Optional[int] = None) -> dict[str, Any]:
+        """
+        Summary:
+        Process a user task by invoking an agent executor and returning the output.
+
+        Explanation:
+        This function processes a user task by setting up an agent executor with the provided session ID, user task, and thread ID. It then invokes the agent executor with the user task input and returns the output generated by the agent. If an error occurs during processing, it logs the exception and returns an error message.
+
+        Args:
+        ----
+        - self: The instance of the class.
+        - session_id (str): The session ID for the user task.
+        - user_task (str): The user task to be processed.
+        - thread_id (Optional[int]): The ID of the thread associated with the user task. Defaults to None.
+
+        Returns:
+        -------
+        - str: The output generated by the agent or an error message if processing fails.
+
+        """
+        LOGGER.debug(f"session_id = {session_id}")
+        LOGGER.debug(f"user_task = {user_task}")
+        LOGGER.debug(f"thread_id = {thread_id}")
+
+        try:
+            # SOURCE: https://langchain-ai.github.io/langgraph/tutorials/customer-support/customer-support/#flights
+            # We the can access the RunnableConfig for a given run to check the passenger_id of the user accessing this application. The LLM never has to provide these explicitly, they are provided for a given invocation of the graph so that each user cannot access other passengers' booking information.
+            # agent_executor = self.setup_agent_executor(session_id, user_task)
+            config = {
+                # # @Web @https://api.python.langchain.com/en/latest/runnables/langchain_core.runnables.config.RunnableConfig.html
+                # # tags: List of strings to tag this call and any sub-calls (e.g., a Chain calling an LLM)
+                # "tags": ["agent"],
+                # # metadata: Dictionary of key-value pairs to store metadata for this call and any sub-calls
+                # # Metadata for this call and any sub-calls (eg. a Chain calling an LLM). Keys should be strings, values should be JSON-serializable.
+                "metadata": {
+                    "session_id": session_id,
+                    "thread_id": thread_id,
+                },
+                # # callbacks: List of callbacks to be called for this call and any sub-calls
+                # # Callbacks for this call and any sub-calls (eg. a Chain calling an LLM). Tags are passed to all callbacks, metadata is passed to handle*Start callbacks.
+                "callbacks": [StdOutCallbackHandler()],
+                #     {
+                #         "name": "langsmith",
+                #         "session_id": session_id,
+                #         "thread_id": thread_id,
+                #     }
+                # ],
+                # # run_name: Name for the tracer run for this call, defaults to the name of the class
+                # "run_name": "process_user_task",
+                # # max_concurrency: Maximum number of parallel calls to make, defaults to ThreadPoolExecutor's default if not provided
+                # "max_concurrency": 1,
+                # # recursion_limit: Maximum number of times a call can recurse, defaults to 25 if not provided
+                # "recursion_limit": 1,
+                # # run_id: Unique identifier for the tracer run for this call, a new UUID will be generated if not provided
+                # "run_id": session_id,
+                # configurable: Runtime values for attributes previously made configurable on this Runnable or sub-Runnables
+                # "configurable": {
+                #     # The passenger_id is used in our flight tools to fetch the user's flight information
+                #     "passenger_id": "3442 587242",
+                #     # Checkpoints are accessed by thread_id
+                #     "thread_id": thread_id,
+                # },
+            }
+            inputs = {"input": user_task}
+            result = self.graph.invoke(inputs, config=config)
+            LOGGER.error(f"type(result) = {type(result)}")
+            return result.get("output", "No response generated by the agent.")
+        except Exception as e:
+            LOGGER.exception(f"Error in process_user_task: {e}")
+            return "An error occurred while processing the task."
+
+    @traceable
+    async def process_user_task_streaming(
+        self,
+        session_id: str,
+        user_task: str,
+        thread_id: Optional[int] = None,
+    ) -> AsyncIterator[str]:
+        """
+        Process the user task by streaming the agent's response.
+
+        This method invokes the agent's workflow graph to process the user's task.
+        It streams the agent's response, including tool invocations and the final output,
+        as an asynchronous iterator of strings.
+
+        Args:
+            session_id (str): The ID of the current session.
+            user_task (str): The task provided by the user.
+            thread_id (Optional[int], optional): The ID of the current thread. Defaults to None.
+
+        Yields:
+            str: The next chunk of the agent's response, including tool invocations and the final output.
+
+        Raises:
+            Exception: If an error occurs during the processing of the user task.
+        """
+        try:
+            LOGGER.debug(f"session_id = {session_id}")
+            LOGGER.debug(f"user_task = {user_task}")
+            LOGGER.debug(f"thread_id = {thread_id}")
+            # SOURCE: https://langchain-ai.github.io/langgraph/tutorials/customer-support/customer-support/#flights
+            # We the can access the RunnableConfig for a given run to check the passenger_id of the user accessing this application. The LLM never has to provide these explicitly, they are provided for a given invocation of the graph so that each user cannot access other passengers' booking information.
+            # agent_executor = self.setup_agent_executor(session_id, user_task)
+            config = {
+                # # @Web @https://api.python.langchain.com/en/latest/runnables/langchain_core.runnables.config.RunnableConfig.html
+                # # tags: List of strings to tag this call and any sub-calls (e.g., a Chain calling an LLM)
+                # "tags": ["agent"],
+                # # metadata: Dictionary of key-value pairs to store metadata for this call and any sub-calls
+                # # Metadata for this call and any sub-calls (eg. a Chain calling an LLM). Keys should be strings, values should be JSON-serializable.
+                "metadata": {
+                    "session_id": session_id,
+                    "thread_id": thread_id,
+                },
+                # # callbacks: List of callbacks to be called for this call and any sub-calls
+                # # Callbacks for this call and any sub-calls (eg. a Chain calling an LLM). Tags are passed to all callbacks, metadata is passed to handle*Start callbacks.
+                "callbacks": [StdOutCallbackHandler()],
+                # "callbacks": [
+                #     {
+                #         "name": "langsmith",
+                #         "session_id": session_id,
+                #         "thread_id": thread_id,
+                #     }
+                # ],
+                # # run_name: Name for the tracer run for this call, defaults to the name of the class
+                # "run_name": "process_user_task",
+                # # max_concurrency: Maximum number of parallel calls to make, defaults to ThreadPoolExecutor's default if not provided
+                # "max_concurrency": 1,
+                # # recursion_limit: Maximum number of times a call can recurse, defaults to 25 if not provided
+                # "recursion_limit": 1,
+                # # run_id: Unique identifier for the tracer run for this call, a new UUID will be generated if not provided
+                # "run_id": session_id,
+                # configurable: Runtime values for attributes previously made configurable on this Runnable or sub-Runnables
+                # "configurable": {
+                #     # The passenger_id is used in our flight tools to fetch the user's flight information
+                #     "passenger_id": "3442 587242",
+                #     # Checkpoints are accessed by thread_id
+                #     "thread_id": thread_id,
+                # }
+            }
+            inputs = {"input": user_task}
+            # agent_executor = self.setup_agent_executor(session_id, user_task)
+            # Loop through the agent executor stream
+            async for chunk in self.graph.astream_log(inputs, config=config):
+                # We want to pull any tool invocation and the tokens for the final response
+                for op in chunk.ops:
+                    # Extract the tool invocation from the agent executor stream
+                    if op["op"] == "add" and "/logs/OpenAIToolsAgentOutputParser/final_output" in op["path"]:
+                        try:
+                            tool_invocations = op["value"]["output"]
+                            for tool_invocation in tool_invocations:
+                                # Directly access the 'log' attribute of the tool_invocation object
+                                if hasattr(tool_invocation, "log"):
+                                    LOGGER.info(f"Tool invocation: {tool_invocation.log}")
+                                    yield tool_invocation.log
+
+                        except AttributeError as e:
+                            LOGGER.exception(f"An error occurred: {e}")
+                            continue
+
+                    # Logic to pull agent response from the streaming output
+                    # Target paths ending with 'streamed_output_str/-', and check if 'value' is non-empty
+                    if op["op"] == "add" and op["path"].endswith("/streamed_output_str/-") and op["value"]:
+                        value = op["value"]  # Directly access the value
+                        LOGGER.info(f"Chunk: {value}")
+                        yield value
+
+        except Exception as e:
+            LOGGER.exception(f"Error in process_user_task_streaming: {e}")
+            yield "An error occurred while processing the task."
+
+        await LOGGER.complete()
+
+    # @traceable
+    # def summarize(self, user_input: str) -> str:
+    #     """
+    #     Process the user input and summarize it using a LLM. This method is used for the summarization API.
+
+    #     :param user_input: The task input by the user.
+    #     :return: The output from the LLM.
+    #     """
+    #     try:
+    #         # Setup a LLM instance
+    #         llm = LlmManager().llm
+
+    #         # Setup the prompt
+    #         prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
+    #             [
+    #                 (
+    #                     "system",
+    #                     "Please summarize the input from the user. Just provide the text for the summary, please don't add any additional information or commentary.",
+    #                 ),
+    #                 ("user", "{user_input}"),
+    #             ]
+    #         )
+
+    #         # Put this in a chain
+    #         chain = prompt | llm | StrOutputParser()
+    #         chain_custom_name = chain.with_config({"run_name": "summarize"})
+    #         return chain_custom_name.invoke({"user_input": user_input})
+
+    #     except Exception as e:
+    #         LOGGER.exception(f"Error during summarization of user task: {e}")
+    #         return "An error occurred while summarizing the input."

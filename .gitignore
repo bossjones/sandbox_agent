@@ -398,3 +398,4 @@ runtime_time_table.jsonl
 bup/
 notebooks/travel2.backup.sqlite
 notebooks/travel2.sqlite
+src/sandbox_agent/vendored/dpytest

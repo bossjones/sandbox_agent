@@ -50,19 +50,19 @@ There are a number of utility commands being showcased here."""
 
 
 class DiscordClient(commands.Bot):
-    user: discord.ClientUser
-    command_stats: Counter[str]
-    socket_stats: Counter[str]
-    command_types_used: Counter[bool]
-    logging_handler: Any
-    bot_app_info: discord.AppInfo
-    old_tree_error = Callable[[discord.Interaction, discord.app_commands.AppCommandError], Coroutine[Any, Any, None]]
+    # user: discord.ClientUser
+    # command_stats: Counter[str]
+    # socket_stats: Counter[str]
+    # command_types_used: Counter[bool]
+    # logging_handler: Any
+    # bot_app_info: discord.AppInfo
+    # old_tree_error = Callable[[discord.Interaction, discord.app_commands.AppCommandError], Coroutine[Any, Any, None]]
 
-    chat_model: ChatOpenAI | None
-    embedding_model: OpenAIEmbeddings | None
-    vector_store: type(Chroma) | type[FAISS] | None
-    agent: CompiledStateGraph | None
-    graph: CompiledStateGraph | None
+    # chat_model: ChatOpenAI | None
+    # embedding_model: OpenAIEmbeddings | None
+    # vector_store: type(Chroma) | type[FAISS] | None
+    # agent: CompiledStateGraph | None
+    # graph: CompiledStateGraph | None
 
     def __init__(self):
         allowed_mentions = discord.AllowedMentions(roles=False, everyone=False, users=True)

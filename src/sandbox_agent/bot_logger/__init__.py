@@ -149,6 +149,7 @@ def filter_out_serialization_errors(record):
         r"Object of type .* is not JSON serializable",
         # Failed to deepcopy input: TypeError("cannot pickle '_thread.RLock' object") | {}
         r".*Failed to deepcopy input:.*",
+        r".*logging:callHandlers.*",
     ]
 
     # Check if the log message matches any of the patterns

@@ -17,7 +17,6 @@ import typing
 
 from collections import defaultdict
 from collections.abc import AsyncIterator, Generator, Iterable
-from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO
 from typing import Any, NoReturn, Optional
@@ -30,6 +29,7 @@ from codetiming import Timer
 from discord import Message as DiscordMessage
 from logging_tree import printout
 from loguru import logger as LOGGER
+from pydantic.dataclasses import dataclass
 
 from sandbox_agent import shell
 from sandbox_agent.base import GoobMessage, GoobThreadConfig

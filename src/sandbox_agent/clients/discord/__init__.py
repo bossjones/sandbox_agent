@@ -28,7 +28,7 @@ import discord
 from codetiming import Timer
 from discord.ext import commands
 from langchain_chroma import Chroma
-from langchain_community.vectorstores import FAISS, Chroma, PGVector
+from langchain_community.vectorstores import FAISS, PGVector
 from langchain_community.vectorstores import Redis as RedisVectorStore
 from langchain_openai import ChatOpenAI, OpenAI, OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -40,6 +40,7 @@ from redis.asyncio import ConnectionPool as RedisConnectionPool
 from starlette.responses import JSONResponse, StreamingResponse
 
 from sandbox_agent.aio_settings import aiosettings
+from sandbox_agent.constants import CHANNEL_ID, INACTIVATE_THREAD_PREFIX, MAX_CHARS_PER_REPLY_MSG
 
 
 DESCRIPTION = """An example bot to showcase the discord.ext.commands extension

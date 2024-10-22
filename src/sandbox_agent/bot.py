@@ -61,7 +61,13 @@ from sandbox_agent.clients.discord_client.utils import (
     handle_save_attachment_locally,
     preload_guild_data,
 )
-from sandbox_agent.constants import ACTIVATE_THREAD_PREFX, MAX_THREAD_MESSAGES
+from sandbox_agent.constants import (
+    ACTIVATE_THREAD_PREFX,
+    CHANNEL_ID,
+    INACTIVATE_THREAD_PREFIX,
+    MAX_CHARS_PER_REPLY_MSG,
+    MAX_THREAD_MESSAGES,
+)
 from sandbox_agent.factories import ChatModelFactory, EmbeddingModelFactory, VectorStoreFactory
 from sandbox_agent.utils import file_functions, file_operations
 from sandbox_agent.utils.context import Context
@@ -438,43 +444,29 @@ class SandboxAgent(DiscordClient):
             str: The updated message content with extracted information.
 
         """
-        # Check if the message content is a URL
-
-        message_content: str = message.content  # pyright: ignore[reportAttributeAccessIssue]
+        message_content: str = message.content
         url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
+
         if "https://tenor.com/view/" in message_content:
-            # Extract the Tenor GIF URL from the message content
+            # Process Tenor GIF URL
             start_index = message_content.index("https://tenor.com/view/")
             end_index = message_content.find(" ", start_index)
-            if end_index == -1:
-                tenor_url = message_content[start_index:]
-            else:
-                tenor_url = message_content[start_index:end_index]
-            # Split the URL on forward slashes
-            parts = tenor_url.split("/")
-            # Extract the relevant words from the URL
-            words = parts[-1].split("-")[:-1]
-            # Join the words into a sentence
+            tenor_url = message_content[start_index:] if end_index == -1 else message_content[start_index:end_index]
+            words = tenor_url.split("/")[-1].split("-")[:-1]
             sentence = " ".join(words)
-            message_content = f"{message_content} [{message.author.display_name} posts an animated {sentence} ]"
-            return message_content.replace(tenor_url, "")
-        elif url_pattern.match(message_content):
-            LOGGER.info(f"Message content is a URL: {message_content}")
-            # Download the image from the URL and convert it to a PIL image
-            response = await download_image(message_content)
-            # response = requests.get(message_content)
-            image = Image.open(BytesIO(response.content)).convert("RGB")  # pyright: ignore[reportAttributeAccessIssue]
-        else:
-            LOGGER.info(f"OTHERRRR Message content is a URL: {message_content}")
-            # Download the image from the message and convert it to a PIL image
-            image_url = message.attachments[0].url  # pyright: ignore[reportAttributeAccessIssue]
-            # response = requests.get(image_url)
-            response = await download_image(message_content)
-            image = Image.open(BytesIO(response.content)).convert("RGB")  # pyright: ignore[reportAttributeAccessIssue]
+            message_content = (
+                f"{message_content.replace(tenor_url, '')} [{message.author.display_name} posts an animated {sentence}]"
+            )
+            return message_content.strip()
+        elif url_pattern.search(message_content):
+            # Process image URL
+            url = url_pattern.search(message_content).group()
+            await self.process_image(url)
+        elif message.attachments:
+            # Process attached image
+            image_url = message.attachments[0].url
+            await self.process_image(image_url)
 
-        # # Generate the image caption
-        # caption = self.caption_image(image)
-        # message_content = f"{message_content} [{message.author.display_name} posts a picture of {caption}]"
         await LOGGER.complete()
         return message_content
 

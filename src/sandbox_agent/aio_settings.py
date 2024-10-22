@@ -638,7 +638,7 @@ class AioSettings(BaseSettings):
         env="EVAL_MAX_CONCURRENCY", description="Maximum number of concurrent evaluations", default=4
     )
     llm_model_name: str = Field(
-        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o", init=True
+        env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
     )
     provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
     chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)

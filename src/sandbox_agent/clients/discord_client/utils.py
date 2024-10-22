@@ -9,68 +9,34 @@ from __future__ import annotations
 
 import asyncio
 import base64
-import datetime
 import io
-import json
-import logging
 import os
 import pathlib
-import re
 import sys
-import tempfile
-import time
-import traceback
 import typing
-import uuid
 
-from collections import Counter, defaultdict
-from collections.abc import AsyncIterator, Coroutine, Generator, Iterable
+from collections import defaultdict
+from collections.abc import AsyncIterator, Generator, Iterable
 from dataclasses import dataclass
 from enum import Enum
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Tuple, TypeVar, Union, cast
+from typing import Any, NoReturn, Optional
 
 import aiohttp
-import bpdb
 import discord
 import rich
 
 from codetiming import Timer
 from discord import Message as DiscordMessage
-from discord.ext import commands
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from logging_tree import printout
 from loguru import logger as LOGGER
-from PIL import Image
-from pydantic.dataclasses import dataclass
-from redis.asyncio import ConnectionPool as RedisConnectionPool
-from starlette.responses import JSONResponse, StreamingResponse
 
-import sandbox_agent
-
-from sandbox_agent import db, helpers, shell, utils
-from sandbox_agent.aio_settings import aiosettings
+from sandbox_agent import shell
 from sandbox_agent.base import GoobMessage, GoobThreadConfig
-from sandbox_agent.bot_logger import REQUEST_ID_CONTEXTVAR, generate_tree, get_lm_from_tree, get_logger
-from sandbox_agent.clients.discord_client.utils import (
-    close_thread,
-    discord_message_to_message,
-    is_last_message_stale,
-    split_into_shorter_messages,
-)
-from sandbox_agent.constants import (
-    ACTIVATE_THREAD_PREFX,
-    CHANNEL_ID,
-    INACTIVATE_THREAD_PREFIX,
-    INPUT_CLASSIFICATION_NOT_A_QUESTION,
-    INPUT_CLASSIFICATION_NOT_FOR_ME,
-    MAX_CHARS_PER_REPLY_MSG,
-    MAX_THREAD_MESSAGES,
-)
+from sandbox_agent.bot_logger import generate_tree, get_lm_from_tree
+from sandbox_agent.constants import INACTIVATE_THREAD_PREFIX, MAX_CHARS_PER_REPLY_MSG
 from sandbox_agent.factories import guild_factory
-from sandbox_agent.utils import async_, file_functions
-from sandbox_agent.utils.context import Context
-from sandbox_agent.utils.misc import CURRENTFUNCNAME
+from sandbox_agent.utils import async_
 
 
 SEPARATOR_TOKEN = "<|endoftext|>"
@@ -599,171 +565,6 @@ async def close_thread(thread: discord.Thread):
         )
     )
     await thread.edit(archived=True, locked=True)
-
-
-###################################################################
-# NOTE: on frozen dataclasses
-###################################################################
-# Frozen instances
-# It is not possible to create truly immutable Python objects. However, by passing frozen=True to the @dataclass decorator you can emulate immutability. In that case, dataclasses will add __setattr__() and __delattr__() methods to the class. These methods will raise a FrozenInstanceError when invoked.
-
-# There is a tiny performance penalty when using frozen=True: __init__() cannot use simple assignment to initialize fields, and must use object.__setattr__().
-###################################################################
-
-
-@dataclass(frozen=True)
-class GoobMessage:
-    """Represents a message in a Goob conversation.
-
-    Attributes:
-        user: The user who sent the message.
-        text: The text content of the message.
-    """
-
-    user: str
-    text: Optional[str] = None
-
-    def render(self) -> str:
-        """Renders the message as a string.
-
-        Returns:
-            The rendered message string.
-        """
-        result = self.user + ":"
-        if self.text is not None:
-            result += " " + self.text
-        return result
-
-
-@dataclass
-class GoobConversation:
-    """Represents a conversation in the Goob system.
-
-    Attributes:
-        messages: The list of messages in the conversation.
-    """
-
-    messages: list[GoobMessage]
-
-    def prepend(self, message: GoobMessage) -> GoobConversation:
-        """Prepends a message to the conversation.
-
-        Args:
-            message: The message to prepend.
-
-        Returns:
-            The updated conversation.
-        """
-        self.messages.insert(0, message)
-        return self
-
-    def render(self) -> str:
-        """Renders the conversation as a string.
-
-        Returns:
-            The rendered conversation string.
-        """
-        return f"\n{SEPARATOR_TOKEN}".join([message.render() for message in self.messages])
-
-
-@dataclass(frozen=True)
-class GoobConfig:
-    """Configuration for a Goob AI instance.
-
-    Attributes:
-        name: The name of the Goob AI instance.
-        instructions: The instructions for the Goob AI.
-        example_conversations: Example conversations for the Goob AI.
-    """
-
-    name: str
-    instructions: str
-    example_conversations: list[GoobConversation]
-
-
-@dataclass(frozen=True)
-class GoobThreadConfig:
-    """Configuration for a Goob thread.
-
-    Attributes:
-        model: The name of the model to use.
-        max_tokens: The maximum number of tokens to generate.
-        temperature: The temperature for text generation.
-    """
-
-    model: str
-    max_tokens: int
-    temperature: float
-
-
-@dataclass(frozen=True)
-class GoobPrompt:
-    """Represents a prompt for the Goob AI.
-
-    Attributes:
-        header: The header message of the prompt.
-        examples: Example conversations for the prompt.
-        convo: The current conversation for the prompt.
-    """
-
-    header: GoobMessage
-    examples: list[GoobConversation]
-    convo: GoobConversation
-
-    def full_render(self, bot_name: str) -> list[dict]:
-        """Renders the full prompt for the Goob AI.
-
-        Args:
-            bot_name: The name of the bot.
-
-        Returns:
-            The rendered prompt as a list of message dictionaries.
-        """
-        messages = [
-            {
-                "role": "system",
-                "content": self.render_system_prompt(),
-            }
-        ]
-        for message in self.render_messages(bot_name):
-            messages.append(message)
-        return messages
-
-    def render_system_prompt(self) -> str:
-        """Renders the system prompt for the Goob AI.
-
-        Returns:
-            The rendered system prompt string.
-        """
-        return f"\n{SEPARATOR_TOKEN}".join(
-            [self.header.render()]
-            + [GoobMessage("System", "Example conversations:").render()]
-            + [conversation.render() for conversation in self.examples]
-            + [GoobMessage("System", "Now, you will work with the actual current conversation.").render()]
-        )
-
-    def render_messages(self, bot_name: str) -> Generator[dict, None, None]:
-        """Renders the messages for the Goob AI.
-
-        Args:
-            bot_name (str): The name of the bot.
-
-        Yields:
-            dict: The rendered message as a dictionary.
-        """
-        for message in self.convo.messages:
-            if bot_name not in message.user:
-                yield {
-                    "role": "user",
-                    "name": message.user,
-                    "content": message.text,
-                }
-            else:
-                yield {
-                    "role": "assistant",
-                    "name": bot_name,
-                    "content": message.text,
-                }
 
 
 # SOURCE: https://github.com/darren-rose/DiscordDocChatBot/blob/63a2f25d2cb8aaace6c1a0af97d48f664588e94e/main.py#L28

@@ -12,25 +12,19 @@
 from __future__ import annotations
 
 import asyncio
-import base64
 import datetime
-import io
 import json
-import logging
 import os
 import pathlib
 import re
 import sys
-import tempfile
-import time
 import traceback
-import typing
 import uuid
 
-from collections import Counter, defaultdict
-from collections.abc import AsyncIterator, Coroutine, Iterable
+from collections import defaultdict
+from collections.abc import AsyncIterator, Iterable
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NoReturn, Optional, Tuple, TypeVar, Union, cast
+from typing import Any, Optional, Union
 
 import aiohttp
 import bpdb
@@ -40,11 +34,9 @@ import rich
 from codetiming import Timer
 from discord.ext import commands
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from logging_tree import printout
 from loguru import logger as LOGGER
 from PIL import Image
-from redis.asyncio import ConnectionPool as RedisConnectionPool
-from starlette.responses import JSONResponse, StreamingResponse
+from starlette.responses import JSONResponse
 
 import sandbox_agent
 
@@ -53,43 +45,23 @@ from sandbox_agent.agents.agent_executor import AgentExecutorFactory
 from sandbox_agent.ai.evaluators import Evaluator
 from sandbox_agent.ai.workflows import WorkflowFactory
 from sandbox_agent.aio_settings import aiosettings
-from sandbox_agent.bot_logger import REQUEST_ID_CONTEXTVAR, generate_tree, get_lm_from_tree, get_logger
+from sandbox_agent.bot_logger import REQUEST_ID_CONTEXTVAR
 from sandbox_agent.clients.discord import DiscordClient
 from sandbox_agent.clients.discord_client.utils import (
-    GoobConfig,
-    GoobConversation,
-    GoobMessage,
-    GoobPrompt,
     GoobThreadConfig,
     SurfaceInfo,
     SurfaceType,
     attachment_to_dict,
     close_thread,
-    co_task,
-    data_uri_to_file,
     details_from_file,
     download_image,
-    dump_logger,
-    dump_logger_tree,
     extensions,
-    file_to_data_uri,
     file_to_local_data_dict,
-    filter_empty_string,
     get_logger_tree_printout,
     handle_save_attachment_locally,
-    path_for,
     preload_guild_data,
-    save_attachment,
-    send_long_message,
-    worker,
 )
-from sandbox_agent.constants import (
-    ACTIVATE_THREAD_PREFX,
-    CHANNEL_ID,
-    INPUT_CLASSIFICATION_NOT_A_QUESTION,
-    INPUT_CLASSIFICATION_NOT_FOR_ME,
-    MAX_THREAD_MESSAGES,
-)
+from sandbox_agent.constants import ACTIVATE_THREAD_PREFX, MAX_THREAD_MESSAGES
 from sandbox_agent.factories import ChatModelFactory, EmbeddingModelFactory, VectorStoreFactory
 from sandbox_agent.utils import file_functions, file_operations
 from sandbox_agent.utils.context import Context
@@ -449,56 +421,6 @@ class SandboxAgent(DiscordClient):
         self.resumes[shard_id].append(discord.utils.utcnow())
         await LOGGER.complete()
 
-    # SOURCE: https://github.com/aronweiler/assistant/blob/a8abd34c6973c21bc248f4782f1428a810daf899/src/discord/rag_bot.py#L90
-    async def process_attachments(self, message: discord.Message) -> None:
-        """
-        Process attachments in a Discord message.
-
-        This asynchronous function processes attachments in a Discord message by downloading each attached file,
-        storing it in a temporary directory, and then loading and processing the files. It sends a message to indicate
-        the start of processing and handles any errors that occur during the download process.
-
-        Args:
-        ----
-            message (discord.Message): The Discord message containing attachments to be processed.
-
-        Returns:
-        -------
-            None
-
-        """
-        if len(message.attachments) <= 0:  # pyright: ignore[reportAttributeAccessIssue]
-            return
-        # await message.channel.send("Processing attachments... (this may take a minute)", delete_after=30.0)  # pyright: ignore[reportAttributeAccessIssue]
-
-        root_temp_dir = f"temp/{str(uuid.uuid4())}"
-        uploaded_file_paths = []
-        for attachment in message.attachments:  # pyright: ignore[reportAttributeAccessIssue]
-            LOGGER.debug(f"Downloading file from {attachment.url}")
-            # Download the file
-            file_path = os.path.join(root_temp_dir, attachment.filename)
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
-            # Download the file from the URL
-            async with aiohttp.ClientSession() as session:
-                async with session.get(attachment.url) as resp:
-                    if resp.status != 200:
-                        raise aiohttp.ClientException(f"Error downloading file from {attachment.url}")
-                    data = await resp.read()
-
-                    with open(file_path, "wb") as f:
-                        f.write(data)
-
-            uploaded_file_paths.append(file_path)
-
-            # FIXME: RE ENABLE THIS SHIT 6/5/2024
-            # # Process the files
-            # await self.load_files(
-            #     uploaded_file_paths=uploaded_file_paths,
-            #     root_temp_dir=root_temp_dir,
-            #     message=message,
-            # )
-
     async def check_for_attachments(self, message: discord.Message) -> str:
         """
         Check a Discord message for attachments and process image URLs.
@@ -590,80 +512,6 @@ class SandboxAgent(DiscordClient):
             attachment_data_list_dicts.append(data)
 
         return attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths
-
-    async def write_attachments_to_disk(self, message: discord.Message) -> None:
-        """
-        Save attachments from a Discord message to disk.
-
-        This asynchronous function processes the attachments in a Discord message,
-        saves them to a temporary directory, and logs the file paths. It also handles
-        any errors that occur during the download process.
-
-        Args:
-        ----
-            message (discord.Message): The Discord message containing attachments to be saved.
-
-        Returns:
-        -------
-            None
-
-        """
-        ctx = await self.get_context(message)
-        attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths = (
-            self.get_attachments(message)
-        )
-
-        # Create a temporary directory to store the attachments
-        tmpdirname = f"temp/{str(uuid.uuid4())}"
-        os.makedirs(os.path.dirname(tmpdirname), exist_ok=True)
-        print("created temporary directory", tmpdirname)
-        with Timer(text="\nTotal elapsed time: {:.1f}"):
-            # Save each attachment to the temporary directory
-            for an_attachment_dict in attachment_data_list_dicts:
-                local_attachment_path = await handle_save_attachment_locally(an_attachment_dict, tmpdirname)
-                local_attachment_file_list.append(local_attachment_path)
-
-            # Create a list of dictionaries with information about the local files
-            for some_file in local_attachment_file_list:
-                local_data_dict = file_to_local_data_dict(some_file, tmpdirname)
-                local_attachment_data_list_dicts.append(local_data_dict)
-                path_to_image = file_functions.fix_path(local_data_dict["filename"])
-                media_filepaths.append(path_to_image)
-
-            print("hello")
-
-            rich.print("media_filepaths -> ")
-            rich.print(media_filepaths)
-
-            print("standy")
-
-            try:
-                for media_fpaths in media_filepaths:
-                    # Compute all predictions first
-                    full_path_input_file, full_path_output_file, get_timestamp = await details_from_file(
-                        media_fpaths, cwd=f"{tmpdirname}"
-                    )
-            except Exception as ex:
-                await ctx.send(embed=discord.Embed(description="Could not download story...."))
-                print(ex)
-                exc_type, exc_value, exc_traceback = sys.exc_info()
-                LOGGER.error(f"Error Class: {str(ex.__class__)}")
-                output = f"[UNEXPECTED] {type(ex).__name__}: {ex}"
-                LOGGER.warning(output)
-                await ctx.send(embed=discord.Embed(description=output))
-                LOGGER.error(f"exc_type: {exc_type}")
-                LOGGER.error(f"exc_value: {exc_value}")
-                traceback.print_tb(exc_traceback)
-
-            # Log the directory tree of the temporary directory
-            tree_list = file_functions.tree(pathlib.Path(f"{tmpdirname}"))
-            rich.print("tree_list ->")
-            rich.print(tree_list)
-
-            file_to_upload_list = [f"{p}" for p in tree_list]
-            LOGGER.debug(f"{type(self).__name__} -> file_to_upload_list = {file_to_upload_list}")
-            rich.print(file_to_upload_list)
-            await LOGGER.complete()
 
     def prepare_agent_input(
         self, message: Union[discord.Message, discord.Thread], user_real_name: str, surface_info: dict
@@ -1216,12 +1064,23 @@ class SandboxAgent(DiscordClient):
             Sleep for 10 seconds before the next monitoring iteration.
             """
 
+    # SOURCE: https://github.com/aronweiler/assistant/blob/a8abd34c6973c21bc248f4782f1428a810daf899/src/discord/rag_bot.py#L90
     async def process_attachments(self, message: discord.Message) -> None:
         """
         Process attachments in a Discord message.
 
+        This asynchronous function processes attachments in a Discord message by downloading each attached file,
+        storing it in a temporary directory, and then loading and processing the files. It sends a message to indicate
+        the start of processing and handles any errors that occur during the download process.
+
         Args:
-            message (discord.Message): The Discord message containing attachments.
+        ----
+            message (discord.Message): The Discord message containing attachments to be processed.
+
+        Returns:
+        -------
+            None
+
         """
         if len(message.attachments) <= 0:
             return
@@ -1244,42 +1103,6 @@ class SandboxAgent(DiscordClient):
 
             uploaded_file_paths.append(file_path)
 
-    async def check_for_attachments(self, message: discord.Message) -> str:
-        """
-        Check a Discord message for attachments and process image URLs.
-
-        Args:
-            message (discord.Message): The Discord message to check for attachments.
-
-        Returns:
-            str: The modified message content.
-        """
-        message_content: str = message.content
-        url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
-
-        if "https://tenor.com/view/" in message_content:
-            # Process Tenor GIF URL
-            start_index = message_content.index("https://tenor.com/view/")
-            end_index = message_content.find(" ", start_index)
-            tenor_url = message_content[start_index:] if end_index == -1 else message_content[start_index:end_index]
-            words = tenor_url.split("/")[-1].split("-")[:-1]
-            sentence = " ".join(words)
-            message_content = (
-                f"{message_content.replace(tenor_url, '')} [{message.author.display_name} posts an animated {sentence}]"
-            )
-            return message_content.strip()
-        elif url_pattern.search(message_content):
-            # Process image URL
-            url = url_pattern.search(message_content).group()
-            await self.process_image(url)
-        elif message.attachments:
-            # Process attached image
-            image_url = message.attachments[0].url
-            await self.process_image(image_url)
-
-        await LOGGER.complete()
-        return message_content
-
     async def process_image(self, url: str) -> None:
         """
         Process an image from a given URL.
@@ -1291,39 +1114,22 @@ class SandboxAgent(DiscordClient):
         image = Image.open(BytesIO(response.content)).convert("RGB")
         # Add any additional image processing logic here
 
-    def get_attachments(
-        self, message: discord.Message
-    ) -> tuple[list[dict[str, Any]], list[str], list[dict[str, Any]], list[str]]:
-        """
-        Retrieve attachment data from a Discord message.
-
-        Args:
-            message (discord.Message): The Discord message containing attachments.
-
-        Returns:
-            Tuple[List[Dict[str, Any]], List[str], List[Dict[str, Any]], List[str]]:
-                - attachment_data_list_dicts: List of attachment data dictionaries.
-                - local_attachment_file_list: List of local attachment file paths.
-                - local_attachment_data_list_dicts: List of local attachment data dictionaries.
-                - media_filepaths: List of media file paths.
-        """
-        attachment_data_list_dicts = []
-        local_attachment_file_list = []
-        local_attachment_data_list_dicts = []
-        media_filepaths = []
-
-        for attm in message.attachments:
-            data = utils.attachment_to_dict(attm)
-            attachment_data_list_dicts.append(data)
-
-        return attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths
-
     async def write_attachments_to_disk(self, message: discord.Message) -> None:
         """
         Save attachments from a Discord message to disk.
 
+        This asynchronous function processes the attachments in a Discord message,
+        saves them to a temporary directory, and logs the file paths. It also handles
+        any errors that occur during the download process.
+
         Args:
-            message (discord.Message): The Discord message containing attachments.
+        ----
+            message (discord.Message): The Discord message containing attachments to be saved.
+
+        Returns:
+        -------
+            None
+
         """
         ctx = await self.get_context(message)
         attachment_data_list_dicts, local_attachment_file_list, local_attachment_data_list_dicts, media_filepaths = (
@@ -1372,41 +1178,6 @@ class SandboxAgent(DiscordClient):
             LOGGER.debug(f"{type(self).__name__} -> file_to_upload_list = {file_to_upload_list}")
             rich.print(file_to_upload_list)
             await LOGGER.complete()
-
-    async def on_message(self, message: discord.Message) -> None:
-        """
-        Handle incoming messages and process commands.
-
-        Args:
-            message (discord.Message): The incoming Discord message.
-        """
-        LOGGER.info(f"message = {message}")
-        LOGGER.info("ITS THIS ONE BOSS")
-
-        LOGGER.info(f"You are in function: {CURRENTFUNCNAME()}")
-        LOGGER.info(f"This function's caller was: {CURRENTFUNCNAME(1)}")
-
-        LOGGER.info(f"Thread message to process - {message.author}: {message.content[:50]}")
-        if message.author.bot:
-            LOGGER.info(f"Skipping message from bot itself, message.author.bot = {message.author.bot}")
-            return
-
-        if message.content.startswith("%"):
-            LOGGER.info("Skipping message that starts with %")
-            return
-
-        await self.process_attachments(message)
-        if message.content.strip() != "":
-            await self.process_commands(message)
-        await LOGGER.complete()
-
-    async def close(self) -> None:
-        """Close the bot and its associated resources."""
-        await super().close()
-
-    async def start(self) -> None:  # type: ignore
-        """Start the bot and connect to Discord."""
-        await super().start(aiosettings.discord_token.get_secret_value(), reconnect=True)
 
     @commands.command()
     async def chat(self, ctx: commands.Context, *, message: str) -> None:  # type: ignore

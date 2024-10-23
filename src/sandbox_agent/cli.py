@@ -41,7 +41,7 @@ import typer
 
 from langchain.globals import set_debug, set_verbose
 from langchain_chroma import Chroma as ChromaVectorStore
-from loguru import logger as LOGGER
+from loguru import logger
 from pinecone import ServerlessSpec
 from pinecone.core.openapi.data.model.describe_index_stats_response import DescribeIndexStatsResponse
 from pinecone.core.openapi.data.model.query_response import QueryResponse
@@ -58,12 +58,15 @@ from typer import Typer
 import sandbox_agent
 
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
+from sandbox_agent.alembic import current, downgrade, upgrade
 from sandbox_agent.asynctyper import AsyncTyper, AsyncTyperImproved
 from sandbox_agent.bot import SandboxAgent
 from sandbox_agent.bot_logger import get_logger, global_log_config
 from sandbox_agent.utils import repo_typing
 from sandbox_agent.utils.base import print_line_seperator
+from sandbox_agent.utils.collections_io import export_collection_data, import_collection_data
 from sandbox_agent.utils.file_functions import fix_path
+from sandbox_agent.utils.files_import import index_file_folder
 
 
 # SOURCE: https://python.langchain.com/v0.2/docs/how_to/debugging/
@@ -86,37 +89,6 @@ class ChromaChoices(str, Enum):
     get_response = "get_response"
 
 
-# async def async_load_commands(directory: str = "subcommands") -> None:
-#     """
-#     Asynchronously load subcommands from the specified directory.
-
-#     This function loads subcommands from the specified directory and adds them to the main Typer app.
-#     It iterates over the files in the directory, imports the modules that end with "_cmd.py", and adds
-#     their Typer app to the main app if they have one.
-
-#     Args:
-#         directory (str, optional): The directory to load subcommands from. Defaults to "subcommands".
-
-#     Returns:
-#         None
-#     """
-#     script_dir = Path(__file__).parent
-#     subcommands_dir = script_dir / directory
-
-#     LOGGER.debug(f"Loading subcommands from {subcommands_dir}")
-
-#     async for filename in aiofiles.os.scandir(subcommands_dir):
-#         if filename.name.endswith("_cmd.py"):
-#             module_name = f'{__name__.split(".")[0]}.{directory}.{filename.name[:-3]}'
-#             LOGGER.debug(f"Loading subcommand: {module_name}")
-#             spec = importlib.util.spec_from_file_location(module_name, filename.path)
-#             module = importlib.util.module_from_spec(spec)
-#             spec.loader.exec_module(module)
-#             if hasattr(module, "APP"):
-#                 LOGGER.debug(f"Adding subcommand: {filename.name[:-7]}")
-#                 APP.add_typer(module.APP, name=filename.name[:-7])
-
-
 # Load existing subcommands
 def load_commands(directory: str = "subcommands") -> None:
     """
@@ -135,16 +107,16 @@ def load_commands(directory: str = "subcommands") -> None:
     script_dir = Path(__file__).parent
     subcommands_dir = script_dir / directory
 
-    LOGGER.debug(f"Loading subcommands from {subcommands_dir}")
+    logger.debug(f"Loading subcommands from {subcommands_dir}")
 
     for filename in os.listdir(subcommands_dir):
-        LOGGER.debug(f"Filename: {filename}")
+        logger.debug(f"Filename: {filename}")
         if filename.endswith("_cmd.py"):
             module_name = f'{__name__.split(".")[0]}.{directory}.{filename[:-3]}'
-            LOGGER.debug(f"Loading subcommand: {module_name}")
+            logger.debug(f"Loading subcommand: {module_name}")
             module = import_module(module_name)
             if hasattr(module, "APP"):
-                LOGGER.debug(f"Adding subcommand: {filename[:-7]}")
+                logger.debug(f"Adding subcommand: {filename[:-7]}")
                 APP.add_typer(module.APP, name=filename[:-7])
 
 
@@ -222,7 +194,7 @@ async def run_bot():
         None
     """
 
-    LOGGER.info("Running bot")
+    logger.info("Running bot")
     try:
         async with SandboxAgent() as bot:
             # if aiosettings.enable_redis:
@@ -240,7 +212,7 @@ async def run_bot():
         if aiosettings.dev_mode:
             bpdb.pm()
 
-    await LOGGER.complete()
+    await logger.complete()
 
 
 async def run_bot_with_redis():
@@ -260,7 +232,7 @@ async def run_bot_with_redis():
     # async with SandboxAgent() as bot:
     #     await bot.start()
 
-    await LOGGER.complete()
+    await logger.complete()
 
 
 @APP.command()
@@ -284,16 +256,8 @@ def go() -> None:
     asyncio.run(run_bot())
 
 
-# @APP.command()
-# def create_token(user: str = typer.Argument("brevia"), duration: int = typer.Argument(60)) -> None:
-#     """Create an access token"""
-#     from sandbox_agent.tokens import create_token as _create_token
-#     token = _create_token(user=user, duration=duration)
-#     typer.echo(token)
-
-
 @APP.command()
-def db_current(verbose: Annotated[bool, typer.Option(help="Verbose mode")] = False) -> None:
+def db_current(verbose: Annotated[Optional[bool], typer.Option("--verbose/-v", help="Verbose mode")] = False) -> None:
     """Display current database revision.
 
     This command shows the current revision of the database.
@@ -303,13 +267,12 @@ def db_current(verbose: Annotated[bool, typer.Option(help="Verbose mode")] = Fal
         verbose (bool): If True, display additional details about the current revision.
     """
     typer.echo(f"Running db_current with verbose={verbose}")
-    from sandbox_agent.alembic import current
 
     current(verbose)
 
 
 @APP.command()
-def db_upgrade(revision: Annotated[str, typer.Argument(help="Revision target")] = "head") -> None:
+def db_upgrade(revision: Annotated[str, typer.Argument("--revision/-r", help="Revision target")] = "head") -> None:
     """Upgrade to a later database revision.
 
     This command upgrades the database to the specified revision.
@@ -319,76 +282,80 @@ def db_upgrade(revision: Annotated[str, typer.Argument(help="Revision target")] 
         revision (str): The target revision to upgrade to. Defaults to 'head'.
     """
     typer.echo(f"Running db_upgrade with revision={revision}")
-    from sandbox_agent.alembic import upgrade
 
     upgrade(revision)
 
 
-@APP.command()
-def db_downgrade(revision: Annotated[str, typer.Argument(help="Revision target")]) -> None:
-    """Revert to a previous database revision.
+# @APP.command()
+# def db_downgrade(revision: Annotated[str, typer.Argument("--revision/-r", help="Revision target")]) -> None:
+#     """Revert to a previous database revision.
 
-    This command downgrades the database to the specified revision.
+#     This command downgrades the database to the specified revision.
 
-    Args:
-        revision (str): The target revision to downgrade to.
-    """
-    typer.echo(f"Running db_downgrade with revision={revision}")
-    from sandbox_agent.alembic import downgrade
+#     Args:
+#         revision (str): The target revision to downgrade to.
+#     """
+#     typer.echo(f"Running db_downgrade with revision={revision}")
 
-    downgrade(revision)
-
-
-@APP.command()
-def export_collection(
-    folder_path: Annotated[str, typer.Argument(help="Folder output path")],
-    collection: Annotated[str, typer.Argument(help="Collection name")],
-) -> None:
-    """Export a collection to CSV postgres files.
-
-    This command exports the specified collection to CSV files in the given folder path.
-
-    Args:
-        folder_path (str): The path to the folder where the CSV files will be saved.
-        collection (str): The name of the collection to export.
-    """
-    typer.echo(f"Running export_collection with folder_path={folder_path}, collection={collection}")
-    from sandbox_agent.utils.collections_io import export_collection_data
-
-    export_collection_data(folder_path=folder_path, collection=collection)
+#     downgrade(revision)
 
 
-@APP.command()
-def import_collection(
-    folder_path: Annotated[str, typer.Argument(help="Folder input path")],
-    collection: Annotated[str, typer.Argument(help="Collection name")],
-) -> None:
-    """Import a collection from CSV postgres files.
+# @APP.command()
+# def export_collection(
+#     folder_path: Annotated[str, typer.Argument("--folder-path/-f", help="Folder output path")],
+#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
+# ) -> None:
+#     """Export a collection to CSV postgres files.
 
-    This command imports the specified collection from CSV files located in the given folder path.
+#     This command exports the specified collection to CSV files in the given folder path.
 
-    Args:
-        folder_path (str): The path to the folder containing the CSV files.
-        collection (str): The name of the collection to import.
-    """
-    typer.echo(f"Running import_collection with folder_path={folder_path}, collection={collection}")
-    from sandbox_agent.utils.collections_io import import_collection_data
+#     Args:
+#         folder_path (str): The path to the folder where the CSV files will be saved.
+#         collection (str): The name of the collection to export.
+#     """
+#     typer.echo(f"Running export_collection with folder_path={folder_path}, collection={collection}")
 
-    import_collection_data(folder_path=folder_path, collection=collection)
+#     export_collection_data(folder_path=folder_path, collection=collection)
 
 
-@APP.command()
-def import_file(
-    file_path: Annotated[str, typer.Argument(help="File or folder path")],
-    collection: Annotated[str, typer.Argument(help="Collection name")],
-    options: Annotated[str, typer.Argument(help="Loader options in JSON format")] = "",
-) -> None:
-    """Add file or folder content to collection"""
-    from sandbox_agent.ai.index import index_file_folder
+# @APP.command()
+# def import_collection(
+#     folder_path: Annotated[str, typer.Argument("--folder-path/-f", help="Folder input path")],
+#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
+# ) -> None:
+#     """Import a collection from CSV postgres files.
 
-    kwargs = {} if not options else json.loads(options)
-    num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
-    print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
+#     This command imports the specified collection from CSV files located in the given folder path.
+
+#     Args:
+#         folder_path (str): The path to the folder containing the CSV files.
+#         collection (str): The name of the collection to import.
+#     """
+#     typer.echo(f"Running import_collection with folder_path={folder_path}, collection={collection}")
+
+#     import_collection_data(folder_path=folder_path, collection=collection)
+
+
+# @APP.command()
+# def import_file(
+#     file_path: Annotated[str, typer.Argument("--file-path/-f", help="File or folder path")],
+#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
+#     options: Annotated[Optional[str], typer.Option("--options/-o", help="Loader options in JSON format")] = None,
+# ) -> None:
+#     """Add file or folder content to collection.
+
+#     This command adds the content of a file or folder to the specified collection.
+
+#     Args:
+#         file_path (str): The path to the file or folder.
+#         collection (str): The name of the collection to update.
+#         options (str): Loader options in JSON format.
+#     """
+#     typer.echo(f"Running import_file with file_path={file_path}, collection={collection}, options={options}")
+
+#     kwargs = {} if not options else json.loads(options)
+#     num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
+#     print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
 
 
 def handle_sigterm(signo, frame):  # noqa: ARG001: unused argument

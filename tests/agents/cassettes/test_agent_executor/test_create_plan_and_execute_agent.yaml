@@ -16,7 +16,7 @@ interactions:
     uri: https://api.smith.langchain.com/info
   response:
     body:
-      string: '{"version":"0.7.60","license_expiration_time":null,"batch_ingest_config":{"use_multipart_endpoint":true,"scale_up_qsize_trigger":1000,"scale_up_nthreads_limit":16,"scale_down_nempty_trigger":4,"size_limit":100,"size_limit_bytes":20971520},"instance_flags":{"generate_ai_query_enabled":true,"org_creation_disabled":false,"show_ttl_ui":true,"trace_tier_duration_days":{"longlived":400,"shortlived":14},"search_enabled":true,"workspace_scope_org_invites":false,"s3_storage_enabled":true}}'
+      string: '{"version":"0.8.6","license_expiration_time":null,"batch_ingest_config":{"use_multipart_endpoint":true,"scale_up_qsize_trigger":1000,"scale_up_nthreads_limit":16,"scale_down_nempty_trigger":4,"size_limit":100,"size_limit_bytes":20971520},"instance_flags":{"generate_ai_query_enabled":true,"org_creation_disabled":false,"show_ttl_ui":true,"trace_tier_duration_days":{"longlived":400,"shortlived":14},"search_enabled":true,"workspace_scope_org_invites":false,"s3_storage_enabled":true}}'
     headers:
       Access-Control-Allow-Credentials:
       - 'true'
@@ -33,7 +33,7 @@ interactions:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Content-Length:
-      - '485'
+      - '484'
       Via:
       - 1.1 google
       cache-control:
@@ -41,7 +41,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 15 Oct 2024 23:13:30 GMT
+      - Wed, 23 Oct 2024 17:05:13 GMT
       server:
       - uvicorn
     status:
@@ -90,7 +90,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Tue, 15 Oct 2024 23:13:29 GMT
+      - Wed, 23 Oct 2024 17:05:13 GMT
       server:
       - uvicorn
     status:

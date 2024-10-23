@@ -355,3 +355,4 @@ typingcov_txt
 notebooks/travel2.backup.sqlite
 notebooks/travel2.sqlite
 !src/sandbox_agent/vendored/dpytest
+.env.langraph

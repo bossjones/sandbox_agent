@@ -1,0 +1,8 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./src/sandbox_agent/ai/workflows/basic.py:graph"
+  },
+  "env": "./.env.langraph",
+  "python_version": "3.11"
+}

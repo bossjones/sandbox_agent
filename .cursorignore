@@ -356,4 +356,6 @@ notebooks/travel2.backup.sqlite
 notebooks/travel2.sqlite
 !src/sandbox_agent/vendored/dpytest
 !src/sandbox_agent/vendored/langgraph
+!src/sandbox_agent/vendored/goob_ai
+!src/sandbox_agent/vendored/brevia
 .env.langraph

@@ -589,6 +589,47 @@ class AioSettings(BaseSettings):
     llm_key_value_stores_type: str = Field(
         env="LLM_KEY_VALUE_STORES_TYPE", description="Key-value stores type", default="redis"
     )
+    # Variables for Postgres/pgvector
+    pgvector_driver: str = Field(
+        env="PGVECTOR_DRIVER",
+        description="The database driver to use for pgvector (e.g., psycopg)",
+        default="psycopg",
+    )
+    pgvector_host: str = Field(
+        env="PGVECTOR_HOST",
+        description="The hostname or IP address of the pgvector database server",
+        default="localhost",
+    )
+    pgvector_port: int = Field(
+        env="PGVECTOR_PORT",
+        description="The port number of the pgvector database server",
+        default=6432,
+    )
+    pgvector_database: str = Field(
+        env="PGVECTOR_DATABASE",
+        description="The name of the pgvector database",
+        default="langchain",
+    )
+    pgvector_user: str = Field(
+        env="PGVECTOR_USER",
+        description="The username to connect to the pgvector database",
+        default="langchain",
+    )
+    pgvector_password: SecretStr = Field(
+        env="PGVECTOR_PASSWORD",
+        description="The password to connect to the pgvector database",
+        default="langchain",
+    )
+    pgvector_pool_size: int = Field(
+        env="PGVECTOR_POOL_SIZE",
+        description="The size of the connection pool for the pgvector database",
+        default=10,
+    )
+    pgvector_dsn_uri: str = Field(
+        env="PGVECTOR_DSN_URI",
+        description="optional DSN URI, if set other pgvector_* settings are ignored",
+        default="",
+    )
 
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
@@ -711,7 +752,7 @@ class AioSettings(BaseSettings):
 
     llm_memory_type: str = Field(env="LLM_MEMORY_TYPE", description="Type of memory to use", default="memorysaver")
     llm_memory_enabled: bool = Field(env="LLM_MEMORY_ENABLED", description="Enable memory", default=True)
-
+    llm_human_loop_enabled: bool = Field(env="LLM_HUMAN_LOOP_ENABLED", description="Enable human loop", default=False)
     # Tool allowlist
     tool_allowlist: list[str] = ["tavily_search", "magic_function"]
 

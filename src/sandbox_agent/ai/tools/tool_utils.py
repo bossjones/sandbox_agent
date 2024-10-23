@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from typing import Optional
+
+from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 
 

@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 
 from collections.abc import Sequence
-from typing import Annotated, Any, List, Literal, TypedDict, Union
+from typing import Annotated, Any, Dict, List, Literal, TypedDict, Union
 
 import pysnooper
 
@@ -37,7 +37,7 @@ from loguru import logger
 from sandbox_agent.agents.agent_executor import AgentExecutorFactory
 from sandbox_agent.ai.graph import Act, Plan, PlanExecute, Response
 from sandbox_agent.aio_settings import aiosettings
-from sandbox_agent.factories import ChatModelFactory, ToolFactory
+from sandbox_agent.factories import ChatModelFactory, MemoryFactory, ToolFactory
 
 
 class AgentState(TypedDict):
@@ -70,6 +70,7 @@ class State(TypedDict):
 model = ChatModelFactory.create()
 tools = ToolFactory.create_tools()
 model = model.bind_tools(tools)
+memory = MemoryFactory.create()
 
 
 """
@@ -84,7 +85,22 @@ tools_by_name = {tool.name: tool for tool in tools}
 
 
 # Define our tool node
-def tool_node(state: AgentState):
+def tool_node(state: AgentState) -> dict[str, list[ToolMessage]]:
+    """
+    Execute the tools specified in the agent's last message.
+
+    This function processes the tool calls from the last message in the agent's state,
+    invokes the corresponding tools, and generates ToolMessage responses.
+
+    Args:
+    ----
+        state (AgentState): The current state of the agent, containing messages and tool calls.
+
+    Returns:
+    -------
+        Dict[str, List[ToolMessage]]: A dictionary with a 'messages' key containing a list of ToolMessages
+        representing the results of the tool executions.
+    """
     outputs = []
     for tool_call in state["messages"][-1].tool_calls:
         tool_result = tools_by_name[tool_call["name"]].invoke(tool_call["args"])  # type: ignore
@@ -102,18 +118,52 @@ def tool_node(state: AgentState):
 def call_model(
     state: AgentState,
     config: RunnableConfig,
-):
-    # this is similar to customizing the create_react_agent with state_modifier, but is a lot more flexible
+) -> dict[str, list[BaseMessage]]:
+    """
+    Generate a response using the language model based on the current agent state.
+
+    This function adds a system prompt to the existing messages and invokes the language model
+    to generate a response.
+
+    Args:
+    ----
+        state (AgentState): The current state of the agent, containing previous messages.
+        config (RunnableConfig): Configuration for the model invocation.
+
+    Returns:
+    -------
+        Dict[str, List[BaseMessage]]: A dictionary with a 'messages' key containing a list
+        with the model's response message.
+    """
     system_prompt = SystemMessage(
         "You are a helpful AI assistant, please respond to the users query to the best of your ability!"
     )
     response = model.invoke([system_prompt] + state["messages"], config)
-    # We return a list, because this will get added to the existing list
     return {"messages": [response]}
 
 
 # Define the conditional edge that determines whether to continue or not
-def should_continue(state: AgentState):
+def should_continue(state: AgentState) -> Literal["end", "continue"]:
+    """
+    Determine whether the agent should continue processing or end the conversation.
+
+    This function checks the last message in the agent's state for tool calls.
+    If there are tool calls, it indicates that the conversation should continue.
+    Otherwise, it signals that the conversation should end.
+
+    Args:
+    ----
+        state (AgentState): The current state of the agent, containing messages.
+
+    Returns:
+    -------
+        Literal["end", "continue"]: "continue" if there are tool calls in the last message,
+        "end" otherwise.
+    """
+    # messages = state["messages"]
+    # last_message = messages[-1]
+    # return "continue" if last_message.tool_calls else "end"
+
     messages = state["messages"]
     last_message = messages[-1]
     # If there is no function call, then we finish
@@ -160,35 +210,41 @@ workflow.add_conditional_edges(
 # This means that after `tools` is called, `agent` node is called next.
 workflow.add_edge("tools", "agent")
 
-# Now we can compile and visualize our graph
-graph = workflow.compile()
+
+# Define a function to build the compile arguments
+def build_compile_args() -> dict[str, Any]:
+    """
+    Build the compile arguments for the workflow graph.
+
+    This function constructs a dictionary of arguments to be passed to the `workflow.compile()`
+    method. The arguments include:
+
+    - `checkpointer`: An instance of `MemorySaver` if `aiosettings.llm_memory_enabled` is True.
+    - `interrupt_before`: A list of node names before which the execution should be interrupted
+      to allow for human input. In this case, it is set to `["tools"]` if
+      `aiosettings.llm_human_loop_enabled` is True.
+    - `interrupt_after`: A list of node names after which the execution should be interrupted
+      to allow for human input. This is currently commented out, but you can uncomment the line
+      if you want to interrupt after the "tools" node as well.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing the compile arguments.
+    """
+    compile_args = {}
+
+    if aiosettings.llm_memory_enabled:
+        logger.info("Adding checkpointer to compile args")
+        compile_args["checkpointer"] = memory
+
+    if aiosettings.llm_human_loop_enabled:
+        logger.info("Adding interrupt_before to compile args")
+        compile_args["interrupt_before"] = ["tools"]
+        # Uncomment the following line if you want to interrupt after tools as well
+        # compile_args["interrupt_after"] = ["tools"]
+
+    logger.info(f"Compile args: {compile_args}")
+    return compile_args
 
 
-# # Initialize the StateGraph
-# # The first thing you do when you define a graph is define the State of the graph. The State consists of the schema of the graph as well as reducer functions which specify how to apply updates to the state. In our example State is a TypedDict with a single key: messages. The messages key is annotated with the add_messages reducer function, which tells LangGraph to append new messages to the existing list, rather than overwriting it. State keys without an annotation will be overwritten by each update, storing the most recent value. Check out this conceptual guide to learn more about state, reducers and other low-level concepts.
-# graph_builder: StateGraph = StateGraph(State)
-
-# # Create the agent executor
-# llm = AgentExecutorFactory.create_plan_and_execute_agent()
-
-# def chatbot(state: State) -> dict:
-#     """
-#     Process the current state and generate a response using the LLM.
-
-#     Args:
-#     ----
-#     state : State
-#         The current state of the conversation.
-
-#     Returns:
-#     -------
-#     dict
-#         A dictionary containing the LLM's response message.
-#     """
-#     return {"messages": [llm.invoke(state["messages"])]}
-
-# # Add the chatbot node to the graph
-# # The first argument is the unique node name
-# # The second argument is the function or object that will be called whenever
-# # the node is used.
-# graph_builder.add_node("chatbot", chatbot)
+# Now we can compile the graph with conditional arguments
+graph = workflow.compile(**build_compile_args())

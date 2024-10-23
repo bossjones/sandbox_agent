@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from langgraph.checkpoint.memory import MemorySaver
+from loguru import logger
 
 from sandbox_agent.aio_settings import aiosettings
 
@@ -26,6 +27,7 @@ class MemoryFactory:
             ValueError: If an unsupported memory type is provided.
         """
         if memory_type == "memorysaver":
+            logger.info("Creating instance of       MemorySaver")
             return MemorySaver()
         # elif memory_type == "redis":
         #     return RedisChatMessageHistory()

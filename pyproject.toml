@@ -13,7 +13,6 @@ dependencies = [
     "langchain-google-genai>=1.0.6",
     "langchain-groq>=0.1.6",
     "langchain-openai>=0.1.23",
-    "langchain-postgres>=0.0.9",
     "langchain>=0.2.15",
     "langchainhub>=0.1.20",
     "langgraph>=0.2.38",
@@ -142,11 +141,14 @@ dependencies = [
     "faiss-cpu>=1.8.0.post1",
     "duckdb>=1.0.0",
     "asyncpg>=0.29.0",
-    "psycopg2-binary>=2.9.9",
+    "psycopg2-binary>=2.9.10",
     "aider-chat>=0.59.1",
     "pur>=7.3.2",
     "tavily-python>=0.5.0",
     "langgraph-checkpoint-postgres>=2.0.1",
+    "pgvector>=0.3.5",
+    "alembic>=1.13.3",
+    "sqlalchemy-utils>=0.41.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

@@ -52,6 +52,8 @@ aiosql==11.1
     # via sandbox-agent
 aiosqlite==0.20.0
     # via sandbox-agent
+alembic==1.13.3
+    # via sandbox-agent
 altair==5.4.1
     # via streamlit
 annotated-types==0.7.0
@@ -543,7 +545,6 @@ langchain-core==0.3.10
     # via langchain-google-genai
     # via langchain-groq
     # via langchain-openai
-    # via langchain-postgres
     # via langchain-text-splitters
     # via langgraph
     # via langgraph-checkpoint
@@ -554,8 +555,6 @@ langchain-google-genai==2.0.1
 langchain-groq==0.2.0
     # via sandbox-agent
 langchain-openai==0.2.2
-    # via sandbox-agent
-langchain-postgres==0.0.12
     # via sandbox-agent
 langchain-text-splitters==0.3.0
     # via langchain
@@ -600,6 +599,8 @@ lxml==5.3.0
     # via yfinance
 lz4==4.3.3
     # via pinecone-client
+mako==1.3.6
+    # via alembic
 markdown==3.7
     # via sandbox-agent
     # via tensorboard
@@ -611,6 +612,7 @@ markdown2==2.5.0
 markupsafe==2.1.5
     # via aider-chat
     # via jinja2
+    # via mako
     # via nbconvert
     # via werkzeug
 marshmallow==3.22.0
@@ -695,7 +697,6 @@ numpy==1.26.4
     # via langchain
     # via langchain-chroma
     # via langchain-community
-    # via langchain-postgres
     # via matplotlib
     # via moviepy
     # via onnxruntime
@@ -829,8 +830,8 @@ peewee==3.17.6
 pexpect==4.9.0
     # via aider-chat
     # via ipython
-pgvector==0.2.5
-    # via langchain-postgres
+pgvector==0.3.5
+    # via sandbox-agent
 pickledb==0.9.2
     # via sandbox-agent
 pillow==10.4.0
@@ -900,12 +901,10 @@ psutil==6.0.0
     # via memory-profiler
     # via wandb
 psycopg==3.2.1
-    # via langchain-postgres
     # via langgraph-checkpoint-postgres
 psycopg-pool==3.2.2
-    # via langchain-postgres
     # via langgraph-checkpoint-postgres
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.10
     # via sandbox-agent
 ptyprocess==0.7.0
     # via aider-chat
@@ -1232,9 +1231,12 @@ soupsieve==2.6
     # via beautifulsoup4
     # via sandbox-agent
 sqlalchemy==2.0.32
+    # via alembic
     # via langchain
     # via langchain-community
-    # via langchain-postgres
+    # via sqlalchemy-utils
+sqlalchemy-utils==0.41.2
+    # via sandbox-agent
 sse-starlette==1.8.2
     # via langserve
 stack-data==0.6.3
@@ -1384,6 +1386,7 @@ typing-extensions==4.12.2
     # via aiodebug
     # via aiomonitor
     # via aiosqlite
+    # via alembic
     # via altair
     # via anthropic
     # via bump-pydantic

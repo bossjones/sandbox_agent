@@ -19,7 +19,6 @@ import pytest
 
 from sandbox_agent.bot import SandboxAgent
 from sandbox_agent.utils.file_operations import create_temp_directory, download_image
-from sandbox_agent.vendored.dpytest.tests.conftest import bot
 
 
 if TYPE_CHECKING:
@@ -29,16 +28,6 @@ if TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch
 
     from pytest_mock.plugin import MockerFixture
-
-
-# class Misc(Cog):
-#     @command()
-#     async def ping(self, ctx):
-#         await ctx.send("Pong !")
-
-#     @command()
-#     async def echo(self, ctx, text: str):
-#         await ctx.send(text)
 
 
 @pytest_asyncio.fixture
@@ -59,9 +48,6 @@ async def mockbot(request: pytest.FixtureRequest) -> AsyncGenerator[SandboxAgent
     if mark is not None:
         for extension in mark.args:
             await test_bot.load_extension("tests.internal." + extension)
-
-    # await test_bot._async_setup_hook()  # type: ignore # setup the loop
-    # await test_bot.add_cog(Misc())
 
     dpytest.configure(test_bot)
 
@@ -159,30 +145,6 @@ async def test_verify_file_jpg(mockbot: SandboxAgent):
     file_ = discord.File(path_)
     await channel.send(file=file_)
     assert dpytest.verify().message().attachment(path_)
-
-
-# @pytest.mark.asyncio
-# async def test_check_for_attachments_attached_image(mockbot: SandboxAgent, mocker: MockerFixture):
-#     """
-#     Test the check_for_attachments method with an attached image.
-
-#     This test verifies that the method correctly identifies and processes an attached image.
-
-#     Args:
-#         sandbox_agent (SandboxAgent): The SandboxAgent instance.
-#         mocker (MockerFixture): The pytest-mock fixture for mocking.
-#     """
-#     message = mocker.MagicMock(spec=Message)
-#     message.content = "Check out this image"
-#     attachment = mocker.MagicMock(spec=Attachment)
-#     attachment.url = "http://example.com/attached_image.jpg"
-#     message.attachments = [attachment]
-
-#     mock_process_image = mocker.patch.object(mockbot, "process_image")
-#     result = await mockbot.check_for_attachments(message)
-
-#     assert result == "Check out this image"
-#     mock_process_image.assert_called_once_with("http://example.com/attached_image.jpg")
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")

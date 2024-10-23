@@ -285,7 +285,7 @@ aider:
 	aider -c .aider.conf.yml --aiderignore .aiderignore
 
 aider-claude:
-	aider -c .aider.conf.yml --aiderignore .aiderignore --model 'claude-3-5-sonnet-20240620'
+	aider -c .aider.conf.yml --aiderignore .aiderignore --model 'anthropic/claude-3-5-sonnet-20241022'
 
 pur:
 	cp -a .github/dependabot/requirements-dev.txt pur.before.txt
@@ -315,3 +315,23 @@ regenerate-cassettes: local-regenerate-cassettes
 # This applies the ruff fixer to the target file and shows the fixes using a more aggressive formatter.
 superfmt target:
 	rye run ruff check --fix --show-fixes --select "E4,E7,E9,F,B,I,D,ERA" --fixable=ALL --unfixable="B003" --config=pyproject.toml {{ target }}
+
+update-crucial-deps:
+	rye lock --update aider-chat --all-features
+	rye lock --update langchain-core --all-features
+	rye lock --update langchain-community --all-features
+	rye lock --update langgraph --all-features
+	rye lock --update langsmith --all-features
+	rye lock --update langsmith-community --all-features
+	rye lock --update langsmith-core --all-features
+	rye lock --update langsmith-server --all-features
+	rye lock --update langchain-anthropic --all-features
+	rye lock --update langchain-chroma --all-features
+	rye lock --update langchain-google-genai --all-features
+	rye lock --update langchain-groq --all-features
+	rye lock --update langchain-openai --all-features
+	rye lock --update langchain-postgres --all-features
+	rye lock --update langchain --all-features
+	rye lock --update langchainhub --all-features
+	rye lock --update 'langserve[all]' --all-features
+	rye sync --all-features

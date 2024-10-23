@@ -11,7 +11,7 @@
 
 absl-py==2.1.0
     # via tensorboard
-aider-chat==0.59.1
+aider-chat==0.60.0
     # via sandbox-agent
 aiocache==0.12.2
     # via sandbox-agent

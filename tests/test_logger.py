@@ -61,20 +61,20 @@ from src.sandbox_agent.bot_logger import (
 #     logging.getLogger().handlers = []
 
 
-# def test_global_log_config(capsys, caplog):
-#     """
-#     Test the global_log_config function to ensure it sets up the logger correctly.
+def test_global_log_config(capsys, caplog):
+    """
+    Test the global_log_config function to ensure it sets up the logger correctly.
 
-#     Args:
-#         capsys: Pytest fixture to capture stdout and stderr.
+    Args:
+        capsys: Pytest fixture to capture stdout and stderr.
 
-#     Asserts:
-#         The logger is set up with the correct log level.
-#     """
-#     global_log_config(log_level=logging.INFO, json=False)
-#     logger.info("Testing global log config.")
-#     captured = capsys.readouterr()
-#     assert "Logger set up with log level: 20" in captured.out
+    Asserts:
+        The logger is set up with the correct log level.
+    """
+    global_log_config(log_level=logging.INFO, json=False)
+    logger.info("Testing global log config.")
+    captured = capsys.readouterr()
+    assert "Logger set up with log level: 20" in captured.out
 
 
 # def test_reset_logging(setup_logging, tmp_path):

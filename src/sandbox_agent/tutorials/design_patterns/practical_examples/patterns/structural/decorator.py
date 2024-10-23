@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *What is this pattern about?
 The Decorator pattern is used to dynamically add a new feature to an

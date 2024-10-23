@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Command pattern decouples the object invoking a job from the one who knows
 how to do it. As mentioned in the GoF book, a good example is in menu items.

@@ -167,7 +167,7 @@ def build_workflow() -> CompiledStateGraph:
     return workflow
 
 
-def get_graph() -> CompiledStateGraph:
+def build_compiled_workflow() -> CompiledStateGraph:
     """
     Get the compiled state graph for the workflow.
 
@@ -198,7 +198,7 @@ class WorkflowFactory:
         agent_type = aiosettings.agent_type
 
         if agent_type == "plan_and_execute":
-            return get_graph()
+            return build_compiled_workflow()
         # Add more agent types and their corresponding workflows as needed
         else:
             raise ValueError(f"Unsupported agent type: {agent_type}")

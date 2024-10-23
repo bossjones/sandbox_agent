@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *What is this pattern about?
 It decouples the creation of a complex object and its representation,

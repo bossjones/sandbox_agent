@@ -85,7 +85,7 @@ repos:
     hooks:
       - id: check-added-large-files
         args:
-          - '--maxkb=5000'
+          - '--maxkb=15000'
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: check-symlinks

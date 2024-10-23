@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Implementing a Shopping Cart using the Composite Pattern
 

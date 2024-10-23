@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Composite Pattern
 

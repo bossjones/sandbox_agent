@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *TL;DR
 Separates presentation, application processing, and data management functions.

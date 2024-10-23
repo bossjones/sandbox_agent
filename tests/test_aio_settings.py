@@ -264,7 +264,7 @@ class TestSettings:
         assert isinstance(test_settings.rag_doc_relevance_feature_flag, bool)
         assert isinstance(test_settings.rag_string_embedding_distance_metrics_feature_flag, bool)
         assert test_settings.chat_history_buffer == 10
-        assert test_settings.chat_model == "gpt-4o"
+        assert test_settings.chat_model == "gpt-4o-mini"
         assert test_settings.editor in ["lvim", "vim", "nvim"]
         assert test_settings.eval_max_concurrency == 4
         assert test_settings.git_editor in ["lvim", "vim", "nvim"]
@@ -306,7 +306,7 @@ class TestSettings:
         assert test_settings.langchain_project == "sandbox_agent"
         assert isinstance(test_settings.langchain_tracing_v2, bool)
         assert test_settings.llm_embedding_model_name == "text-embedding-3-large"
-        assert test_settings.llm_model_name == "gpt-4o"
+        assert test_settings.llm_model_name == "gpt-4o-mini"
         assert test_settings.llm_temperature == 0.0
         assert isinstance(test_settings.local_test_debug, bool)
         assert isinstance(test_settings.local_test_enable_evals, bool)

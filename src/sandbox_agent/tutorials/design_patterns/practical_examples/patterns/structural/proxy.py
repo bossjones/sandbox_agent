@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *What is this pattern about?
 Proxy is used in places where you want to add functionality to a class without

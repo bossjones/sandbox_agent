@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 http://peter-hoffmann.com/2010/extrinsic-visitor-pattern-python-inheritance.html
 

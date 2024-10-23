@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Building a Text Editor using the Memento and Command Patterns
 

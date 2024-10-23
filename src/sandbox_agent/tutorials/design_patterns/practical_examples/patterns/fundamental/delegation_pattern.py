@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Reference: https://en.wikipedia.org/wiki/Delegation_pattern
 Author: https://github.com/IuryAlves

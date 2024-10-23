@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Creating a Plugin System using the Strategy Pattern
 

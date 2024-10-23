@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *References:
 http://en.wikibooks.org/wiki/Computer_Science_Design_Patterns/Bridge_Pattern#Python

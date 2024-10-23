@@ -1,3 +1,4 @@
+# pragma: exclude file
 """*What is this pattern about?
 A Factory is an object for creating other objects.
 

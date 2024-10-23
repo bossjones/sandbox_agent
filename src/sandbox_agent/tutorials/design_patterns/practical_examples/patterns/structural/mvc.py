@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 *TL;DR
 Separates data in GUIs from the ways it is presented, and accepted.

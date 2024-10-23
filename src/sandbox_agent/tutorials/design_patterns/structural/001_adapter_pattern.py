@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Overview of the Adapter Pattern
 

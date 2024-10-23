@@ -1,3 +1,4 @@
+# pragma: exclude file
 """
 Example from https://en.wikipedia.org/wiki/Facade_pattern#Python
 

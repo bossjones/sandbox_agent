@@ -341,3 +341,5 @@ src/sandbox_agent/data/chroma/vectorstorage/
 notebooks/travel2.backup.sqlite
 notebooks/travel2.sqlite
 .env.langraph
+!src/sandbox_agent/vendored/langgraph
+!src/sandbox_agent/vendored/dpytest

@@ -203,6 +203,7 @@ click==8.1.7
     # via maison
     # via mkdocs
     # via mkdocstrings
+    # via nltk
     # via pur
     # via pyinspect
     # via rich-click
@@ -551,6 +552,7 @@ jiter==0.5.0
     # via anthropic
     # via openai
 joblib==1.4.2
+    # via nltk
     # via scikit-learn
 jq==1.8.0
     # via sandbox-agent
@@ -644,6 +646,7 @@ langchain-openai==0.2.2
     # via sandbox-agent
 langchain-text-splitters==0.3.0
     # via langchain
+    # via sandbox-agent
 langchainhub==0.1.21
     # via sandbox-agent
 langgraph==0.2.38
@@ -869,6 +872,8 @@ nest-asyncio==1.6.0
 networkx==3.2.1
     # via aider-chat
     # via torch
+nltk==3.9.1
+    # via sandbox-agent
 nodeenv==1.9.1
     # via pre-commit
     # via pyright
@@ -1381,6 +1386,7 @@ referencing==0.35.1
 regex==2024.9.11
     # via aider-chat
     # via mkdocs-material
+    # via nltk
     # via simpletransformers
     # via tiktoken
     # via transformers
@@ -1661,6 +1667,7 @@ tqdm==4.66.5
     # via google-generativeai
     # via huggingface-hub
     # via moviepy
+    # via nltk
     # via openai
     # via pinecone-client
     # via proglog

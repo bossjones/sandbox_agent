@@ -1,9 +1,11 @@
-"""sandbox_agent.types"""
 # INSPIRATION  from https://github.com/RobertCraigie/prisma-client-py/blob/da53c4280756f1a9bddc3407aa3b5f296aa8cc10/src/prisma/_types.py
 # pyright: reportMissingImports=false
 # pyright: reportUnusedVariable=warning
 # pyright: reportUntypedBaseClass=error
 # pyright: reportGeneralTypeIssues=false
+
+
+"""sandbox_agent.types"""
 
 from __future__ import annotations
 
@@ -11,8 +13,26 @@ import pathlib
 
 from collections.abc import Coroutine, Mapping
 from collections.abc import Sequence as Seq
+from importlib import import_module
 from types import TracebackType
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, NewType, Tuple, Type, TypeAlias, TypedDict, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    List,
+    Literal,
+    NewType,
+    Protocol,
+    Tuple,
+    Type,
+    TypeAlias,
+    TypedDict,
+    TypeGuard,
+    TypeVar,
+    Union,
+    get_args,
+)
 from typing import runtime_checkable as runtime_checkable
 
 import httpx
@@ -20,12 +40,6 @@ import numpy as np
 
 from langchain_core.prompts.chat import BaseChatPromptTemplate, BaseMessage, BaseMessagePromptTemplate
 from pydantic import BaseModel, Field
-from typing_extensions import Literal as Literal
-from typing_extensions import NewType
-from typing_extensions import Protocol as Protocol
-from typing_extensions import TypedDict as TypedDict
-from typing_extensions import TypeGuard as TypeGuard
-from typing_extensions import get_args as get_args
 
 
 if TYPE_CHECKING:
@@ -262,3 +276,16 @@ MessageLikeRepresentation = Union[
     ],
     str,
 ]
+
+
+def load_type(name: str, parent_type: type | None = None) -> type:
+    """Return a type from a string with a python module path"""
+    module_name, class_name = name.rsplit(".", 1)
+    module = import_module(module_name)
+    if not hasattr(module, class_name):
+        raise ValueError(f'Class "{class_name}" not found in "{module}"')
+    new_class = getattr(module, class_name)
+    if parent_type and not issubclass(new_class, parent_type):
+        raise ValueError(f'Class "{class_name}" must extend "{parent_type}"')
+
+    return new_class

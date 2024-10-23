@@ -1,8 +1,10 @@
 """DB migrations commands """
+from __future__ import annotations
+
 from os import getcwd
 
-from alembic.config import Config
 from alembic import command
+from alembic.config import Config
 
 
 ALEMBIC_CFG = Config(f'{getcwd()}/alembic.ini')

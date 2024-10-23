@@ -151,6 +151,8 @@ dependencies = [
     "sqlalchemy-utils>=0.41.2",
     "langgraph-checkpoint-sqlite>=2.0.0",
     "langgraph-sdk>=0.1.33",
+    "nltk>=3.9.1",
+    "langchain-text-splitters>=0.3.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -275,6 +277,13 @@ packages = ["src/sandbox_agent"]
 ############ - new - ############
 
 [tool.rye.scripts]
+create_token = {call = "sandbox_agent.cli:create_token"}
+db_current = {call = "sandbox_agent.cli:db_current"}
+db_upgrade = {call = "sandbox_agent.cli:db_upgrade"}
+db_downgrade = {call = "sandbox_agent.cli:db_downgrade"}
+export_collection = {call = "sandbox_agent.cli:export_collection"}
+import_collection = {call = "sandbox_agent.cli:import_collection"}
+import_file = {call = "sandbox_agent.cli:import_file"}
 lint-markdown = "pymarkdownlnt --disable-rules=MD013,MD034 scan README.md"
 serve-docs = "mkdocs serve"
 pylint-to-ruff = "pylint-to-ruff"
@@ -542,6 +551,7 @@ log_file_level = "DEBUG"
 # markers=["basic", "filetree", "suites", "markers", "parametrization", "buildmeta"]
 # allows you to conditionally call only a subset of pytest baased on the marker provided
 markers = [
+    "cogs: marks tests that run code that utilizes the cogs module (deselect with '-m \"not cogs\"')",
     "configonly: marks tests that run code that utilizes the config module (deselect with '-m \"not configonly\"')",
     "e2e: marks tests dealing with e2e testing (deselect with '-m \"not e2e\"')",
     "evals: marks tests as evals (run with '-m evals')",

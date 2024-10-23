@@ -5,8 +5,11 @@ Revises: be67c72a4e5a
 Create Date: 2023-08-08 12:52:50.336008
 
 """
-from alembic import op
+from __future__ import annotations
+
 import sqlalchemy as sa
+
+from alembic import op
 
 
 # revision identifiers, used by Alembic.

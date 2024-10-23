@@ -284,6 +284,113 @@ def go() -> None:
     asyncio.run(run_bot())
 
 
+# @APP.command()
+# def create_token(user: str = typer.Argument("brevia"), duration: int = typer.Argument(60)) -> None:
+#     """Create an access token"""
+#     from sandbox_agent.tokens import create_token as _create_token
+#     token = _create_token(user=user, duration=duration)
+#     typer.echo(token)
+
+
+@APP.command()
+def db_current(verbose: Annotated[bool, typer.Option(help="Verbose mode")] = False) -> None:
+    """Display current database revision.
+
+    This command shows the current revision of the database.
+    If the verbose option is enabled, additional details about the revision are displayed.
+
+    Args:
+        verbose (bool): If True, display additional details about the current revision.
+    """
+    typer.echo(f"Running db_current with verbose={verbose}")
+    from sandbox_agent.alembic import current
+
+    current(verbose)
+
+
+@APP.command()
+def db_upgrade(revision: Annotated[str, typer.Argument(help="Revision target")] = "head") -> None:
+    """Upgrade to a later database revision.
+
+    This command upgrades the database to the specified revision.
+    By default, it upgrades to the latest revision ('head').
+
+    Args:
+        revision (str): The target revision to upgrade to. Defaults to 'head'.
+    """
+    typer.echo(f"Running db_upgrade with revision={revision}")
+    from sandbox_agent.alembic import upgrade
+
+    upgrade(revision)
+
+
+@APP.command()
+def db_downgrade(revision: Annotated[str, typer.Argument(help="Revision target")]) -> None:
+    """Revert to a previous database revision.
+
+    This command downgrades the database to the specified revision.
+
+    Args:
+        revision (str): The target revision to downgrade to.
+    """
+    typer.echo(f"Running db_downgrade with revision={revision}")
+    from sandbox_agent.alembic import downgrade
+
+    downgrade(revision)
+
+
+@APP.command()
+def export_collection(
+    folder_path: Annotated[str, typer.Argument(help="Folder output path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+) -> None:
+    """Export a collection to CSV postgres files.
+
+    This command exports the specified collection to CSV files in the given folder path.
+
+    Args:
+        folder_path (str): The path to the folder where the CSV files will be saved.
+        collection (str): The name of the collection to export.
+    """
+    typer.echo(f"Running export_collection with folder_path={folder_path}, collection={collection}")
+    from sandbox_agent.utils.collections_io import export_collection_data
+
+    export_collection_data(folder_path=folder_path, collection=collection)
+
+
+@APP.command()
+def import_collection(
+    folder_path: Annotated[str, typer.Argument(help="Folder input path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+) -> None:
+    """Import a collection from CSV postgres files.
+
+    This command imports the specified collection from CSV files located in the given folder path.
+
+    Args:
+        folder_path (str): The path to the folder containing the CSV files.
+        collection (str): The name of the collection to import.
+    """
+    typer.echo(f"Running import_collection with folder_path={folder_path}, collection={collection}")
+    from sandbox_agent.utils.collections_io import import_collection_data
+
+    import_collection_data(folder_path=folder_path, collection=collection)
+
+
+@APP.command()
+def import_file(
+    file_path: Annotated[str, typer.Argument(help="File or folder path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+    options: Annotated[str, typer.Argument(help="Loader options in JSON format")] = "",
+) -> None:
+    """Add file or folder content to collection"""
+    from sandbox_agent.ai.index import index_file_folder
+
+    kwargs = {} if not options else json.loads(options)
+    num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
+    print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
+
+
 def handle_sigterm(signo, frame):  # noqa: ARG001: unused argument
     sys.exit(128 + signo)  # this will raise SystemExit and cause atexit to be called
 

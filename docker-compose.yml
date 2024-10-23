@@ -11,26 +11,38 @@ networks:
     driver: bridge
 services:
 # docker run --name pgvector-container -e POSTGRES_USER=langchain -e POSTGRES_PASSWORD=langchain -e POSTGRES_DB=langchain -p 6024:5432 -d pgvector/pgvector:pg16
-  db:
-    image: pgvector/pgvector:pg14
-    container_name: pgvector
+  pgdatabase:
+    image: pgvector/pgvector:0.7.4-pg16
+    container_name: pgvector16
     ports:
       - 7432:5432
     volumes:
       # This script initialises the DB for integration tests
-      - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
-      - db:/var/lib/postgresql/data
+      # - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=langchain
       - POSTGRES_USER=langchain
       - POSTGRES_DB=langchain
 
     restart: unless-stopped
-    # logging: *logging
+
     networks:
       - net
     command: |
       postgres -c log_statement=all
+
+  pgadmin:
+    image: dpage/pgadmin4
+    profiles:
+      - "admin"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-4000}:80"
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
 
   server:
     # image: server
@@ -123,4 +135,11 @@ services:
 volumes:
   goob_redis_data:
     driver: local
-  db:
+  pgdata:
+    name: ${PGVECTOR_VOLUME_NAME:-pgdata}
+  pgadmindata:
+    name: ${PGADMIN_VOLUME_NAME:-pgadmindata}
+  # breviaappdata:
+  #   name: ${BREVIA_APP_VOLUME_NAME:-breviaapp}
+  # breviaapidata:
+  #   name: ${BREVIA_API_VOLUME_NAME:-breviaapi}

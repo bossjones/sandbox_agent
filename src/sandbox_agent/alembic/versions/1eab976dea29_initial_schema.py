@@ -5,10 +5,15 @@ Revises:
 Create Date: 2023-08-02 19:05:29.656326
 
 """
-from alembic import op
-import sqlalchemy as sa
-from pgvector.sqlalchemy import Vector
+from __future__ import annotations
+
 import uuid
+
+import sqlalchemy as sa
+
+from alembic import op
+from pgvector.sqlalchemy import Vector
+
 
 # revision identifiers, used by Alembic.
 revision = '1eab976dea29'

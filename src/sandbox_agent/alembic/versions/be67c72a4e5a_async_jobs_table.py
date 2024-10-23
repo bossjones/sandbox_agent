@@ -5,9 +5,14 @@ Revises: 1eab976dea29
 Create Date: 2023-08-03 17:02:05.940720
 
 """
-from alembic import op
-import sqlalchemy as sa
+from __future__ import annotations
+
 import uuid
+
+import sqlalchemy as sa
+
+from alembic import op
+
 
 # revision identifiers, used by Alembic.
 revision = 'be67c72a4e5a'

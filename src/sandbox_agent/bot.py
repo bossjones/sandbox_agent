@@ -545,7 +545,7 @@ class SandboxAgent(DiscordClient):
 
         This function constructs the input dictionary to be sent to the agent based on the
         provided Discord message, user's real name, and surface information. It includes
-        the message content, user name, and any attachments if present.
+        the message content, user_name, and any attachments if present.
 
         Args:
         ----
@@ -560,10 +560,10 @@ class SandboxAgent(DiscordClient):
         """
         # ctx: Context = await self.get_context(message)  # type: ignore
         if isinstance(message, discord.Thread):
-            agent_input = {"user name": user_real_name, "message": message.starter_message.content}  # pyright: ignore[reportAttributeAccessIssue]
+            agent_input = {"user_name": user_real_name, "message": message.starter_message.content}  # pyright: ignore[reportAttributeAccessIssue]
             attachments: list[discord.Attachment] = message.starter_message.attachments  # pyright: ignore[reportAttributeAccessIssue]
         elif isinstance(message, discord.Message):
-            agent_input = {"user name": user_real_name, "message": message.content}  # pyright: ignore[reportAttributeAccessIssue]
+            agent_input = {"user_name": user_real_name, "message": message.content}  # pyright: ignore[reportAttributeAccessIssue]
             attachments: list[discord.Attachment] = message.attachments  # pyright: ignore[reportAttributeAccessIssue]
 
         if len(attachments) > 0:  # pyright: ignore[reportAttributeAccessIssue]
@@ -943,7 +943,7 @@ class SandboxAgent(DiscordClient):
         # Create an instance of SurfaceInfo
         surface_info = SurfaceInfo(surface=surface_enum, type=surface_type, source=source)
 
-        agent_input = {"user name": message.author, "message": message.content, "surface_info": surface_info.__dict__}  # pyright: ignore[reportAttributeAccessIssue]
+        agent_input = {"user_name": message.author, "message": message.content, "surface_info": surface_info.__dict__}  # pyright: ignore[reportAttributeAccessIssue]
 
         # Modify the call to process_user_task to pass agent_input
         # if not is_streaming:
@@ -952,7 +952,7 @@ class SandboxAgent(DiscordClient):
         LOGGER.info(f"session_id: {session_id} thread_id: {thread_id} Agent input: {json.dumps(agent_input)}")
         try:
             # agent_response_text = await self.process_user_task(REQUEST_ID_CONTEXTVAR.get(), str(agent_input))
-            agent_response_text = await self.process_user_task(session_id, str(agent_input), thread_id)
+            agent_response_text = await self.process_user_task(session_id, agent_input, thread_id)
             return JSONResponse(content={"response": agent_response_text}, status_code=200)
         except Exception as ex:
             LOGGER.exception(f"Failed to process user task: {ex}")
@@ -992,7 +992,7 @@ class SandboxAgent(DiscordClient):
 
         # TODO: This is where all the AI logic is going to go
         LOGGER.info(
-            f"Thread message to process - function: {CURRENTFUNCNAME()}, function caller: {CURRENTFUNCNAME(1)}, author: {message.author}, content: '{message.content[:50]}'"
+            f"Thread message to process - function: {CURRENTFUNCNAME()}, function caller: {CURRENTFUNCNAME(1)}, author: {message.author}, content: '{message.content[:50]}'"  # type: ignore
         )  # pyright: ignore[reportAttributeAccessIssue]
         if message.author.bot:
             LOGGER.info(f"Skipping message from bot itself, message.author.bot = {message.author.bot}")

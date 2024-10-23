@@ -290,76 +290,76 @@ def db_upgrade(revision: Annotated[str, typer.Option(help="Revision target")] = 
     upgrade(revision)
 
 
-# @APP.command()
-# def db_downgrade(revision: Annotated[str, typer.Argument("--revision/-r", help="Revision target")]) -> None:
-#     """Revert to a previous database revision.
+@APP.command()
+def db_downgrade(revision: Annotated[str, typer.Option(help="Revision target")] = "head") -> None:
+    """Revert to a previous database revision.
 
-#     This command downgrades the database to the specified revision.
+    This command downgrades the database to the specified revision.
 
-#     Args:
-#         revision (str): The target revision to downgrade to.
-#     """
-#     typer.echo(f"Running db_downgrade with revision={revision}")
+    Args:
+        revision (str): The target revision to downgrade to.
+    """
+    typer.echo(f"Running db_downgrade with revision={revision}")
 
-#     downgrade(revision)
-
-
-# @APP.command()
-# def export_collection(
-#     folder_path: Annotated[str, typer.Argument("--folder-path/-f", help="Folder output path")],
-#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
-# ) -> None:
-#     """Export a collection to CSV postgres files.
-
-#     This command exports the specified collection to CSV files in the given folder path.
-
-#     Args:
-#         folder_path (str): The path to the folder where the CSV files will be saved.
-#         collection (str): The name of the collection to export.
-#     """
-#     typer.echo(f"Running export_collection with folder_path={folder_path}, collection={collection}")
-
-#     export_collection_data(folder_path=folder_path, collection=collection)
+    downgrade(revision)
 
 
-# @APP.command()
-# def import_collection(
-#     folder_path: Annotated[str, typer.Argument("--folder-path/-f", help="Folder input path")],
-#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
-# ) -> None:
-#     """Import a collection from CSV postgres files.
+@APP.command()
+def export_collection(
+    folder_path: Annotated[str, typer.Argument(help="Folder output path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+) -> None:
+    """Export a collection to CSV postgres files.
 
-#     This command imports the specified collection from CSV files located in the given folder path.
+    This command exports the specified collection to CSV files in the given folder path.
 
-#     Args:
-#         folder_path (str): The path to the folder containing the CSV files.
-#         collection (str): The name of the collection to import.
-#     """
-#     typer.echo(f"Running import_collection with folder_path={folder_path}, collection={collection}")
+    Args:
+        folder_path (str): The path to the folder where the CSV files will be saved.
+        collection (str): The name of the collection to export.
+    """
+    typer.echo(f"Running export_collection with folder_path={folder_path}, collection={collection}")
 
-#     import_collection_data(folder_path=folder_path, collection=collection)
+    export_collection_data(folder_path=folder_path, collection=collection)
 
 
-# @APP.command()
-# def import_file(
-#     file_path: Annotated[str, typer.Argument("--file-path/-f", help="File or folder path")],
-#     collection: Annotated[str, typer.Argument("--collection/-c", help="Collection name")],
-#     options: Annotated[Optional[str], typer.Option("--options/-o", help="Loader options in JSON format")] = None,
-# ) -> None:
-#     """Add file or folder content to collection.
+@APP.command()
+def import_collection(
+    folder_path: Annotated[str, typer.Argument(help="Folder input path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+) -> None:
+    """Import a collection from CSV postgres files.
 
-#     This command adds the content of a file or folder to the specified collection.
+    This command imports the specified collection from CSV files located in the given folder path.
 
-#     Args:
-#         file_path (str): The path to the file or folder.
-#         collection (str): The name of the collection to update.
-#         options (str): Loader options in JSON format.
-#     """
-#     typer.echo(f"Running import_file with file_path={file_path}, collection={collection}, options={options}")
+    Args:
+        folder_path (str): The path to the folder containing the CSV files.
+        collection (str): The name of the collection to import.
+    """
+    typer.echo(f"Running import_collection with folder_path={folder_path}, collection={collection}")
 
-#     kwargs = {} if not options else json.loads(options)
-#     num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
-#     print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
+    import_collection_data(folder_path=folder_path, collection=collection)
+
+
+@APP.command()
+def import_file(
+    file_path: Annotated[str, typer.Argument(help="File or folder path")],
+    collection: Annotated[str, typer.Argument(help="Collection name")],
+    options: Annotated[Optional[str], typer.Option("--options", "-o", help="Loader options in JSON format")] = None,
+) -> None:
+    """Add file or folder content to collection.
+
+    This command adds the content of a file or folder to the specified collection.
+
+    Args:
+        file_path (str): The path to the file or folder.
+        collection (str): The name of the collection to update.
+        options (str): Loader options in JSON format.
+    """
+    typer.echo(f"Running import_file with file_path={file_path}, collection={collection}, options={options}")
+
+    kwargs = {} if not options else json.loads(options)
+    num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
+    print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
 
 
 def handle_sigterm(signo, frame):  # noqa: ARG001: unused argument

@@ -74,7 +74,7 @@ class AgentExecutorFactory:
         # Choose the LLM that will drive the agent
         if memory_enabled:
             memory = MemoryFactory.create()
-            agent_executor = create_react_agent(llm, tools, state_modifier=prompt, memory=memory, debug=True)
+            agent_executor = create_react_agent(llm, tools, state_modifier=prompt, checkpointer=memory, debug=True)
             LOGGER.info(f"Created agent executor with memory: {agent_executor}")
         else:
             agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)

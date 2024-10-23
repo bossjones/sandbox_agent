@@ -591,3 +591,23 @@ async def send_long_message(channel: Any, message: discord.Message, max_length: 
     chunks = [message[i : i + max_length] for i in range(0, len(message), max_length)]  # type: ignore
     for chunk in chunks:
         await channel.send(chunk)
+
+
+# SOURCE: https://langchain-ai.github.io/langgraph/how-tos/create-react-agent-system-prompt/#code
+def print_stream(stream: Iterable[dict[str, Any]]) -> None:
+    """
+    Print the messages from a stream of message dictionaries.
+
+    Args:
+        stream (Iterable[dict[str, Any]]): An iterable of dictionaries containing messages.
+
+    This function iterates over a stream of dictionaries, each containing a list of messages.
+    It prints the last message in each dictionary, either by calling its `pretty_print` method
+    if it is an object with that method, or by printing the message directly if it is a tuple.
+    """
+    for s in stream:
+        message = s["messages"][-1]
+        if isinstance(message, tuple):
+            print(message)
+        else:
+            message.pretty_print()

@@ -1,3 +1,11 @@
+"""ReAct agent from scratch
+
+A ReAct agent, or reasoning and action agent, is a framework that combines the reasoning capabilities of large language models (LLMs) with the ability to take actions. This allows ReAct agents to understand and process information, assess situations, and take appropriate actions.
+ReAct agents are designed to interact with the real world through actions, such as searching the web, accessing databases, or controlling physical devices. They can flexibly adjust their strategy based on continuous feedback from the environment, allowing them to solve complex or dynamic tasks.
+ReAct agents use a step-by-step problem-solving approach, alternating between generating thoughts and task-specific actions. They maintain a list of previous messages, which serves as input to the LLM model to process context and provide relevant responses.
+ReAct agents can be used in a variety of applications, such as customer support systems, where they can think about a customer's issue, retrieve relevant data, and refine their approach to resolve the issue.
+"""
+
 # SOURCE: https://langchain-ai.github.io/langgraph/how-tos/react-agent-from-scratch/
 # SOURCE: https://langchain-ai.github.io/langgraph/tutorials/introduction/#part-2-enhancing-the-chatbot-with-tools
 # pyright: reportMissingTypeStubs=false

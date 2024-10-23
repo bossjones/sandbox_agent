@@ -212,6 +212,10 @@ class WorkflowFactory:
 
         if agent_type == "plan_and_execute":
             return build_compiled_workflow()
+        elif agent_type == "advanced":
+            from sandbox_agent.ai.workflows.advanced import graph
+
+            return graph
         # Add more agent types and their corresponding workflows as needed
         else:
             raise ValueError(f"Unsupported agent type: {agent_type}")

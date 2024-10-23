@@ -80,7 +80,7 @@ replanner = REPLANNER_PROMPT | ChatOpenAI(model="gpt-4o", temperature=0).with_st
 #             _printed.add(message.id)
 
 
-# @pysnooper.snoop(thread_info=True, max_variable_length=None, depth=10)
+# @pysnooper.snoop(thread_info=True, max_variable_length=None, depth=10, watch=["workflow"])
 # @pysnooper.snoop()
 async def execute_step(state: PlanExecute) -> dict[str, Any]:
     """
@@ -235,6 +235,10 @@ class WorkflowFactory:
             return build_compiled_workflow()
         elif agent_type == "basic":
             from sandbox_agent.ai.workflows.basic import graph
+
+            return graph
+        elif agent_type == "advanced":
+            from sandbox_agent.ai.workflows.advanced import graph
 
             return graph
         # Add more agent types and their corresponding workflows as needed

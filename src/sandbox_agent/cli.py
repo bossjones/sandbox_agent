@@ -135,9 +135,13 @@ def version_callback(version: bool) -> None:
 
 
 @APP.command()
-def version() -> None:
-    """Version command"""
+def version(
+    verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Show detailed version info")] = False,
+) -> None:
+    """Display version information."""
     rich.print(f"sandbox_agent version: {sandbox_agent.__version__}")
+    if verbose:
+        rich.print(f"Python version: {sys.version}")
 
 
 @APP.command()
@@ -272,7 +276,7 @@ def db_current(verbose: Annotated[Optional[bool], typer.Option("--verbose/-v", h
 
 
 @APP.command()
-def db_upgrade(revision: Annotated[str, typer.Argument("--revision/-r", help="Revision target")] = "head") -> None:
+def db_upgrade(revision: Annotated[str, typer.Option(help="Revision target")] = "head") -> None:
     """Upgrade to a later database revision.
 
     This command upgrades the database to the specified revision.

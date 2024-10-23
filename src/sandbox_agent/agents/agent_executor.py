@@ -24,7 +24,7 @@ from tenacity import RetryCallState
 from sandbox_agent.ai.graph import Act, Plan
 from sandbox_agent.ai.tools import ToolFactory
 from sandbox_agent.aio_settings import aiosettings
-from sandbox_agent.factories import ChatModelFactory
+from sandbox_agent.factories import ChatModelFactory, MemoryFactory
 
 
 if TYPE_CHECKING:
@@ -41,6 +41,7 @@ class AgentExecutorFactory:
     def create_plan_and_execute_agent(
         llm: ChatOpenAI | None = None,
         verbose: bool = False,
+        memory_enabled: bool | None = None,
         **kwargs: Any,
     ) -> CompiledStateGraph:
         """
@@ -49,6 +50,8 @@ class AgentExecutorFactory:
         Args:
             llm (ChatOpenAI, optional): Language model to use for the agent. Defaults to None.
             verbose (bool, optional): Whether to print verbose output. Defaults to False.
+            memory_enabled (bool, optional): Whether to enable memory for the agent.
+                Defaults to None, which will use the value from aiosettings.llm_memory_enabled.
             **kwargs (CompiledStateGraph): Additional keyword arguments for the agent.
 
         Returns:
@@ -64,10 +67,18 @@ class AgentExecutorFactory:
 
         tools: list[Tool] = ToolFactory.create_tools()
 
-        # Choose the LLM that will drive the agent
-        agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)
+        # Determine if memory should be enabled
+        if memory_enabled is None:
+            memory_enabled = aiosettings.llm_memory_enabled
 
-        LOGGER.info(f"Created agent executor: {agent_executor} of type {type(agent_executor)}")
+        # Choose the LLM that will drive the agent
+        if memory_enabled:
+            memory = MemoryFactory.create()
+            agent_executor = create_react_agent(llm, tools, state_modifier=prompt, memory=memory, debug=True)
+            LOGGER.info(f"Created agent executor with memory: {agent_executor}")
+        else:
+            agent_executor = create_react_agent(llm, tools, state_modifier=prompt, debug=True)
+            LOGGER.info(f"Created agent executor without memory: {agent_executor}")
 
         return agent_executor
 

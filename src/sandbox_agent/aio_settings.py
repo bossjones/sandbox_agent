@@ -709,8 +709,11 @@ class AioSettings(BaseSettings):
         default=False,
     )
 
+    llm_memory_type: str = Field(env="LLM_MEMORY_TYPE", description="Type of memory to use", default="memorysaver")
+    llm_memory_enabled: bool = Field(env="LLM_MEMORY_ENABLED", description="Enable memory", default=True)
+
     # Tool allowlist
-    tool_allowlist: list[str] = ["tavily_search"]
+    tool_allowlist: list[str] = ["tavily_search", "magic_function"]
 
     # Tool-specific configuration
     tavily_search_max_results: int = 3

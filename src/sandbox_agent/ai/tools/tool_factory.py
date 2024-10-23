@@ -8,6 +8,7 @@ from langchain.tools import Tool
 from langchain_community.tools import BraveSearch, DuckDuckGoSearchRun, TavilySearchResults
 from loguru import logger as LOGGER
 
+from sandbox_agent.ai.tools.tool_utils import magic_function
 from sandbox_agent.aio_settings import aiosettings
 
 
@@ -25,6 +26,10 @@ class ToolFactory:
         if "tavily_search" in aiosettings.tool_allowlist:
             tools.append(TavilySearchResults(max_results=aiosettings.tavily_search_max_results))
             LOGGER.info(f"Added TavilySearchResults tool with max_results={aiosettings.tavily_search_max_results}")
+
+        if "magic_function" in aiosettings.tool_allowlist:
+            tools.append(magic_function)
+            LOGGER.info("Added magic_function tool")
 
         if "duckduckgo_search" in aiosettings.tool_allowlist:
             tools.append(DuckDuckGoSearchRun())

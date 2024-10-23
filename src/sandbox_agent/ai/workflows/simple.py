@@ -10,6 +10,9 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import END, StateGraph, add_messages
 from langgraph.prebuilt import ToolNode
 
+from sandbox_agent.aio_settings import aiosettings
+from sandbox_agent.factories import ChatModelFactory
+
 
 tools = [TavilySearchResults(max_results=1)]
 
@@ -53,7 +56,7 @@ def call_model(state, config):
     messages = state["messages"]
     messages = [{"role": "system", "content": system_prompt}] + messages
     model_name = config.get("configurable", {}).get("model_name", "anthropic")
-    model = _get_model(model_name)
+    model = ChatModelFactory.create(aiosettings.chat_model)
     response = model.invoke(messages)
     # We return a list, because this will get added to the existing list
     return {"messages": [response]}

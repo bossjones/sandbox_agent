@@ -436,62 +436,62 @@ async def test_get_attachments(mockbot: SandboxAgent, mocker: MockerFixture):
     mock_attachment_to_dict.assert_called_once_with(attachment)
 
 
-@pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
-async def test_write_attachments_to_disk(mockbot: SandboxAgent, mocker: MockerFixture):
-    """
-    Test the write_attachments_to_disk method of SandboxAgent.
+# @pytest.mark.skip(reason="This test is not yet implemented")
+# @pytest.mark.flaky
+# @pytest.mark.asyncio
+# async def test_write_attachments_to_disk(mockbot: SandboxAgent, mocker: MockerFixture):
+#     """
+#     Test the write_attachments_to_disk method of SandboxAgent.
 
-    This test mocks the necessary dependencies and verifies that the attachments are saved to disk correctly.
+#     This test mocks the necessary dependencies and verifies that the attachments are saved to disk correctly.
 
-    Args:
-        sandbox_agent (SandboxAgent): The SandboxAgent instance.
-        mocker (MockerFixture): The pytest-mock fixture for mocking.
-    """
-    message = mocker.MagicMock(spec=Message)
-    attachment = mocker.MagicMock(spec=Attachment)
-    attachment.filename = "test_file.txt"
-    attachment.url = "http://example.com/test_file.txt"
-    message.attachments = [attachment]
+#     Args:
+#         sandbox_agent (SandboxAgent): The SandboxAgent instance.
+#         mocker (MockerFixture): The pytest-mock fixture for mocking.
+#     """
+#     message = mocker.MagicMock(spec=Message)
+#     attachment = mocker.MagicMock(spec=Attachment)
+#     attachment.filename = "test_file.txt"
+#     attachment.url = "http://example.com/test_file.txt"
+#     message.attachments = [attachment]
 
-    mock_get_context = mocker.patch.object(mockbot, "get_context", return_value=mocker.AsyncMock())
-    mock_get_attachments = mocker.patch.object(
-        mockbot,
-        "get_attachments",
-        return_value=([{"filename": "test_file.txt", "url": "http://example.com/test_file.txt"}], [], [], []),
-    )
+#     mock_get_context = mocker.patch.object(mockbot, "get_context", return_value=mocker.AsyncMock())
+#     mock_get_attachments = mocker.patch.object(
+#         mockbot,
+#         "get_attachments",
+#         return_value=([{"filename": "test_file.txt", "url": "http://example.com/test_file.txt"}], [], [], []),
+#     )
 
-    mock_create_temp_directory = mocker.patch(
-        "mockbot.utils.file_operations.create_temp_directory", return_value="/tmp/test_dir"
-    )
-    mock_handle_save_attachment_locally = mocker.patch(
-        "mockbot.utils.file_operations.handle_save_attachment_locally", return_value="/tmp/test_dir/test_file.txt"
-    )
-    mock_file_to_local_data_dict = mocker.patch(
-        "mockbot.utils.file_operations.file_to_local_data_dict",
-        return_value={"filename": "/tmp/test_dir/test_file.txt"},
-    )
-    mock_fix_path = mocker.patch("mockbot.utils.file_functions.fix_path", return_value="/tmp/test_dir/test_file.txt")
-    mock_details_from_file = mocker.patch(
-        "mockbot.utils.file_operations.details_from_file", return_value=("input_file", "output_file", "timestamp")
-    )
-    mock_get_file_tree = mocker.patch(
-        "mockbot.utils.file_operations.get_file_tree", return_value=["/tmp/test_dir/test_file.txt"]
-    )
+#     mock_create_temp_directory = mocker.patch(
+#         "mockbot.utils.file_operations.create_temp_directory", return_value="/tmp/test_dir"
+#     )
+#     mock_handle_save_attachment_locally = mocker.patch(
+#         "mockbot.utils.file_operations.handle_save_attachment_locally", return_value="/tmp/test_dir/test_file.txt"
+#     )
+#     mock_file_to_local_data_dict = mocker.patch(
+#         "mockbot.utils.file_operations.file_to_local_data_dict",
+#         return_value={"filename": "/tmp/test_dir/test_file.txt"},
+#     )
+#     mock_fix_path = mocker.patch("mockbot.utils.file_functions.fix_path", return_value="/tmp/test_dir/test_file.txt")
+#     mock_details_from_file = mocker.patch(
+#         "mockbot.utils.file_operations.details_from_file", return_value=("input_file", "output_file", "timestamp")
+#     )
+#     mock_get_file_tree = mocker.patch(
+#         "mockbot.utils.file_operations.get_file_tree", return_value=["/tmp/test_dir/test_file.txt"]
+#     )
 
-    await mockbot.write_attachments_to_disk(message)
+#     await mockbot.write_attachments_to_disk(message)
 
-    mock_get_context.assert_called_once_with(message)
-    mock_get_attachments.assert_called_once_with(message)
-    mock_create_temp_directory.assert_called_once()
-    mock_handle_save_attachment_locally.assert_called_once_with(
-        {"filename": "test_file.txt", "url": "http://example.com/test_file.txt"}, "/tmp/test_dir"
-    )
-    mock_file_to_local_data_dict.assert_called_once_with("/tmp/test_dir/test_file.txt", "/tmp/test_dir")
-    mock_fix_path.assert_called_once_with("/tmp/test_dir/test_file.txt")
-    mock_details_from_file.assert_called_once_with("/tmp/test_dir/test_file.txt", cwd="/tmp/test_dir")
-    mock_get_file_tree.assert_called_once_with("/tmp/test_dir")
+#     mock_get_context.assert_called_once_with(message)
+#     mock_get_attachments.assert_called_once_with(message)
+#     mock_create_temp_directory.assert_called_once()
+#     mock_handle_save_attachment_locally.assert_called_once_with(
+#         {"filename": "test_file.txt", "url": "http://example.com/test_file.txt"}, "/tmp/test_dir"
+#     )
+#     mock_file_to_local_data_dict.assert_called_once_with("/tmp/test_dir/test_file.txt", "/tmp/test_dir")
+#     mock_fix_path.assert_called_once_with("/tmp/test_dir/test_file.txt")
+#     mock_details_from_file.assert_called_once_with("/tmp/test_dir/test_file.txt", cwd="/tmp/test_dir")
+#     mock_get_file_tree.assert_called_once_with("/tmp/test_dir")
 
 
 @pytest.mark.integration

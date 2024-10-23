@@ -20,6 +20,7 @@ import uuid
 from io import BytesIO
 from typing import Any, Dict, List, Tuple, Union
 
+import aiofiles
 import aiofiles.os
 import aiohttp
 
@@ -126,6 +127,8 @@ async def handle_save_attachment_locally(attm_data_dict: dict[str, Any], dir_roo
     """
     fname = f"{dir_root}/orig_{attm_data_dict['id']}_{attm_data_dict['filename']}"
     print(f"Saving to ... {fname}")
+    parent_dir = await aio_create_nested_directories(fname)
+    LOGGER.info(f"created parent_dir = {parent_dir}")
     await attm_data_dict["attachment_obj"].save(fname, use_cached=True)
     await asyncio.sleep(1)
     return fname
@@ -158,9 +161,6 @@ async def details_from_file(path_to_media_from_cli: str, cwd: Union[str, None] =
     return full_path_input_file, full_path_output_file, get_timestamp
 
 
-import aiofiles
-
-
 async def aio_create_temp_directory() -> str:
     """Create a temporary directory and return its path.
 
@@ -169,7 +169,8 @@ async def aio_create_temp_directory() -> str:
     """
     tmpdirname = f"temp/{str(uuid.uuid4())}"
     try:
-        await aiofiles.os.mkdir(os.path.dirname(tmpdirname), exist_ok=True)
+        # await aiofiles.os.mkdir(os.path.dirname(tmpdirname))
+        await aiofiles.os.makedirs(os.path.dirname(tmpdirname), exist_ok=True)
     except Exception as e:
         LOGGER.error(f"Error creating temporary directory: {e}")
         raise e
@@ -202,3 +203,23 @@ def get_file_tree(directory: str) -> list[str]:
         list[str]: A list of file paths in the directory tree.
     """
     return [str(p) for p in pathlib.Path(directory).rglob("*")]
+
+
+async def aio_create_nested_directories(file_path: str) -> str:
+    """
+    Create nested directories from a file path asynchronously.
+
+    Args:
+        file_path (str): The file path containing the nested directories.
+
+    Returns:
+        str: The path of the created nested directories.
+
+    """
+    path = pathlib.Path(file_path)
+    parent_dir = path.parent
+    LOGGER.info(f"path = {path}")
+    LOGGER.info(f"parent_dir = {parent_dir}")
+    await aiofiles.os.makedirs(parent_dir, exist_ok=True)
+    await LOGGER.complete()
+    return str(parent_dir)

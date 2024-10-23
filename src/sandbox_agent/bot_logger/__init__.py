@@ -1,5 +1,47 @@
 #!/usr/bin/env python3
-"""dancedetector dbx_logger -- Setup loguru logging with stderr and file with click."""
+
+"""
+Logging utilities for the SandboxAgent project.
+
+This module provides functions and utilities for configuring and managing logging in the SandboxAgent project.
+It includes functions for setting up the global logger, handling exceptions, and filtering log messages.
+
+Functions:
+    global_log_config(log_level: LOG_LEVEL, json: bool = False) -> None:
+        Configure the global logger with the specified log level and format.
+
+    get_logger(name: str = "sandbox_agent") -> Logger:
+        Get a logger instance with the specified name.
+
+    _log_exception(exc: BaseException, dev_mode: bool = False) -> None:
+        Log an exception with the appropriate level based on the dev_mode setting.
+
+    _log_warning(exc: BaseException, dev_mode: bool = False) -> None:
+        Log a warning with the appropriate level based on the dev_mode setting.
+
+    filter_out_serialization_errors(record: dict[str, Any]) -> bool:
+        Filter out log messages related to serialization errors.
+
+    filter_out_modules(record: dict[str, Any]) -> bool:
+        Filter out log messages from the standard logging module.
+
+Constants:
+    LOGURU_FILE_FORMAT: str
+        The log format string for file logging.
+
+    NEW_LOGGER_FORMAT: str
+        The new log format string for console logging.
+
+    LOG_LEVEL: Literal
+        The available log levels.
+
+    MASKED: str
+        A constant string used to mask sensitive data in logs.
+
+Classes:
+    Pii(str):
+        A custom string class that masks sensitive data in logs based on the log_pii setting.
+"""
 # pylint: disable=no-member
 # pylint: disable=consider-using-tuple
 # pylint: disable=eval-used,no-member
@@ -27,6 +69,7 @@ import logging
 import os
 import re
 import sys
+import time
 
 from datetime import datetime, timezone
 from logging import Logger, LogRecord
@@ -117,13 +160,39 @@ class Pii(str):
     """Mask pii data"""
 
     def __format__(self, __format_spec: str) -> str:
+        """
+        Mask personally identifiable information (PII) in log messages.
+
+        This class is a subclass of str and overrides the __format__ method to mask
+        PII data in log messages. If the aiosettings.log_pii setting is True, the
+        original string value is returned. Otherwise, the string "MASKED" is returned.
+
+        Args:
+            __format_spec (str): The format specification string.
+
+        Returns:
+            str: The masked or unmasked string value.
+        """
         if aiosettings.log_pii:
             return super().__format__(__format_spec)
         return MASKED
 
 
 def _log_exception(exc: BaseException, dev_mode: bool = False) -> None:
-    """If dev mode, log the entire traceback"""
+    """
+    Log an exception with the appropriate level based on the dev_mode setting.
+
+    If dev_mode is True, the entire traceback will be logged using logger.opt(exception=True).error().
+    Otherwise, only the exception message will be logged using logger.error().
+
+    Args:
+        exc (BaseException): The exception to be logged.
+        dev_mode (bool, optional): Whether to log the entire traceback or just the exception message.
+            Defaults to False.
+
+    Returns:
+        None
+    """
     if dev_mode:
         logger.opt(exception=True).error(exc)
     else:
@@ -131,17 +200,46 @@ def _log_exception(exc: BaseException, dev_mode: bool = False) -> None:
 
 
 def _log_warning(exc: BaseException, dev_mode: bool = False) -> None:
-    """If dev mode, log the entire traceback"""
+    """
+    Log a warning with the appropriate level based on the dev_mode setting.
+
+    If dev_mode is True, the entire traceback will be logged using logger.opt(exception=True).warning().
+    Otherwise, only the warning message will be logged using logger.warning().
+
+    Args:
+        exc (BaseException): The exception or warning to be logged.
+        dev_mode (bool, optional): Whether to log the entire traceback or just the warning message.
+            Defaults to False.
+
+    Returns:
+        None
+    """
     if dev_mode:
         logger.opt(exception=True).warning(exc)
     else:
-        logger.error(exc)
+        logger.warning(exc)
+
+
+# def _log_exception(exc: BaseException, dev_mode: bool = False) -> None:
+#     """If dev mode, log the entire traceback"""
+#     if dev_mode:
+#         logger.opt(exception=True).error(exc)
+#     else:
+#         logger.error(exc)
+
+
+# def _log_warning(exc: BaseException, dev_mode: bool = False) -> None:
+#     """If dev mode, log the entire traceback"""
+#     if dev_mode:
+#         logger.opt(exception=True).warning(exc)
+#     else:
+#         logger.error(exc)
 
 
 # --------------------------------------------------------------------------
 
 
-def filter_out_serialization_errors(record):
+def filter_out_serialization_errors(record: dict[str, Any]):
     # Patterns to match the log messages you want to filter out
     patterns = [
         r"Orjson serialization failed:",
@@ -160,12 +258,69 @@ def filter_out_serialization_errors(record):
     return True  # Keep all other messages
 
 
-# SOURCE: https://github.com/acgnhiki/blrec/blob/975fa2794a3843a883597acd5915a749a4e196c8/src/blrec/logging/configure_logging.py#L21
+def filter_out_modules(record: dict[str, Any]) -> bool:
+    """
+    Filter out log messages from the standard logging module.
+
+    Args:
+        record: The log record to check.
+
+    Returns:
+        bool: True if the message should be kept, False if it should be filtered out.
+    """
+    # Check if the log message originates from the logging module
+    if record["name"].startswith("logging"):
+        return False  # Filter out this message
+
+    return True  # Keep all other messages
+
+
+def catch_all_filter(record: dict[str, Any]) -> bool:
+    """
+    Filter out log messages that match certain patterns or originate from specific modules.
+
+    This function combines the `filter_out_serialization_errors` and `filter_out_modules` filters
+    to create a single filter that removes log messages that match certain patterns (related to
+    serialization errors) or originate from the standard logging module.
+
+    Args:
+        record (dict[str, Any]): The log record to check.
+
+    Returns:
+        bool: True if the message should be kept, False if it should be filtered out.
+    """
+
+    return filter_out_serialization_errors(record) and filter_out_modules(record)
+
+
 class TqdmOutputStream:
+    """
+    A custom output stream that writes to sys.stderr and supports tqdm progress bars.
+
+    This class provides a write method that writes strings to sys.stderr using tqdm.write,
+    which allows tqdm progress bars to be displayed correctly. It also provides an isatty
+    method that returns whether sys.stderr is a terminal.
+
+    This class is useful when you want to use tqdm progress bars in your application while
+    still being able to write to the standard error stream.
+    """
+
     def write(self, string: str = "") -> None:
+        """
+        Write the given string to sys.stderr using tqdm.write.
+
+        Args:
+            string (str): The string to write.
+        """
         tqdm.write(string, file=sys.stderr, end="")
 
     def isatty(self) -> bool:
+        """
+        Return whether sys.stderr is a terminal.
+
+        Returns:
+            bool: True if sys.stderr is a terminal, False otherwise.
+        """
         return sys.stderr.isatty()
 
 
@@ -279,13 +434,28 @@ class InterceptHandler(logging.Handler):
     # from logging import WARN
     # https://issueexplorer.com/issue/tiangolo/fastapi/4026
     def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover
-        # Get corresponding Loguru level if it exists
+        """
+        Intercept all logging calls (with standard logging) into our Loguru Sink.
+
+        This method is called by the standard logging library whenever a log message
+        is emitted. It converts the standard logging record into a Loguru log message
+        and logs it using the Loguru logger.
+
+        Args:
+            record (logging.LogRecord): The standard logging record to be logged.
+
+        Returns:
+            None
+        """
+        # Get corresponding Loguru level if it exists.
+        level: str | int
         try:
             level = loguru.logger.level(record.levelname).name
         except ValueError:
             # DISABLED 12/10/2021 # level = str(record.levelno)
             level = record.levelno
 
+        # INFO: Find Caller Frame
         # Find caller from where originated the logged message
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:  # noqa: WPS609
@@ -299,12 +469,66 @@ class InterceptHandler(logging.Handler):
         )
 
 
+class InterceptHandlerImproved(logging.Handler):
+    """
+    Intercept all logging calls (with standard logging) into our Loguru Sink
+    """
+
+    def emit(self, record: logging.LogRecord) -> None:
+        """
+        Intercept and redirect log messages from the standard logging module to Loguru.
+
+        Args:
+            record (logging.LogRecord): The standard logging record to be logged.
+        """
+
+        # Determine the corresponding Loguru log level.
+        level: str | int
+        try:
+            # Attempt to get the Loguru level name using the record's level name.
+            level = logger.level(record.levelname).name
+        except ValueError:
+            # If the level name is not found, fall back to using the numeric level.
+            level = record.levelno
+
+        # Find the stack frame from which the log message originated.
+        frame, depth = inspect.currentframe(), 0
+        while frame and (depth == 0 or frame.f_code.co_filename == logging.__file__):
+            # Traverse back through the stack frames.
+            frame = frame.f_back
+            # Increment the depth counter to track how far back we've gone.
+            depth += 1
+
+        # Log the message using Loguru, preserving the original context and exception info.
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level,  # Use the determined log level.
+            record.getMessage(),  # Log the message content.
+        )
+
+
 def get_logger(
     name: str,
     provider: Optional[str] = None,
     level: int = logging.INFO,
     logger: logging.Logger = logger,
 ) -> logging.Logger:
+    """
+    Get a logger instance with the specified name and configuration.
+
+    Args:
+        name (str): The name of the logger.
+        provider (Optional[str], optional): The provider for the logger. Defaults to None.
+        level (int, optional): The logging level. Defaults to logging.INFO.
+        logger (logging.Logger, optional): The logger instance to use. Defaults to the root logger.
+
+    Returns:
+        logging.Logger: The configured logger instance.
+
+    Example:
+        >>> logger = get_logger(__name__)
+        >>> logger.info("This is an info message")
+    """
+
     return logger
 
 
@@ -316,7 +540,29 @@ def request_id_filter(record: dict[str, Any]):
     record["extra"]["request_id"] = REQUEST_ID_CONTEXTVAR.get()
 
 
-def reset_logging(log_dir: str, *, console_log_level: LOG_LEVEL = "INFO", backup_count: Optional[int] = None) -> None:
+def reset_logging(
+    log_dir: str,
+    *,
+    console_log_level: LOG_LEVEL = "INFO",
+    backup_count: Optional[int] = None,
+) -> None:
+    """
+    Reset the logging configuration.
+
+    This function resets the logging configuration by removing any existing
+    handlers and adding new handlers for console and file logging. The console
+    log level and file backup count can be specified.
+
+    Args:
+        log_dir (str): The directory path for the log file.
+        console_log_level (LOG_LEVEL, optional): The log level for the console
+            handler. Defaults to "INFO".
+        backup_count (Optional[int], optional): The number of backup log files
+            to keep. If None, no backup files are kept. Defaults to None.
+
+    Returns:
+        None
+    """
     global _console_handler_id, _file_handler_id
     global _old_log_dir, _old_console_log_level, _old_backup_count
     logger.configure(extra={"room_id": ""})
@@ -327,9 +573,77 @@ def reset_logging(log_dir: str, *, console_log_level: LOG_LEVEL = "INFO", backup
         else:
             logger.remove()  # remove the default stderr handler
 
-        _console_handler_id = logger.add(sys.stderr, level=console_log_level, format=LOGURU_CONSOLE_FORMAT)
+        _console_handler_id = logger.add(
+            sys.stderr,
+            level=console_log_level,
+            format=LOGURU_CONSOLE_FORMAT,
+        )
 
         _old_console_log_level = console_log_level
+
+    # Add file handler if log_dir is provided
+    if log_dir:
+        if _file_handler_id is not None:
+            logger.remove(_file_handler_id)
+
+        log_file = Path(log_dir) / "app.log"
+        _file_handler_id = logger.add(
+            log_file,
+            rotation="1 MB",
+            retention=backup_count,
+            format=NEW_LOGGER_FORMAT,
+            enqueue=True,
+        )
+
+        _old_log_dir = log_dir
+        _old_backup_count = backup_count
+
+
+# def reset_logging(log_dir: str, *, console_log_level: LOG_LEVEL = "INFO", backup_count: Optional[int] = None) -> None:
+
+#     global _console_handler_id, _file_handler_id
+#     global _old_log_dir, _old_console_log_level, _old_backup_count
+#     logger.configure(extra={"room_id": ""})
+
+#     if console_log_level != _old_console_log_level:
+#         if _console_handler_id is not None:
+#             logger.remove(_console_handler_id)
+#         else:
+#             logger.remove()  # remove the default stderr handler
+
+#         _console_handler_id = logger.add(sys.stderr, level=console_log_level, format=LOGURU_CONSOLE_FORMAT)
+
+#         _old_console_log_level = console_log_level
+
+
+def timeit(func):
+    def wrapped(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        logger.debug("Function '{}' executed in {:f} s", func.__name__, end - start)
+        return result
+
+    return wrapped
+
+
+def logger_wraps(*, entry=True, exit=True, level="DEBUG"):
+    def wrapper(func):
+        name = func.__name__
+
+        @functools.wraps(func)
+        def wrapped(*args, **kwargs):
+            logger_ = logger.opt(depth=1)
+            if entry:
+                logger_.log(level, "Entering '{}' (args={}, kwargs={})", name, args, kwargs)
+            result = func(*args, **kwargs)
+            if exit:
+                logger_.log(level, "Exiting '{}' (result={})", name, result)
+            return result
+
+        return wrapped
+
+    return wrapper
 
 
 # @pysnooper.snoop()
@@ -347,6 +661,10 @@ def global_log_config(log_level: Union[str, int] = logging.DEBUG, json: bool = F
         The configured logger instance.
     """
 
+    # The logger is pre-configured for convenience with a default handler which writes messages to |sys.stderr|. You should |remove| it first if you plan to |add| another handler logging messages to the console, otherwise you may end up with duplicated logs.
+    # logger.remove()  # Remove all handlers added so far, including the default one.
+    # logger.add(sys.stdout, level="DEBUG")
+
     # SOURCE: https://github.com/acgnhiki/blrec/blob/975fa2794a3843a883597acd5915a749a4e196c8/src/blrec/logging/configure_logging.py#L21
     global _console_handler_id, _file_handler_id
     global _old_log_dir, _old_console_log_level, _old_backup_count
@@ -355,7 +673,13 @@ def global_log_config(log_level: Union[str, int] = logging.DEBUG, json: bool = F
     if isinstance(log_level, str) and (log_level in logging._nameToLevel):
         log_level = logging.DEBUG
 
+    # NOTE: Original
     intercept_handler = InterceptHandler()
+    # logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+
+    # intercept_handler = InterceptHandlerImproved()
+    # logging.basicConfig(handlers=[intercept_handler], level=log_level, force=True)
+
     # logging.basicConfig(handlers=[intercept_handler], level=LOG_LEVEL)
     # logging.root.handlers = [intercept_handler]
     logging.root.setLevel(log_level)
@@ -417,10 +741,18 @@ def global_log_config(log_level: Union[str, int] = logging.DEBUG, json: bool = F
     setup_uvicorn_logger()
     setup_gunicorn_logger()
 
+    # logger.disable("logging")
+
     return logger
 
 
 def setup_uvicorn_logger():
+    """
+    Set up the uvicorn logger.
+
+    This function configures the uvicorn logger to use the InterceptHandler,
+    which allows for better handling and formatting of log messages from uvicorn.
+    """
     loggers = (logging.getLogger(name) for name in logging.root.manager.loggerDict if name.startswith("uvicorn."))
     for uvicorn_logger in loggers:
         uvicorn_logger.handlers = []

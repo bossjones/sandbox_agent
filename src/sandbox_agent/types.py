@@ -18,6 +18,7 @@ from typing import runtime_checkable as runtime_checkable
 import httpx
 import numpy as np
 
+from langchain_core.prompts.chat import BaseChatPromptTemplate, BaseMessage, BaseMessagePromptTemplate
 from pydantic import BaseModel, Field
 from typing_extensions import Literal as Literal
 from typing_extensions import NewType
@@ -251,3 +252,13 @@ class DataCmdOptionalProps(TypedDict, total=False):
 
 class ReqAndOptional(DataCmdRequiredProps, DataCmdOptionalProps):
     pass
+
+
+MessageLikeRepresentation = Union[
+    Union[BaseMessagePromptTemplate, BaseMessage, BaseChatPromptTemplate],
+    tuple[
+        Union[str, type],
+        Union[str, list[dict], list[object]],
+    ],
+    str,
+]

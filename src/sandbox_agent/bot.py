@@ -48,7 +48,12 @@ from starlette.responses import JSONResponse
 import sandbox_agent
 
 from sandbox_agent import shell, utils
-from sandbox_agent.agents.agent_executor import AgentExecutorFactory, AsyncLoggingCallbackHandler
+from sandbox_agent.agents.agent_executor import (
+    AgentExecutorFactory,
+    AsyncLoggingCallbackHandler,
+    format_user_input,
+    format_user_message,
+)
 from sandbox_agent.ai.evaluators import Evaluator
 from sandbox_agent.ai.workflows import WorkflowFactory
 from sandbox_agent.aio_settings import aiosettings
@@ -76,6 +81,7 @@ from sandbox_agent.constants import (
     MAX_THREAD_MESSAGES,
 )
 from sandbox_agent.factories import ChatModelFactory, EmbeddingModelFactory, VectorStoreFactory
+from sandbox_agent.types import MessageLikeRepresentation
 from sandbox_agent.utils import file_functions, file_operations
 from sandbox_agent.utils.context import Context
 from sandbox_agent.utils.misc import CURRENTFUNCNAME
@@ -676,7 +682,12 @@ class SandboxAgent(DiscordClient):
         # response_ts = response["ts"]
         # For direct messages, remember chat based on the user:
 
-        agent_response_text = self.process_user_task(session_id, str(agent_input), thread_id)
+        #          process_user_task: Must write to at least one of ['input', 'plan', 'past_steps', 'response'] | {}Traceback (most recent call last):
+
+        #   File "/Users/malcolm/dev/bossjones/sandbox_agent/.venv/bin/pytest", line 8, in <module>
+        #     sys.exit(console_main())
+        # #
+        agent_response_text = await self.process_user_task(session_id, str(agent_input), thread_id)
 
         # Update the slack response with the agent response
         # client.chat_update(channel=channel_id, ts=response_ts, text=agent_response_text)
@@ -737,7 +748,7 @@ class SandboxAgent(DiscordClient):
         thread_id = self.get_thread_id(message)
         LOGGER.info(f"session_id: {session_id} Agent input: {json.dumps(agent_input)}")
 
-        agent_response_text = self.process_user_task(session_id, str(agent_input), thread_id)
+        agent_response_text = await self.process_user_task(session_id, str(agent_input), thread_id)
 
         # Sometimes the response can be over 2000 characters, so we need to split it
         # into multiple messages, and send them one at a time
@@ -936,8 +947,12 @@ class SandboxAgent(DiscordClient):
 
         # Modify the call to process_user_task to pass agent_input
         # if not is_streaming:
+        session_id = self.get_session_id(message)  # type: ignore
+        thread_id = self.get_thread_id(message)
+        LOGGER.info(f"session_id: {session_id} thread_id: {thread_id} Agent input: {json.dumps(agent_input)}")
         try:
-            agent_response_text = self.agent.process_user_task(REQUEST_ID_CONTEXTVAR.get(), str(agent_input))  # type: ignore
+            # agent_response_text = await self.process_user_task(REQUEST_ID_CONTEXTVAR.get(), str(agent_input))
+            agent_response_text = await self.process_user_task(session_id, str(agent_input), thread_id)
             return JSONResponse(content={"response": agent_response_text}, status_code=200)
         except Exception as ex:
             LOGGER.exception(f"Failed to process user task: {ex}")
@@ -950,10 +965,8 @@ class SandboxAgent(DiscordClient):
             LOGGER.error(f"exc_value: {exc_value}")
             traceback.print_tb(exc_traceback)
             raise
-        # except Exception as e:
-        #     LOGGER.exception(f"Failed to process user task: {e}")
-        #     return HTTPException(status_code=500, detail=str(e))
-        await LOGGER.complete()
+        finally:
+            await LOGGER.complete()
 
     async def on_message(self, message: discord.Message) -> None:
         """
@@ -978,7 +991,9 @@ class SandboxAgent(DiscordClient):
         LOGGER.info(f"This function's caller was: {CURRENTFUNCNAME(1)}")
 
         # TODO: This is where all the AI logic is going to go
-        LOGGER.info(f"Thread message to process - {message.author}: {message.content[:50]}")  # pyright: ignore[reportAttributeAccessIssue]
+        LOGGER.info(
+            f"Thread message to process - function: {CURRENTFUNCNAME()}, function caller: {CURRENTFUNCNAME(1)}, author: {message.author}, content: '{message.content[:50]}'"
+        )  # pyright: ignore[reportAttributeAccessIssue]
         if message.author.bot:
             LOGGER.info(f"Skipping message from bot itself, message.author.bot = {message.author.bot}")
             return
@@ -1234,7 +1249,9 @@ class SandboxAgent(DiscordClient):
     # Add more commands as needed
 
     @traceable
-    def process_user_task(self, session_id: str, user_task: str, thread_id: Optional[int] = None) -> dict[str, Any]:
+    async def process_user_task(
+        self, session_id: str, user_task: str, thread_id: Optional[int] = None
+    ) -> dict[str, Any]:
         """
         Summary:
         Process a user task by invoking an agent executor and returning the output.
@@ -1259,46 +1276,16 @@ class SandboxAgent(DiscordClient):
         LOGGER.debug(f"thread_id = {thread_id}")
 
         try:
-            # SOURCE: https://langchain-ai.github.io/langgraph/tutorials/customer-support/customer-support/#flights
-            # We the can access the RunnableConfig for a given run to check the passenger_id of the user accessing this application. The LLM never has to provide these explicitly, they are provided for a given invocation of the graph so that each user cannot access other passengers' booking information.
-            # agent_executor = self.setup_agent_executor(session_id, user_task)
             config = {
-                # # @Web @https://api.python.langchain.com/en/latest/runnables/langchain_core.runnables.config.RunnableConfig.html
-                # # tags: List of strings to tag this call and any sub-calls (e.g., a Chain calling an LLM)
-                # "tags": ["agent"],
-                # # metadata: Dictionary of key-value pairs to store metadata for this call and any sub-calls
-                # # Metadata for this call and any sub-calls (eg. a Chain calling an LLM). Keys should be strings, values should be JSON-serializable.
                 "metadata": {
                     "session_id": session_id,
                     "thread_id": thread_id,
                 },
-                # # callbacks: List of callbacks to be called for this call and any sub-calls
-                # # Callbacks for this call and any sub-calls (eg. a Chain calling an LLM). Tags are passed to all callbacks, metadata is passed to handle*Start callbacks.
-                "callbacks": [StdOutCallbackHandler()],
-                #     {
-                #         "name": "langsmith",
-                #         "session_id": session_id,
-                #         "thread_id": thread_id,
-                #     }
-                # ],
-                # # run_name: Name for the tracer run for this call, defaults to the name of the class
-                # "run_name": "process_user_task",
-                # # max_concurrency: Maximum number of parallel calls to make, defaults to ThreadPoolExecutor's default if not provided
-                # "max_concurrency": 1,
-                # # recursion_limit: Maximum number of times a call can recurse, defaults to 25 if not provided
-                # "recursion_limit": 1,
-                # # run_id: Unique identifier for the tracer run for this call, a new UUID will be generated if not provided
-                # "run_id": session_id,
-                # configurable: Runtime values for attributes previously made configurable on this Runnable or sub-Runnables
-                # "configurable": {
-                #     # The passenger_id is used in our flight tools to fetch the user's flight information
-                #     "passenger_id": "3442 587242",
-                #     # Checkpoints are accessed by thread_id
-                #     "thread_id": thread_id,
-                # },
+                "callbacks": [StdOutCallbackHandler(), AsyncLoggingCallbackHandler()],
             }
-            inputs = {"input": user_task}
-            result = self.graph.invoke(inputs, config=config)
+            # inputs: Dict[str, str] = {"input": user_task}
+            inputs: MessageLikeRepresentation = format_user_input(user_task)
+            result = await self.graph.ainvoke(inputs, config=config)
             LOGGER.error(f"type(result) = {type(result)}")
             return result.get("output", "No response generated by the agent.")
         except Exception as e:
@@ -1349,7 +1336,7 @@ class SandboxAgent(DiscordClient):
                 },
                 # # callbacks: List of callbacks to be called for this call and any sub-calls
                 # # Callbacks for this call and any sub-calls (eg. a Chain calling an LLM). Tags are passed to all callbacks, metadata is passed to handle*Start callbacks.
-                "callbacks": [StdOutCallbackHandler()],
+                "callbacks": [StdOutCallbackHandler(), AsyncLoggingCallbackHandler()],
                 # "callbacks": [
                 #     {
                 #         "name": "langsmith",
@@ -1373,7 +1360,8 @@ class SandboxAgent(DiscordClient):
                 #     "thread_id": thread_id,
                 # }
             }
-            inputs = {"input": user_task}
+            # inputs = {"input": user_task}
+            inputs: MessageLikeRepresentation = format_user_input(user_task)
             # agent_executor = self.setup_agent_executor(session_id, user_task)
             # Loop through the agent executor stream
             async for chunk in self.graph.astream_log(inputs, config=config):
@@ -1403,37 +1391,5 @@ class SandboxAgent(DiscordClient):
         except Exception as e:
             LOGGER.exception(f"Error in process_user_task_streaming: {e}")
             yield "An error occurred while processing the task."
-
-        await LOGGER.complete()
-
-    # @traceable
-    # def summarize(self, user_input: str) -> str:
-    #     """
-    #     Process the user input and summarize it using a LLM. This method is used for the summarization API.
-
-    #     :param user_input: The task input by the user.
-    #     :return: The output from the LLM.
-    #     """
-    #     try:
-    #         # Setup a LLM instance
-    #         llm = LlmManager().llm
-
-    #         # Setup the prompt
-    #         prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
-    #             [
-    #                 (
-    #                     "system",
-    #                     "Please summarize the input from the user. Just provide the text for the summary, please don't add any additional information or commentary.",
-    #                 ),
-    #                 ("user", "{user_input}"),
-    #             ]
-    #         )
-
-    #         # Put this in a chain
-    #         chain = prompt | llm | StrOutputParser()
-    #         chain_custom_name = chain.with_config({"run_name": "summarize"})
-    #         return chain_custom_name.invoke({"user_input": user_input})
-
-    #     except Exception as e:
-    #         LOGGER.exception(f"Error during summarization of user task: {e}")
-    #         return "An error occurred while summarizing the input."
+        finally:
+            await LOGGER.complete()

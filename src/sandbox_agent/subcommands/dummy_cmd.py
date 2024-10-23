@@ -6,19 +6,20 @@ import asyncio
 
 import typer
 
-from sandbox_agent.asynctyper import AsyncTyper
+from sandbox_agent.asynctyper import AsyncTyper, AsyncTyperImproved
 
 
-app = AsyncTyper(help="dummy command")
+# APP = AsyncTyper(help="dummy command")
+APP = AsyncTyperImproved(help="dummy command")
 
 
-@app.command("dummy")
+@APP.command("dummy")
 def cli_dummy_cmd(prompt: str):
     """Generate a new dspy.Module. Example: dspygen sig new 'text -> summary'"""
     return f"dummy cmd: {prompt}"
 
 
-@app.command()
+@APP.command()
 async def aio_cli_dummy_cmd() -> str:
     """Returns information about the bot."""
     await asyncio.sleep(1)
@@ -26,4 +27,4 @@ async def aio_cli_dummy_cmd() -> str:
 
 
 if __name__ == "__main__":
-    app()
+    APP()

@@ -9,7 +9,10 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, TypeVar, Union
 from uuid import UUID
 
 from langchain import hub
+from langchain_anthropic import ChatAnthropic
 from langchain_core.callbacks import AsyncCallbackHandler, BaseCallbackHandler, StdOutCallbackHandler
+from langchain_core.messages import BaseMessage
+from langchain_core.outputs import LLMResult
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools.simple import Tool
 from langchain_openai import ChatOpenAI
@@ -67,6 +70,68 @@ class AgentExecutorFactory:
         LOGGER.info(f"Created agent executor: {agent_executor} of type {type(agent_executor)}")
 
         return agent_executor
+
+
+# SOURCE: https://python.langchain.com/docs/how_to/callbacks_runtime/
+class SandboxLoggingHandler(BaseCallbackHandler):
+    """
+    A callback handler for logging events during agent execution.
+
+    This class inherits from BaseCallbackHandler and provides methods to log
+    events related to chat model start, LLM end, chain start, and chain end.
+    """
+
+    def on_chat_model_start(
+        self,
+        serialized: dict[str, Any],
+        messages: list[list[BaseMessage]],
+        **kwargs: Any,
+    ) -> None:
+        """
+        Log when a chat model starts running.
+
+        Args:
+            serialized (Dict[str, Any]): The serialized chat model.
+            messages (List[List[BaseMessage]]): The messages to be processed by the chat model.
+            **kwargs (Any): Additional keyword arguments.
+        """
+        print("Chat model started")
+
+    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+        """
+        Log when an LLM (Language Model) finishes running.
+
+        Args:
+            response (LLMResult): The result from the LLM.
+            **kwargs (Any): Additional keyword arguments.
+        """
+        print(f"Chat model ended, response: {response}")
+
+    def on_chain_start(
+        self,
+        serialized: dict[str, Any],
+        inputs: dict[str, Any],
+        **kwargs: Any,
+    ) -> None:
+        """
+        Log when a chain starts running.
+
+        Args:
+            serialized (Dict[str, Any]): The serialized chain.
+            inputs (Dict[str, Any]): The inputs to the chain.
+            **kwargs (Any): Additional keyword arguments.
+        """
+        print(f"Chain {serialized.get('name')} started")
+
+    def on_chain_end(self, outputs: dict[str, Any], **kwargs: Any) -> None:
+        """
+        Log when a chain finishes running.
+
+        Args:
+            outputs (Dict[str, Any]): The outputs from the chain.
+            **kwargs (Any): Additional keyword arguments.
+        """
+        print(f"Chain ended, outputs: {outputs}")
 
 
 class AsyncLoggingCallbackHandler(AsyncCallbackHandler):
@@ -563,3 +628,31 @@ class AsyncLoggingCallbackHandler(AsyncCallbackHandler):
         )
         LOGGER.info(f"on_custom_event | inspect: {inspect.signature(self.on_custom_event)}")
         await LOGGER.complete()
+
+
+# NOTE: Sequence[MessageLikeRepresentation]
+# Sequence[MessageLikeRepresentation]
+def format_user_message(message: str) -> dict[str, list[tuple[str, str]]]:
+    """
+    Format a user message into a dictionary for use with agent_executor.invoke().
+
+    Args:
+        message (str): The user message to format.
+
+    Returns:
+        dict[str, list[tuple[str, str]]]: A dictionary containing the formatted message.
+    """
+    return {"messages": [("user", message)]}
+
+
+def format_user_input(message: str) -> dict[str, str]:
+    """
+    Format a user message into a dictionary for use with agent_executor.invoke().
+
+    Args:
+        message (str): The user message to format.
+
+    Returns:
+        dict[str, str]: A dictionary containing the formatted message as the input.
+    """
+    return {"input": message}

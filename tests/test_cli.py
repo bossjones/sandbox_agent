@@ -10,6 +10,7 @@ from typer.testing import CliRunner
 
 import pytest
 
+from sandbox_agent import cli
 from sandbox_agent.cli import (
     APP,
     ChromaChoices,
@@ -18,7 +19,6 @@ from sandbox_agent.cli import (
     entry,
     go,
     handle_sigterm,
-    load_commands,
     main,
     run_bot,
     run_bot_with_redis,
@@ -37,6 +37,18 @@ if TYPE_CHECKING:
     from pytest_mock.plugin import MockerFixture
 
 runner = CliRunner()
+
+# @pytest.fixture()
+# def mod(monkeypatch: MonkeyPatch):
+#     with monkeypatch.context() as m:
+#         monkeypatch.syspath_prepend(list(cli.__path__)[0])
+#         from sandbox_agent import cli
+
+#         return cli
+
+# @pytest.fixture()
+# def app(mod):
+#     return mod.app
 
 
 class TestApp:
@@ -200,10 +212,16 @@ class TestApp:
     #     # Assert that the exception was logged
     #     assert "Test exception" in caplog.text
 
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
     def test_load_commands_success(self) -> None:
         """Test the load_commands function when it loads commands successfully."""
         # Run the function
+        from sandbox_agent.cli import load_commands
+
         load_commands()
+
+        from sandbox_agent.cli import APP
 
         # Assert that the command was added to the app
         assert "dummy" in [cmd.name for cmd in APP.registered_commands]

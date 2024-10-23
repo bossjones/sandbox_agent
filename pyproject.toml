@@ -1141,7 +1141,7 @@ unsafe-fixes = false
 # ===========================[ RUFF lint ]========================
 [tool.ruff.lint]
 # On top of the default `select` (`E4`, E7`, `E9`, and `F`), enable flake8-bugbear (`B`) and flake8-quotes (`Q`).
-extend-select = ["I"]
+extend-select = ["I", "N812"]
 unfixable = [
     "ERA", # do not autoremove commented out code
 ]
@@ -1212,6 +1212,7 @@ select = [
     "D",    # pydocstyle
     "C90",  # mccabe
     "I002", # from __future__ import annotations
+    "N812", # lowercase-imported-as-non-lowercase (N812) - Derived from the pep8-naming linter.
 
     # # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible. Ignoring `one-blank-line-before-class`.
     # # warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.

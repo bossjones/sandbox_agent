@@ -1,0 +1,11 @@
+{
+  "dependencies": ["./src/sandbox_agent"],
+  "graphs": {
+    "basic": "./src/sandbox_agent/ai/workflows/basic.py:graph"
+  },
+  "env": "./.env.langraph",
+  "python_version": "3.12",
+  "dockerfile_lines": [
+    "RUN apt-get update && apt-get install -y git"
+  ]
+}

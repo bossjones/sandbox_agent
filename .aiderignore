@@ -340,3 +340,4 @@ tests/services/cassettes/.*
 src/sandbox_agent/data/chroma/vectorstorage/
 notebooks/travel2.backup.sqlite
 notebooks/travel2.sqlite
+.env.langraph

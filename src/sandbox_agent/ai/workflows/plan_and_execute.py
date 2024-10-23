@@ -64,24 +64,7 @@ Update your plan accordingly. If no more steps are needed and you can return to 
 # Create the replanner using the prompt and a ChatOpenAI model
 replanner = REPLANNER_PROMPT | ChatOpenAI(model="gpt-4o", temperature=0).with_structured_output(Act)
 
-# def _print_event(event: dict, _printed: set, max_length=1500):
-#     current_state = event.get("dialog_state")
-#     if current_state:
-#         print("Currently in: ", current_state[-1])
-#     message = event.get("messages")
-#     if message:
-#         if isinstance(message, list):
-#             message = message[-1]
-#         if message.id not in _printed:
-#             msg_repr = message.pretty_repr(html=True)
-#             if len(msg_repr) > max_length:
-#                 msg_repr = msg_repr[:max_length] + " ... (truncated)"
-#             print(msg_repr)
-#             _printed.add(message.id)
 
-
-# @pysnooper.snoop(thread_info=True, max_variable_length=None, depth=10)
-# @pysnooper.snoop()
 async def execute_step(state: PlanExecute) -> dict[str, Any]:
     """
     Execute a step in the plan.
@@ -105,8 +88,6 @@ async def execute_step(state: PlanExecute) -> dict[str, Any]:
     }
 
 
-# @pysnooper.snoop(thread_info=True, max_variable_length=None, depth=10)
-# @pysnooper.snoop()
 async def plan_step(state: PlanExecute) -> dict[str, list[str]]:
     """
     Create a plan based on the input state.
@@ -158,8 +139,6 @@ def should_end(state: PlanExecute) -> Literal["agent", "__end__"]:
         return "agent"
 
 
-# @pysnooper.snoop(thread_info=True, max_variable_length=None, watch=["workflow"], depth=10)
-# @pysnooper.snoop(thread_info=True, max_variable_length=None, depth=10)
 @pysnooper.snoop()
 def build_workflow() -> CompiledStateGraph:
     """
@@ -233,10 +212,6 @@ class WorkflowFactory:
 
         if agent_type == "plan_and_execute":
             return build_compiled_workflow()
-        elif agent_type == "basic":
-            from sandbox_agent.ai.workflows.basic import graph
-
-            return graph
         # Add more agent types and their corresponding workflows as needed
         else:
             raise ValueError(f"Unsupported agent type: {agent_type}")

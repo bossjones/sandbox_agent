@@ -27,7 +27,8 @@ services:
     #   timeout: 5s
     #   retries: 5
     healthcheck:
-      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      test: "pg_isready -U langchain -d langchain"
+      # test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
       interval: "10s"
       timeout: "5s"
       retries: 5
@@ -106,7 +107,7 @@ services:
     image: grafana/grafana
     container_name: grafana_sbx
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_SECURITY_ADMIN_PASSWORD: foobar
       GF_USERS_ALLOW_SIGN_UP: false
       GRAFANA_USERNAME: admin
       GRAFANA_PASSWORD: foobar
@@ -148,76 +149,76 @@ services:
     networks:
       - net
 
-  server:
-    # image: server
-    image: chromadb/chroma:latest
-    container_name: chroma_sbx
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    volumes:
-      # Be aware that indexed data are located in "/chroma/chroma/"
-      # Default configuration for persist_directory in chromadb/config.py
-      # Read more about deployments: https://docs.trychroma.com/deployment
-      # - chroma-data:/chroma/chroma
-      - ./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw
+  # server:
+  #   # image: server
+  #   image: chromadb/chroma:latest
+  #   container_name: chroma_sbx
+  #   # build:
+  #   #   context: .
+  #   #   dockerfile: Dockerfile
+  #   volumes:
+  #     # Be aware that indexed data are located in "/chroma/chroma/"
+  #     # Default configuration for persist_directory in chromadb/config.py
+  #     # Read more about deployments: https://docs.trychroma.com/deployment
+  #     # - chroma-data:/chroma/chroma
+  #     - ./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw
 
-    command: "--workers 1 --host 0.0.0.0 --port 9010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
-      \ 30"
-    environment:
-      - IS_PERSISTENT=TRUE
-      - ALLOW_RESET=TRUE
-      - CHROMA_SERVER_AUTHN_PROVIDER=${CHROMA_SERVER_AUTHN_PROVIDER}
-      - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=${CHROMA_SERVER_AUTHN_CREDENTIALS_FILE}
-      - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
-      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=${CHROMA_AUTH_TOKEN_TRANSPORT_HEADER}
-      - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
+  #   command: "--workers 1 --host 0.0.0.0 --port 9010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
+  #     \ 30"
+  #   environment:
+  #     - IS_PERSISTENT=TRUE
+  #     - ALLOW_RESET=TRUE
+  #     - CHROMA_SERVER_AUTHN_PROVIDER=${CHROMA_SERVER_AUTHN_PROVIDER}
+  #     - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=${CHROMA_SERVER_AUTHN_CREDENTIALS_FILE}
+  #     - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+  #     - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=${CHROMA_AUTH_TOKEN_TRANSPORT_HEADER}
+  #     - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
 
-      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
+  #     - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
 
-      - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
+  #     - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
 
-    ports:
-      - "9010:9010"
-    healthcheck:
-      # Adjust below to match your container port
-      test:
-        - "CMD"
-        - "curl"
-        - "-f"
-        - "http://localhost:9010/api/v1/heartbeat"
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - net
+  #   ports:
+  #     - "9010:9010"
+  #   healthcheck:
+  #     # Adjust below to match your container port
+  #     test:
+  #       - "CMD"
+  #       - "curl"
+  #       - "-f"
+  #       - "http://localhost:9010/api/v1/heartbeat"
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - net
 
-  # NOTE: Use http://host.docker.internal:9010 to access the server from the admin container
-  chromadb-admin:
-    image: "fengzhichao/chromadb-admin:latest"
-    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
-    # hostname: 'chromadb-admin'
-    ports:
-      - "4001:3000/tcp"
-    container_name: chromadb-admin-sbx
-    expose:
-      - 4001
-    restart: unless-stopped
-    networks:
-      - net
-    # depends_on:
-    # - server
-    depends_on:
-      server:
-        condition: service_started
+  # # NOTE: Use http://host.docker.internal:9010 to access the server from the admin container
+  # chromadb-admin:
+  #   image: "fengzhichao/chromadb-admin:latest"
+  #   # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+  #   # hostname: 'chromadb-admin'
+  #   ports:
+  #     - "4001:3000/tcp"
+  #   container_name: chromadb-admin-sbx
+  #   expose:
+  #     - 4001
+  #   restart: unless-stopped
+  #   networks:
+  #     - net
+  #   # depends_on:
+  #   # - server
+  #   depends_on:
+  #     server:
+  #       condition: service_started
 
   redis:
     image: bitnami/redis:6.2.10

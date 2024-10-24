@@ -331,6 +331,18 @@ dc-reset:
 	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
 	rye run db_upgrade
 
+dc-reset-logs:
+	docker compose down -v
+	@docker network rm net || true
+	@docker volume rm sbx_pgdata || true
+	@docker volume rm sbx_pgadmindata || true
+	@docker volume rm sbx_goob_redis_data || true
+	sleep 30
+	docker compose up -d
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+	rye run db_upgrade
+	docker compose logs -f | ccze -A
+
 dc-postgres-tuning:
 	docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c max_connections=40
 

@@ -1,4 +1,10 @@
 -- Adjust PostgreSQL configuration parameters
+-- DB Version: 17
+-- OS Type: linux
+-- DB Type: dw
+-- Total Memory (RAM): 4 GB
+-- Data Storage: ssd
+-- SOURCE: https://pgtune.leopard.in.ua/
 
 ALTER SYSTEM SET max_connections = 40;
 ALTER SYSTEM SET shared_buffers = '1GB';
@@ -18,6 +24,7 @@ ALTER SYSTEM SET log_min_duration_statement = 0;
 ALTER SYSTEM SET log_connections = 'on';
 ALTER SYSTEM SET log_disconnections = 'on';
 ALTER SYSTEM SET log_error_verbosity = 'verbose';
+ALTER SYSTEM SET log_destination = 'stderr';
 
 -- Reload the PostgreSQL configuration
 SELECT pg_reload_conf();

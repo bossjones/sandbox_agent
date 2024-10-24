@@ -663,6 +663,8 @@ class AioSettings(BaseSettings):
         "temperature": 0,
         "max_tokens": 2000
     }"""
+
+    # vectorstore_default_settings: {"sklearn": {"documents":[], "embedding": }}
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
     #     driver=os.environ.get("PGVECTOR_DRIVER", "psycopg"),
@@ -715,6 +717,21 @@ class AioSettings(BaseSettings):
     #     description="Dimensions of each embedding model",
     #     default_factory=lambda: EMBEDDING_MODEL_DIMENSIONS_DATA,
     # )
+    sklearn_persist_path: str = Field(
+        env="SKLEARN_PERSIST_PATH",
+        description="Path to persist the SKLearn vector store",
+        default="db",
+    )
+    sklearn_serializer: Literal["json", "bson", "parquet"] = Field(
+        env="SKLEARN_SERIALIZER",
+        description="Serializer for the SKLearn vector store",
+        default="json",
+    )
+    sklearn_metric: str = Field(
+        env="SKLEARN_METRIC",
+        description="Metric for the SKLearn vector store",
+        default="cosine",
+    )
 
     # Evaluation settings
     eval_max_concurrency: int = Field(

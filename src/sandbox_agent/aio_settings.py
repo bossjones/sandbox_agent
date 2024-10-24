@@ -466,7 +466,7 @@ class AioSettings(BaseSettings):
 
     # Variables for Redis
     redis_host: str = "localhost"
-    redis_port: int = 7600
+    redis_port: int = 8600
     redis_user: Optional[str] = None
     redis_pass: SecretStr | None = None
     redis_base: Optional[int] = None
@@ -478,9 +478,9 @@ class AioSettings(BaseSettings):
 
     # Variables for ChromaDB
 
-    # client = chromadb.HttpClient(host="localhost", port="8010", settings=Settings(allow_reset=True))
+    # client = chromadb.HttpClient(host="localhost", port="9010", settings=Settings(allow_reset=True))
     chroma_host: str = "localhost"
-    chroma_port: str = "8010"
+    chroma_port: str = "9010"
     enable_chroma: bool = True
 
     dev_mode: bool = Field(env="DEV_MODE", description="enable dev mode", default=False)
@@ -647,7 +647,7 @@ class AioSettings(BaseSettings):
     #     password=os.environ.get("PGVECTOR_PASSWORD", "langchain"),
     # )
     postgres_host: str = "localhost"
-    postgres_port: int = 7432
+    postgres_port: int = 8432
     postgres_password: Optional[str] = "langchain"
     postgres_driver: Optional[str] = "psycopg"
     postgres_database: Optional[str] = "langchain"

@@ -13,13 +13,13 @@ services:
 # docker run --name pgvector-container -e POSTGRES_USER=langchain -e POSTGRES_PASSWORD=langchain -e POSTGRES_DB=langchain -p 6024:5432 -d pgvector/pgvector:pg16
   pgdatabase:
     image: pgvector/pgvector:0.7.4-pg16
-    container_name: pgvector16
+    container_name: pgvector16_sbx
     ports:
-      - 7432:5432
+      - 8432:5432
     volumes:
       # This script initialises the DB for integration tests
       # - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
-      - pgdata:/var/lib/postgresql/data
+      - sbx_pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=langchain
       - POSTGRES_USER=langchain
@@ -42,12 +42,12 @@ services:
     ports:
       - "${PGADMIN_PORT:-4000}:80"
     volumes:
-      - pgadmindata:/var/lib/pgadmin
+      - sbx_pgadmindata:/var/lib/pgadmin
 
   server:
     # image: server
     image: chromadb/chroma:latest
-    container_name: chroma
+    container_name: chroma_sbx
     # build:
     #   context: .
     #   dockerfile: Dockerfile
@@ -58,7 +58,7 @@ services:
       # - chroma-data:/chroma/chroma
       - ./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw
 
-    command: "--workers 1 --host 0.0.0.0 --port 8010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
+    command: "--workers 1 --host 0.0.0.0 --port 9010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
       \ 30"
     environment:
       - IS_PERSISTENT=TRUE
@@ -82,30 +82,30 @@ services:
     restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
 
     ports:
-      - "8010:8010"
+      - "9010:9010"
     healthcheck:
       # Adjust below to match your container port
       test:
         - "CMD"
         - "curl"
         - "-f"
-        - "http://localhost:8010/api/v1/heartbeat"
+        - "http://localhost:9010/api/v1/heartbeat"
       interval: 30s
       timeout: 10s
       retries: 3
     networks:
       - net
 
-  # NOTE: Use http://host.docker.internal:8010 to access the server from the admin container
+  # NOTE: Use http://host.docker.internal:9010 to access the server from the admin container
   chromadb-admin:
     image: "fengzhichao/chromadb-admin:latest"
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     # hostname: 'chromadb-admin'
     ports:
-      - "3000:3000/tcp"
-    container_name: chromadb-admin
+      - "4001:3000/tcp"
+    container_name: chromadb-admin-sbx
     expose:
-      - 3000
+      - 4001
     restart: unless-stopped
     networks:
       - net
@@ -117,27 +117,27 @@ services:
 
   redis:
     image: bitnami/redis:6.2.10
-    hostname: "goob-redis"
+    hostname: "goob-redis-sbx"
     restart: always
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
-      REDIS_PORT_NUMBER: 7600
+      REDIS_PORT_NUMBER: 8600
     healthcheck:
       test: redis-cli ping
       interval: 1s
       timeout: 3s
       retries: 50
     ports:
-      - "7600:7600"
+      - "8600:8600"
     volumes:
-      - 'goob_redis_data:/bitnami/redis/data'
+      - 'sbx_goob_redis_data:/bitnami/redis/data'
 
 volumes:
-  goob_redis_data:
+  sbx_goob_redis_data:
     driver: local
-  pgdata:
+  sbx_pgdata:
     name: ${PGVECTOR_VOLUME_NAME:-pgdata}
-  pgadmindata:
+  sbx_pgadmindata:
     name: ${PGADMIN_VOLUME_NAME:-pgadmindata}
   # breviaappdata:
   #   name: ${BREVIA_APP_VOLUME_NAME:-breviaapp}

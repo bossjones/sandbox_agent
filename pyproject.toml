@@ -310,7 +310,7 @@ typecheck = {chain = [
 "docs:changelog" = "towncrier build --version main --draft"
 "ci:mypy" = "mypy  --config-file=pyproject.toml --html-report typingcov --cobertura-xml-report typingcov_cobertura --xml-report typingcov_xml --txt-report typingcov_txt ."
 "open:mypy-coverage" = "open typingcov/index.html"
-"open:chroma" = "open http://127.0.0.1:3000"
+"open:chroma" = "open http://127.0.0.1:4001"
 "open:zipkin" = "open http://127.0.0.1:9411"
 "open:otel" = "open http://127.0.0.1:4317"
 "open:coverage" = "just local-open-coverage"

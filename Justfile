@@ -331,6 +331,10 @@ dc-reset:
 	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
 	rye run db_upgrade
 
+dc-postgres-tuning:
+	docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c max_connections=40
+
+# -c 'shared_buffers=1GB' -c 'effective_cache_size=3GB' -c 'maintenance_work_mem=512MB' -c 'checkpoint_completion_target=0.9' -c 'wal_buffers=16MB' -c 'default_statistics_target=500' -c 'random_page_cost=1.1' -c 'effective_io_concurrency=200' -c 'work_mem=6553kB' -c 'huge_pages=off' -c 'min_wal_size=4GB' -c 'max_wal_size=16GB'
 
 nltk-download:
 	rye run python -m nltk.downloader popular

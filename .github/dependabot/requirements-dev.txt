@@ -144,6 +144,8 @@ brotli==1.1.0
 bs4==0.0.2
     # via pyinspect
     # via pypi-command-line
+bson==0.5.10
+    # via sandbox-agent
 build==1.2.1
     # via chromadb
 bump-pydantic==0.8.0
@@ -1014,7 +1016,7 @@ packaging==24.1
     # via validate-pyproject
 paginate==0.5.7
     # via mkdocs-material
-pandas==2.2.2
+pandas==2.2.3
     # via datasets
     # via sandbox-agent
     # via simpletransformers
@@ -1151,6 +1153,7 @@ pure-eval==0.2.3
     # via stack-data
 pyarrow==17.0.0
     # via datasets
+    # via sandbox-agent
     # via streamlit
 pyasn1==0.6.0
     # via pyasn1-modules
@@ -1300,6 +1303,7 @@ pytest-retry==1.6.3
 pytest-skip-slow==0.0.5
 pytest-sugar==1.0.0
 python-dateutil==2.9.0.post0
+    # via bson
     # via faker
     # via ghp-import
     # via jupyter-client
@@ -1480,7 +1484,8 @@ safetensors==0.4.4
     # via transformers
 scenedetect==0.6.4
     # via sandbox-agent
-scikit-learn==1.5.1
+scikit-learn==1.5.2
+    # via sandbox-agent
     # via sentence-transformers
     # via seqeval
     # via simpletransformers
@@ -1524,6 +1529,7 @@ six==1.16.0
     # via asttokens
     # via bleach
     # via blessed
+    # via bson
     # via docker-pycreds
     # via html5lib
     # via jsbeautifier

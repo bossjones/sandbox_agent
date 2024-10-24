@@ -656,6 +656,30 @@ def format_user_message(message: str) -> dict[str, list[tuple[str, str]]]:
     return {"messages": [("user", message)]}
 
 
+def format_adaptive_rag_input(message: str) -> dict[str, str]:
+    """
+    Format a user message into a dictionary for use with adaptive RAG agent.
+
+    This function takes a user message and formats it into a dictionary
+    suitable for use with an adaptive RAG (Retrieval-Augmented Generation) agent.
+    It includes the original message as the 'question' and sets a default
+    'max_retries' value.
+
+    Args:
+        message (str): The user message to format.
+
+    Returns:
+        dict[str, Any]: A dictionary containing the formatted message as the question
+                        and a default max_retries value.
+
+    Example:
+        >>> format_adaptive_rag_input("What is the capital of France?")
+        {'question': 'What is the capital of France?', 'max_retries': 3}
+    """
+
+    return {"question": message, "max_retries": 3}
+
+
 def format_user_input(message: str) -> dict[str, str]:
     """
     Format a user message into a dictionary for use with agent_executor.invoke().

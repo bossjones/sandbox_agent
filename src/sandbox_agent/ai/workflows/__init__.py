@@ -232,13 +232,21 @@ class WorkflowFactory:
         agent_type = aiosettings.agent_type
 
         if agent_type == "plan_and_execute":
+            logger.warning("Using plan and execute workflow")
             return build_compiled_workflow()
         elif agent_type == "basic":
+            logger.warning("Using basic workflow")
             from sandbox_agent.ai.workflows.basic import graph
 
             return graph
         elif agent_type == "advanced":
+            logger.warning("Using advanced workflow")
             from sandbox_agent.ai.workflows.advanced import graph
+
+            return graph
+        elif agent_type == "adaptive_rag":
+            logger.warning("Using adaptive RAG workflow")
+            from sandbox_agent.ai.workflows.adaptive_rag import graph
 
             return graph
         # Add more agent types and their corresponding workflows as needed

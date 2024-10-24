@@ -328,3 +328,7 @@ dc-reset:
 	@docker volume rm sbx_goob_redis_data || true
 	sleep 30
 	docker compose up -d
+
+nltk-download:
+	rye run python -m nltk.downloader popular
+	rye run python -m nltk.downloader punkt_tab

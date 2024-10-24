@@ -9,6 +9,7 @@ from functools import lru_cache
 from urllib import parse
 
 from langchain_community.vectorstores.pgembedding import CollectionStore
+from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import DatabaseError
@@ -23,17 +24,19 @@ from sandbox_agent.aio_settings import aiosettings
 def connection_string() -> str:
     """Postgres+pgvector db connection string"""
     conf = aiosettings
-    if conf.pgvector_dsn_uri:
-        return conf.pgvector_dsn_uri
+    if conf.postgres_url:
+        logger.info(f"Using postgres_url: conf.postgres_url={conf.postgres_url}")
+        return conf.postgres_url
 
-    driver = conf.pgvector_driver
-    host = conf.pgvector_host
-    port = conf.pgvector_port
-    database = conf.pgvector_database
-    user = conf.pgvector_user
-    password = parse.quote_plus(conf.pgvector_password.get_secret_value())
+    driver = conf.postgres_driver
+    host = conf.postgres_host
+    port = conf.postgres_port
+    database = conf.postgres_database
+    user = conf.postgres_user
+    password = parse.quote_plus(conf.postgres_password)
 
     # return f"postgresql+{driver}://{user}:{password}@{host}:{port}/{database}"
+    logger.info(f"Using postgres_url: aiosettings.postgres_url={aiosettings.postgres_url}")
     return aiosettings.postgres_url
 
 
@@ -67,11 +70,12 @@ def psql_command(
 ) -> bool:
     """Perform command on db using `psql`"""
     conf = aiosettings
-    host = conf.pgvector_host
-    port = conf.pgvector_port
-    database = conf.pgvector_database
-    user = conf.pgvector_user
-    password = conf.pgvector_password.get_secret_value()
+    host = conf.postgres_host
+    port = conf.postgres_port
+    database = conf.postgres_database
+    user = conf.postgres_user
+    password = conf.postgres_password
+    logger.info(f"psql command: host={host}, port={port}, database={database}, user={user}")
 
     cmd = ["psql", "-U", user, "-h", host, "-p", f"{port}", "-c", cmd, database]
 

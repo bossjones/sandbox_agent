@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from h11 import Response
 from langchain.docstore.document import Document
@@ -25,26 +26,54 @@ from sandbox_agent.ai.index import (
     update_links_documents,
 )
 from sandbox_agent.aio_settings import aiosettings
+from sandbox_agent.vendored.brevia.brevia.settings import get_settings
 
 
-def test_load_pdf_file():
-    """Test load_pdf_file method"""
+if TYPE_CHECKING:
+    from _pytest.capture import CaptureFixture
+    from _pytest.logging import LogCaptureFixture
+
+
+def test_load_pdf_file(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the load_pdf_file method.
+
+    This test verifies that a PDF file is loaded correctly into a collection.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     collection = create_collection("test_collection", {})
     file_path = f"{Path(__file__).parent}/files/docs/empty.pdf"
     result = load_pdf_file(file_path=file_path, collection_name=collection.name)
     assert result == 1
 
 
-def test_load_pdf_file_fail():
-    """Test load_pdf_file failure"""
+def test_load_pdf_file_fail(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the load_pdf_file method for failure.
+
+    This test checks that a FileNotFoundError is raised when a non-existent file is loaded.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     file_path = f"{Path(__file__).parent}/files/notfound.pdf"
     with pytest.raises(FileNotFoundError) as exc:
         load_pdf_file(file_path=file_path, collection_name="test")
     assert str(exc.value) == file_path
 
 
-def test_update_links_documents():
-    """Test update_links_documents method with zero results"""
+def test_update_links_documents(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the update_links_documents method.
+
+    This test verifies that the update_links_documents method returns zero results
+    when no documents are updated.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     result = update_links_documents("test")
     assert result == 0
 
@@ -57,8 +86,16 @@ def test_update_links_documents():
 
 @pytest.mark.flaky
 @pytest.mark.skip(reason="Not implemented")
-def test_document_has_changed():
-    """Test document_has_changed method"""
+def test_document_has_changed(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the document_has_changed method.
+
+    This test checks if the document_has_changed method correctly identifies changes
+    in document metadata.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     collection = create_collection("test", {})
 
     doc1 = Document(page_content="some", metadata={})
@@ -109,8 +146,15 @@ def _raise_http_err():
 #     assert meta[0]["cmetadata"].get("http_error") is None
 
 
-def test_select_load_link_options():
-    """Test select_load_link_options method"""
+def test_select_load_link_options(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the select_load_link_options method.
+
+    This test verifies that the correct selector is returned based on the URL.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     options = [{"url": "example.com", "selector": "test"}]
     result = select_load_link_options(url="example.com", options=options)
     assert result == {"selector": "test"}
@@ -122,8 +166,15 @@ def test_select_load_link_options():
     assert result == {}
 
 
-def test_custom_split():
-    """Test split_documents method with custom splitter class"""
+def test_custom_split(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the split_document method with a custom splitter class.
+
+    This test checks that the document is split correctly using a custom splitter.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     doc1 = Document(page_content="some content? no", metadata={"type": "questions"})
     cls = "langchain_text_splitters.character.RecursiveCharacterTextSplitter"
     texts = split_document(doc1, {"splitter": cls})
@@ -131,9 +182,16 @@ def test_custom_split():
     assert len(texts) == 1
 
 
-def test_add_document_custom_split():
-    """Test add_document method with custom splitter in settings"""
-    settings = get_settings()
+def test_add_document_custom_split(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the add_document method with a custom splitter in settings.
+
+    This test verifies that a document is added correctly using a custom splitter.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
+    settings = aiosettings
     current_splitter = settings.text_splitter
     settings.text_splitter = {"splitter": "langchain_text_splitters.character.RecursiveCharacterTextSplitter"}
     doc1 = Document(page_content="some content? no", metadata={"type": "questions"})
@@ -143,8 +201,15 @@ def test_add_document_custom_split():
     settings.text_splitter = current_splitter
 
 
-def test_create_splitter_chunk_params():
-    """Test create_splitter method"""
+def test_create_splitter_chunk_params(caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
+    """Test the create_splitter method.
+
+    This test verifies that the splitter is created with the correct chunk parameters.
+
+    Args:
+        caplog (LogCaptureFixture): Fixture to capture log messages.
+        capsys (CaptureFixture): Fixture to capture stdout and stderr.
+    """
     splitter = create_splitter({"chunk_size": 2222, "chunk_overlap": 333})
 
     assert isinstance(splitter, NLTKTextSplitter)

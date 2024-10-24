@@ -328,7 +328,13 @@ dc-reset:
 	@docker volume rm sbx_goob_redis_data || true
 	sleep 30
 	docker compose up -d
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+	rye run db_upgrade
+
 
 nltk-download:
 	rye run python -m nltk.downloader popular
 	rye run python -m nltk.downloader punkt_tab
+
+wait-until-postgres-ready:
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300

@@ -20,12 +20,30 @@ services:
       # This script initialises the DB for integration tests
       # - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
       - sbx_pgdata:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    healthcheck:
+      test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
     environment:
       - POSTGRES_PASSWORD=langchain
       - POSTGRES_USER=langchain
+      - PGUSER=langchain
       - POSTGRES_DB=langchain
       - POSTGRES_HOST_AUTH_METHOD=trust
-
+      - TZ=America/New_York
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     restart: unless-stopped
 
     networks:
@@ -41,6 +59,7 @@ services:
     #             -c log_error_verbosity=verbose
   pgadmin:
     image: dpage/pgadmin4
+    container_name: pgadmin4_sbx
     profiles:
       - "admin"
     environment:
@@ -51,6 +70,56 @@ services:
     volumes:
       - sbx_pgadmindata:/var/lib/pgadmin
 
+    networks:
+      - net
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus_sbx
+    volumes:
+      - ./docker/prometheus/:/etc/prometheus/
+      - sbx_prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - "${PROMETHEUS_PORT:-9999}:9090"
+    restart: unless-stopped
+    networks:
+      - net
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana_sbx
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: false
+    volumes:
+      - sbx_grafana:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT:-3333}:3000"
+    restart: unless-stopped
+    networks:
+      - net
+
+  postgresql-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgresql-exporter_sbx
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgres://langchain:langchain@pgdatabase:5432/langchain?sslmode=disable"
+      POSTGRES_PASSWORD: langchain
+      POSTGRES_USER: langchain
+      POSTGRES_DB: langchain
+    depends_on:
+      prometheus:
+        condition: service_started
+      pgdatabase:
+        condition: service_healthy
+    restart: unless-stopped
     networks:
       - net
 
@@ -149,6 +218,10 @@ volumes:
     name: ${PGVECTOR_VOLUME_NAME:-pgdata}
   sbx_pgadmindata:
     name: ${PGADMIN_VOLUME_NAME:-pgadmindata}
+  sbx_postgresql:
+  sbx_prometheus:
+  sbx_grafana:
+  sbx_postgresql-exporter:
   # breviaappdata:
   #   name: ${BREVIA_APP_VOLUME_NAME:-breviaapp}
   # breviaapidata:

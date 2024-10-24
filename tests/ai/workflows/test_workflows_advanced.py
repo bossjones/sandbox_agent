@@ -21,9 +21,9 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
-@pytest.mark.asyncio
-@pytest.mark.vcronly
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
+@pytest.mark.vcronly()
 @pytest.mark.default_cassette("test_call_model.yaml")
 @pytest.mark.vcr(
     allow_playback_repeats=True,
@@ -53,7 +53,7 @@ async def test_call_model(caplog: LogCaptureFixture, capsys: CaptureFixture, vcr
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_tool_node() -> None:
     """Test the tool_node function."""
     state: AgentState = {
@@ -78,7 +78,7 @@ def test_tool_node() -> None:
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_should_continue_with_tool_calls() -> None:
     """Test the should_continue function when there are tool calls."""
     state: AgentState = {"messages": [ToolMessage(content="Test", name="test", tool_call_id="id")]}
@@ -89,7 +89,7 @@ def test_should_continue_with_tool_calls() -> None:
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_should_continue_without_tool_calls() -> None:
     """Test the should_continue function when there are no tool calls."""
     state: AgentState = {"messages": [BaseMessage(content="Test")]}
@@ -100,7 +100,7 @@ def test_should_continue_without_tool_calls() -> None:
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_workflow_instance() -> None:
     """Test the workflow instance."""
     assert isinstance(workflow, StateGraph)
@@ -110,16 +110,16 @@ def test_workflow_instance() -> None:
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_graph_instance() -> None:
     """Test the graph instance."""
     assert callable(graph)
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
-@pytest.mark.asyncio
-@pytest.mark.vcronly
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
+@pytest.mark.vcronly()
 @pytest.mark.default_cassette("test_graph_execution.yaml")
 @pytest.mark.vcr(
     allow_playback_repeats=True,
@@ -147,9 +147,9 @@ async def test_graph_execution(caplog: LogCaptureFixture, capsys: CaptureFixture
 
 
 @pytest.mark.skip(reason="This test is not working yet")
-@pytest.mark.flaky
-@pytest.mark.asyncio
-@pytest.mark.vcronly
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
+@pytest.mark.vcronly()
 @pytest.mark.default_cassette("test_workflow_execution.yaml")
 @pytest.mark.vcr(
     allow_playback_repeats=True,

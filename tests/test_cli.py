@@ -96,7 +96,7 @@ class TestApp:
         assert choice.value == choice.name
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_load_commands(self) -> None:
         """Test the load_commands function."""
         from sandbox_agent.cli import load_commands
@@ -121,7 +121,7 @@ class TestApp:
         assert "Show sandbox_agent" in result.stdout
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_main(self, mocker: MockerFixture) -> None:
         """Test the main function."""
         # Mock load_commands
@@ -134,7 +134,7 @@ class TestApp:
         mock_load_commands.assert_called_once()
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_entry(self, mocker: MockerFixture) -> None:
         """Test the entry function."""
         # Mock load_commands
@@ -213,7 +213,7 @@ class TestApp:
     #     assert "Test exception" in caplog.text
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_load_commands_success(self) -> None:
         """Test the load_commands function when it loads commands successfully."""
         # Run the function
@@ -259,12 +259,12 @@ class TestApp:
 
 
 @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 class TestPgVectorAppCommands:
     """Test the pgvector commands."""
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_export_collection(self, mocker: MockerFixture) -> None:
         """Test the export_collection command."""
         mock_export_collection_data = mocker.spy(cli, "export_collection_data")
@@ -278,7 +278,7 @@ class TestPgVectorAppCommands:
         mock_export_collection_data.assert_called_once_with(folder_path=folder_path, collection=collection)
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_import_collection(self, mocker: MockerFixture) -> None:
         """Test the import_collection command."""
         mock_import_collection_data = mocker.spy(cli, "import_collection_data")
@@ -292,7 +292,7 @@ class TestPgVectorAppCommands:
         mock_import_collection_data.assert_called_once_with(folder_path=folder_path, collection=collection)
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_import_file(self, mocker: MockerFixture) -> None:
         """Test the import_file command."""
         mock_index_file_folder = mocker.spy(cli, "index_file_folder")
@@ -310,7 +310,7 @@ class TestPgVectorAppCommands:
         mock_index_file_folder.assert_called_once_with(file_path=file_path, collection=collection, option1="value1")
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_db_current(self, mocker: MockerFixture) -> None:
         """Test the db_current command."""
         mock_current = mocker.spy(cli, "current")
@@ -321,7 +321,7 @@ class TestPgVectorAppCommands:
         mock_current.assert_called_once_with(True)
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_db_upgrade(self, mocker: MockerFixture) -> None:
         """Test the db_upgrade command."""
         mock_upgrade = mocker.spy(cli, "upgrade")
@@ -334,7 +334,7 @@ class TestPgVectorAppCommands:
         mock_upgrade.assert_called_once_with(revision)
 
     @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
-    @pytest.mark.flaky
+    @pytest.mark.flaky()
     def test_db_downgrade(self, mocker: MockerFixture) -> None:
         """Test the db_downgrade command."""
         mock_downgrade = mocker.spy(cli, "downgrade")

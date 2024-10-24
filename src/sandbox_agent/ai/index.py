@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from logging import getLogger
 from os import path
 from warnings import warn
 
@@ -12,6 +11,7 @@ from langchain_community.vectorstores.pgvector import PGVector
 from langchain_core.documents import Document
 from langchain_text_splitters import NLTKTextSplitter
 from langchain_text_splitters.base import TextSplitter
+from loguru import logger
 from requests import HTTPError
 from sqlalchemy.orm import Session
 
@@ -38,7 +38,7 @@ def init_splitting_data() -> bool:
     try:
         import nltk  # pylint: disable=import-outside-toplevel
 
-        return nltk.download("punkt")
+        return nltk.download("punkt")  # type: ignore
 
     except ImportError as exc:
         raise ImportError("NLTK is not installed!") from exc
@@ -233,11 +233,11 @@ def documents_metadata(
 
 def update_links_documents(collection_name: str) -> int:
     """Update links document contents of a collection, if changed"""
-    log = getLogger(__file__)
-    log.info('Updating links contents in "%s"', collection_name)
+
+    logger.info('Updating links contents in "%s"', collection_name)
     collection = single_collection_by_name(collection_name)
     if collection is None:
-        log.error('Collection "%s" not found', collection_name)
+        logger.error('Collection "%s" not found', collection_name)
         return 0
     docs_meta = documents_metadata(collection_id=collection.uuid, filter={"type": "links"})
     count = 0
@@ -247,7 +247,7 @@ def update_links_documents(collection_name: str) -> int:
                 collection=collection, document_id=doc["custom_id"], document_medatata=doc["cmetadata"]
             )
         except HTTPError as exc:
-            log.error('HTTP Error updating document "%s" - %s', doc["custom_id"], exc)
+            logger.error('HTTP Error updating document "%s" - %s', doc["custom_id"], exc)
             doc["cmetadata"] |= {"http_error": str(exc.response.status_code)}
             update_metadata(collection_id=collection.uuid, document_id=doc["custom_id"], metadata=doc["cmetadata"])
             res = False
@@ -261,7 +261,7 @@ def update_collection_link(collection: CollectionStore, document_id: str, docume
     log = getLogger(__file__)
     url = document_medatata.get("url")
     if not url:
-        log.error('Document "%s" has no URL metadata', document_id)
+        logger.error('Document "%s" has no URL metadata', document_id)
         return False
 
     options = select_load_link_options(url=url, options=collection.cmetadata.get("link_load_options", []))

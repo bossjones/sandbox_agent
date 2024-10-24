@@ -86,7 +86,7 @@ def test_get_all_media_files_to_upload(mocker):
     mock_filter_media.assert_called_once_with(["file1", "file2"])
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_aio_read_jsonfile(tmp_path):
     test_data = {"key": "value"}
     json_file = tmp_path / "test.json"
@@ -97,7 +97,7 @@ async def test_aio_read_jsonfile(tmp_path):
     assert result == test_data
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_aio_json_loads(tmp_path):
     test_data = {"key": "value"}
     json_file = tmp_path / "test.json"
@@ -108,7 +108,7 @@ async def test_aio_json_loads(tmp_path):
     assert result == test_data
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_run_aio_json_loads(tmp_path):
     test_data = {"key": "value"}
     json_file = tmp_path / "test.json"
@@ -156,7 +156,7 @@ def test_rich_format_followers():
     assert result == "[bold bright_white]1000000[/bold bright_white]"
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_aiowrite_file(tmp_path):
     test_data = "Test content"
     test_file = tmp_path / "test.txt"
@@ -164,7 +164,7 @@ async def test_aiowrite_file(tmp_path):
     assert test_file.read_text() == test_data
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_aioread_file(tmp_path):
     test_data = "Test content"
     test_file = tmp_path / "test.txt"

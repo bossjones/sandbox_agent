@@ -101,6 +101,13 @@ class VectorStoreAdapter(ABC):
         """
         pass
 
+    @abstractmethod
+    def get_vectorstore(self) -> type[SKLearnVectorStore]:
+        """
+        Get the vector store.
+        """
+        pass
+
 
 class SKLearnVectorStoreAdapter(VectorStoreAdapter):
     """
@@ -110,7 +117,9 @@ class SKLearnVectorStoreAdapter(VectorStoreAdapter):
     It handles initialization, document addition, searching, persistence, loading, and deletion.
     """
 
-    def __init__(self, vectorstore: type[SKLearnVectorStore], documents: Optional[list[Document]] = None) -> None:
+    def __init__(
+        self, vectorstore: type[SKLearnVectorStore] = SKLearnVectorStore, documents: Optional[list[Document]] = None
+    ) -> None:
         """
         Initialize the SKLearnVectorStoreAdapter.
 
@@ -140,6 +149,7 @@ class SKLearnVectorStoreAdapter(VectorStoreAdapter):
                 f"SKLearnVectorStore.from_documents(documents={repr(documents)}, persist_path={aiosettings.sklearn_persist_path}, embedding={repr(self.embeddings)}, serializer={aiosettings.sklearn_serializer}, metric={aiosettings.sklearn_metric})"
             )
             self.vectorstore: SKLearnVectorStore = vectorstore.from_documents(
+                persist_path=aiosettings.sklearn_persist_path,
                 documents=documents,
                 embedding=self.embeddings,
                 serializer=aiosettings.sklearn_serializer,
@@ -147,6 +157,21 @@ class SKLearnVectorStoreAdapter(VectorStoreAdapter):
             )
             logger.info(f"Persisting SKLearn vector store to {aiosettings.sklearn_persist_path} ....")
             self.vectorstore.persist()
+
+    def get_vectorstore(self) -> SKLearnVectorStore:
+        """
+        Get the vector store.
+
+        Args:
+        ----
+            None
+
+        Returns:
+        -------
+            SKLearnVectorStore: The vector store.
+
+        """
+        return self.vectorstore
 
     def add_documents(self, documents: list[Document]) -> None:
         """
@@ -228,18 +253,17 @@ class SKLearnVectorStoreAdapter(VectorStoreAdapter):
         raise NotImplementedError("Delete method not implemented for SKLearnVectorStore")
 
 
-def get_vector_store_adapter(store_type: str) -> VectorStoreAdapter:
-    """
-    A factory function that creates the appropriate vector store adapter based on the store_type.
-    """
-    logger.info(f"Getting vector store adapter for {store_type} ....")
-    if store_type == "sklearn":
-        return SKLearnVectorStoreAdapter()
-    else:
-        raise ValueError(f"Unsupported vector store adaptor type: {store_type}")
-
-
 class VectorStoreFactory:
+    @staticmethod
+    def get_vector_store_adapter(store_type: str, **kwargs) -> VectorStoreAdapter:
+        """
+        Get the appropriate vector store adapter based on the store_type.
+        """
+        if store_type == "sklearn":
+            return SKLearnVectorStoreAdapter(**kwargs)
+        else:
+            raise ValueError(f"Unsupported vector store adaptor type: {store_type}")
+
     @staticmethod
     def create(
         store_type: str = aiosettings.llm_vectorstore_type,

@@ -125,7 +125,7 @@ async def cleanup() -> AsyncGenerator[None, None]:
 #     mock_open.return_value.__enter__().write.assert_called_once_with(b"test content")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_check_for_attachments_tenor_gif(mockbot: SandboxAgent, mocker: MockerFixture) -> None:
     """
     Test the check_for_attachments method with a Tenor GIF URL.
@@ -147,7 +147,7 @@ async def test_check_for_attachments_tenor_gif(mockbot: SandboxAgent, mocker: Mo
     assert result == expected
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_check_for_attachments_image_url(mockbot: SandboxAgent, mocker: MockerFixture) -> None:
     """
     Test the check_for_attachments method with an image URL.
@@ -170,7 +170,7 @@ async def test_check_for_attachments_image_url(mockbot: SandboxAgent, mocker: Mo
     mock_process_image.assert_called_once_with("https://example.com/image.jpg")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_verify_file_jpg(mockbot: SandboxAgent) -> None:
     """
     Test file verification for JPG files.
@@ -192,8 +192,8 @@ async def test_verify_file_jpg(mockbot: SandboxAgent) -> None:
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
 async def test_process_image(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the process_image method of SandboxAgent.
@@ -221,7 +221,7 @@ async def test_process_image(mockbot: SandboxAgent, mocker: MockerFixture):
     mock_image.convert.assert_called_once_with("RGB")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_on_message_bot_message(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the on_message method with a message from a mockbot.
@@ -240,7 +240,7 @@ async def test_on_message_bot_message(mockbot: SandboxAgent, mocker: MockerFixtu
     mock_message.channel.send.assert_not_called()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_on_message_percent_message(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the on_message method with a message starting with a percent sign.
@@ -260,7 +260,7 @@ async def test_on_message_percent_message(mockbot: SandboxAgent, mocker: MockerF
     mock_message.channel.send.assert_not_called()
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_on_message_valid_message(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the on_message method with a valid message.
@@ -309,7 +309,7 @@ async def test_on_message_valid_message(mockbot: SandboxAgent, mocker: MockerFix
 #     ctx.send.assert_called_once_with("Bot response")
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_check_for_attachments_no_attachments(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the check_for_attachments method with no attachments.
@@ -330,8 +330,8 @@ async def test_check_for_attachments_no_attachments(mockbot: SandboxAgent, mocke
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
 async def test_process_image_invalid_url(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the process_image method with an invalid image URL.
@@ -354,8 +354,8 @@ async def test_process_image_invalid_url(mockbot: SandboxAgent, mocker: MockerFi
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
 async def test_on_message_exception(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the on_message method when an exception occurs.
@@ -381,8 +381,8 @@ async def test_on_message_exception(mockbot: SandboxAgent, mocker: MockerFixture
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
 async def test_chat_command_empty_message(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the chat command with an empty message.
@@ -402,8 +402,8 @@ async def test_chat_command_empty_message(mockbot: SandboxAgent, mocker: MockerF
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
-@pytest.mark.asyncio
+@pytest.mark.flaky()
+@pytest.mark.asyncio()
 async def test_get_attachments(mockbot: SandboxAgent, mocker: MockerFixture):
     """
     Test the get_attachments method of SandboxAgent.
@@ -494,9 +494,9 @@ async def test_get_attachments(mockbot: SandboxAgent, mocker: MockerFixture):
 #     mock_get_file_tree.assert_called_once_with("/tmp/test_dir")
 
 
-@pytest.mark.integration
+@pytest.mark.integration()
 class TestBotWithDPyTest:
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     @pytest.mark.cogs("cogs.misc")
     async def test_ping(self, mockbot: SandboxAgent) -> None:
         """
@@ -513,7 +513,7 @@ class TestBotWithDPyTest:
         assert dpytest.verify().message().content("Pong !")
 
     @pytest.mark.cogs("cogs.echo")
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_echo(self, mockbot: SandboxAgent) -> None:
         """
         Test the echo command.
@@ -529,8 +529,8 @@ class TestBotWithDPyTest:
         assert dpytest.verify().message().contains().content("Hello")
 
     @pytest.mark.skip(reason="This test is not yet implemented")
-    @pytest.mark.flaky
-    @pytest.mark.asyncio
+    @pytest.mark.flaky()
+    @pytest.mark.asyncio()
     async def test_on_ready(self, mockbot: SandboxAgent):
         """
         Test the on_ready event.
@@ -541,9 +541,9 @@ class TestBotWithDPyTest:
             await mockbot.on_ready()
 
     @pytest.mark.skip(reason="This test is not yet implemented")
-    @pytest.mark.flaky
-    @pytest.mark.asyncio
-    @pytest.mark.discordonly
+    @pytest.mark.flaky()
+    @pytest.mark.asyncio()
+    @pytest.mark.discordonly()
     async def test_process_commands_help_command(self, mockbot: SandboxAgent):
         """
         Test the process_commands method with the !help command.
@@ -556,9 +556,9 @@ class TestBotWithDPyTest:
         assert dpytest.verify().message().contains().content("Here are the available commands:")
 
     @pytest.mark.skip(reason="something wrong with make_message")
-    @pytest.mark.flaky
-    @pytest.mark.asyncio
-    @pytest.mark.discordonly
+    @pytest.mark.flaky()
+    @pytest.mark.asyncio()
+    @pytest.mark.discordonly()
     async def test_process_commands_unknown_command(self, mockbot: SandboxAgent):
         """
         Test the process_commands method with an unknown command.
@@ -578,9 +578,9 @@ class TestBotWithDPyTest:
         )
 
     @pytest.mark.skip(reason="something wrong with make_message")
-    @pytest.mark.flaky
-    @pytest.mark.asyncio
-    @pytest.mark.discordonly
+    @pytest.mark.flaky()
+    @pytest.mark.asyncio()
+    @pytest.mark.discordonly()
     async def test_process_commands_chat_command(self, mockbot: SandboxAgent, mocker: MockerFixture):
         """
         Test the process_commands method with the !chat command.
@@ -620,8 +620,8 @@ class TestBotWithDPyTest:
 
     #     mock_image.assert_called_once_with(ctx, query="cat")
 
-    @pytest.mark.asyncio
-    @pytest.mark.discordonly
+    @pytest.mark.asyncio()
+    @pytest.mark.discordonly()
     async def test_verify_file_text(self, mockbot: SandboxAgent):
         guild = mockbot.guilds[0]
         channel = guild.text_channels[0]
@@ -631,8 +631,8 @@ class TestBotWithDPyTest:
         await channel.send(file=file_)
         assert dpytest.verify().message().attachment(path_)
 
-    @pytest.mark.asyncio
-    @pytest.mark.discordonly
+    @pytest.mark.asyncio()
+    @pytest.mark.discordonly()
     async def test_verify_file_jpg(self, mockbot: SandboxAgent):
         guild = mockbot.guilds[0]
         channel = guild.text_channels[0]
@@ -642,7 +642,7 @@ class TestBotWithDPyTest:
         await channel.send(file=file_)
         assert dpytest.verify().message().attachment(path_)
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio()
     async def test_dm_send(self, mockbot: SandboxAgent):
         guild = mockbot.guilds[0]
         await guild.members[0].send("hi")
@@ -650,8 +650,8 @@ class TestBotWithDPyTest:
         assert dpytest.verify().message().content("hi")
 
     @pytest.mark.skip(reason="something wrong with make_message")
-    @pytest.mark.flaky
-    @pytest.mark.asyncio
+    @pytest.mark.flaky()
+    @pytest.mark.asyncio()
     @pytest.mark.cogs("cogs.echo")
     async def test_dm_message(self, mockbot: SandboxAgent):
         guild = mockbot.guilds[0]
@@ -662,8 +662,8 @@ class TestBotWithDPyTest:
         assert dpytest.verify().message().content("Ah-Ha!")
 
     # ---------
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_bot_initialization(self, mockbot: SandboxAgent) -> None:
         """
         Test the initialization of the SandboxAgent.
@@ -682,8 +682,8 @@ class TestBotWithDPyTest:
         assert mockbot.agent is not None
         assert mockbot.graph is not None
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_on_ready_logs(self, mockbot: SandboxAgent, capsys: CaptureFixture[str]) -> None:
         """
         Test the on_ready event logging.
@@ -700,8 +700,8 @@ class TestBotWithDPyTest:
         captured = capsys.readouterr()
         assert "Logged in as" in captured.out
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     @pytest.mark.cogs("cogs.misc")
     async def test_ping_command(self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture):
         # guild = mockbot.guilds[0]
@@ -758,8 +758,8 @@ class TestBotWithDPyTest:
 
     #     assert dpytest.verify().message().attachment(path_)
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_check_for_attachments_tenor_gif(
         self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture
     ):
@@ -786,9 +786,9 @@ class TestBotWithDPyTest:
     #     assert result == "https://example.com/image.jpg"
     #     assert vcr.play_count > 0  # type: ignore
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
-    @pytest.mark.vcronly
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
+    @pytest.mark.vcronly()
     @pytest.mark.default_cassette("test_process_user_task.yaml")
     @pytest.mark.vcr(
         allow_playback_repeats=True,
@@ -818,9 +818,9 @@ class TestBotWithDPyTest:
         # assert "output" in result
         assert vcr.play_count > 0  # type: ignore
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
-    @pytest.mark.vcronly
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
+    @pytest.mark.vcronly()
     @pytest.mark.default_cassette("test_process_user_task_streaming.yaml")
     @pytest.mark.vcr(
         allow_playback_repeats=True,
@@ -841,8 +841,8 @@ class TestBotWithDPyTest:
         assert all(isinstance(chunk, str) for chunk in chunks)
         assert vcr.play_count > 0  # type: ignore
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_on_message(self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture) -> None:
         """
         Test the on_message event handler.
@@ -864,8 +864,8 @@ class TestBotWithDPyTest:
         # assert "Received message" in caplog.text
         assert "Dispatching event message" in caplog.text
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_dm_send_messages(self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture):
         guild = mockbot.guilds[0]
         member = guild.members[0]
@@ -899,15 +899,15 @@ class TestBotWithDPyTest:
     #     assert "Error in command error_command" in caplog.text
 
     @pytest.mark.skip(reason="something wrong with make_message")
-    @pytest.mark.flaky
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.flaky()
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_help_command(self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture):
         await dpytest.message(f"{aiosettings.prefix}help")
         assert dpytest.verify().message().contains().content("Here's a list of available commands")
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_bot_mention(self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture):
         guild = mockbot.guilds[0]
         channel = guild.text_channels[0]
@@ -915,8 +915,8 @@ class TestBotWithDPyTest:
         await channel.send(f"<@{mockbot.user.id}> Hello!")
         assert dpytest.verify().message().contains().content("Hello!")
 
-    @pytest.mark.discordonly
-    @pytest.mark.asyncio
+    @pytest.mark.discordonly()
+    @pytest.mark.asyncio()
     async def test_write_attachments_to_disk(
         self, mockbot: SandboxAgent, caplog: LogCaptureFixture, capsys: CaptureFixture, tmp_path
     ):

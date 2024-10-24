@@ -7,7 +7,7 @@ import pytest
 from sandbox_agent.ai.tools import ToolFactory
 
 
-@pytest.mark.aidergenerated
+@pytest.mark.aidergenerated()
 def test_tool_factory_import() -> None:
     """
     Test the import of the ToolFactory class from the __init__ module.

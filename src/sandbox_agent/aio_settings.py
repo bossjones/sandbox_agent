@@ -720,7 +720,7 @@ class AioSettings(BaseSettings):
     sklearn_persist_path: str = Field(
         env="SKLEARN_PERSIST_PATH",
         description="Path to persist the SKLearn vector store",
-        default="db",
+        default="./db.db",
     )
     sklearn_serializer: Literal["json", "bson", "parquet"] = Field(
         env="SKLEARN_SERIALIZER",

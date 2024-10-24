@@ -362,7 +362,7 @@ def filter_request(request: VCRRequest) -> Optional[VCRRequest]:
 # SOURCE: https://github.com/kiwicom/pytest-recording/tree/master?tab=readme-ov-file#configuration
 # @pytest.fixture(scope="module")
 # @pytest.fixture(scope="function")
-@pytest.fixture
+@pytest.fixture()
 def vcr_config() -> dict[str, Any]:
     """
     VCR configuration fixture.
@@ -464,7 +464,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
             print("Error while deleting file : ", filePath)
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_ebook_txt_file(tmp_path: Path) -> Path:
     """
     Fixture to create a mock text file for testing purposes.
@@ -491,7 +491,7 @@ def mock_ebook_txt_file(tmp_path: Path) -> Path:
     return test_ebook_txt_path
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_text_documents(mock_ebook_txt_file: FixtureRequest) -> list[Document]:
     loader = TextLoader(f"{mock_ebook_txt_file}")
     documents = loader.load()

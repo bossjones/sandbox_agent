@@ -27,8 +27,17 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture()
-def set_aiosettings(monkeypatch: MonkeyPatch) -> None:
-    monkeypatch.setenv("SKLEARN_PERSIST_PATH", os.getenv("SKLEARN_PERSIST_PATH", "./test.db"))
+def set_aiosettings(monkeypatch: MonkeyPatch) -> str:
+    """
+    Set the SKLEARN_PERSIST_PATH environment variable to a temporary path.
+
+    Returns:
+    -------
+        str: The path to the temporary file.
+    """
+    persist_path = "./test.db"
+    monkeypatch.setenv("SKLEARN_PERSIST_PATH", os.getenv("SKLEARN_PERSIST_PATH", persist_path))
+    return persist_path
 
 
 @pytest.fixture()
@@ -59,7 +68,7 @@ def test_sklearn_vector_store_adapter_initialization(
     tmp_path: pathlib.Path,
     mocker: MockerFixture,
     vcr: VCRRequest,
-    set_aiosettings: FixtureRequest,
+    # set_aiosettings: FixtureRequest,
 ) -> None:
     """
     Test the initialization of SKLearnVectorStoreAdapter.
@@ -71,14 +80,22 @@ def test_sklearn_vector_store_adapter_initialization(
         mocker (MockerFixture): Pytest mocker fixture.
         vcr (VCRRequest): VCR request object for recording/replaying HTTP interactions.
     """
-    # mocker.patch("sandbox_agent.aio_settings.aiosettings.sklearn_persist_path", str(tmp_path / "test_vector_store"))
+    fake_persist_path = "./test.db"
+    # fake_persist_path = str(tmp_path / "test_vector_store")
+    # persist_path = set_aiosettings
+    # mocker.patch("sandbox_agent.aio_settings.aiosettings.sklearn_persist_path", persist_path)
+    mocker.patch("sandbox_agent.aio_settings.aiosettings.sklearn_persist_path", fake_persist_path)
 
     adapter = SKLearnVectorStoreAdapter(documents=mock_documents)
 
     assert isinstance(adapter.vectorstore, SKLearnVectorStore)
     assert os.path.exists(aiosettings.sklearn_persist_path)
-    assert vcr.play_count > 0
-    # os.path.remove(aiosettings.sklearn_persist_path)
+    assert vcr.play_count > 0  # type: ignore
+
+    try:
+        os.remove(fake_persist_path)
+    except Exception:
+        print("Error while deleting file : ", fake_persist_path)
 
 
 # @pytest.mark.integration

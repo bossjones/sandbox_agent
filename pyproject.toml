@@ -153,6 +153,8 @@ dependencies = [
     "langgraph-sdk>=0.1.33",
     "nltk>=3.9.1",
     "langchain-text-splitters>=0.3.0",
+    "pgsql>=2.2",
+    "psycopg[binary,pool]>=3.2.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

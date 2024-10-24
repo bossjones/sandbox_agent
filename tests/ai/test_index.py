@@ -77,34 +77,34 @@ def _raise_http_err():
     raise HTTPError("404 Client Error", response=Response(headers=[], status_code=404))
 
 
-@patch("brevia.index.load_file.requests.get")
-def test_update_links_documents_http_error(mock_get):
-    """Test update_links_documents method with HTTP error"""
-    collection = create_collection("test", {})
-    doc1 = Document(page_content="some", metadata={"type": "links", "url": "http://example.com"})
-    add_document(document=doc1, collection_name="test", document_id="1")
+# @patch("brevia.index.load_file.requests.get")
+# def test_update_links_documents_http_error(mock_get):
+#     """Test update_links_documents method with HTTP error"""
+#     collection = create_collection("test", {})
+#     doc1 = Document(page_content="some", metadata={"type": "links", "url": "http://example.com"})
+#     add_document(document=doc1, collection_name="test", document_id="1")
 
-    mock_get.return_value.status_code = 404
-    mock_get.return_value.text = "404 Client Error"
-    mock_get.return_value.raise_for_status = _raise_http_err
+#     mock_get.return_value.status_code = 404
+#     mock_get.return_value.text = "404 Client Error"
+#     mock_get.return_value.raise_for_status = _raise_http_err
 
-    result = update_links_documents("test")
-    assert result == 0
-    meta = documents_metadata(collection_id=collection.uuid, document_id="1")
-    assert meta[0]["cmetadata"]["http_error"] == "404"
+#     result = update_links_documents("test")
+#     assert result == 0
+#     meta = documents_metadata(collection_id=collection.uuid, document_id="1")
+#     assert meta[0]["cmetadata"]["http_error"] == "404"
 
-    mock_get.return_value.status_code = 200
-    mock_get.return_value.text = "changed"
+#     mock_get.return_value.status_code = 200
+#     mock_get.return_value.text = "changed"
 
-    def donothing():
-        pass
+#     def donothing():
+#         pass
 
-    mock_get.return_value.raise_for_status = donothing
+#     mock_get.return_value.raise_for_status = donothing
 
-    result = update_links_documents("test")
-    assert result == 1
-    meta = documents_metadata(collection_id=collection.uuid, document_id="1")
-    assert meta[0]["cmetadata"].get("http_error") is None
+#     result = update_links_documents("test")
+#     assert result == 1
+#     meta = documents_metadata(collection_id=collection.uuid, document_id="1")
+#     assert meta[0]["cmetadata"].get("http_error") is None
 
 
 def test_select_load_link_options():

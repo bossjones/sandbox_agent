@@ -24,6 +24,7 @@ services:
       - POSTGRES_PASSWORD=langchain
       - POSTGRES_USER=langchain
       - POSTGRES_DB=langchain
+      - POSTGRES_HOST_AUTH_METHOD=trust
 
     restart: unless-stopped
 
@@ -31,12 +32,13 @@ services:
       - net
     # command: |
     #   postgres -c log_statement=all
-    command: |
-      postgres -c log_statement=all \
-               -c log_min_duration_statement=0 \
-               -c log_connections=on \
-               -c log_disconnections=on \
-               -c log_error_verbosity=verbose
+
+    # command: |
+    #   postgres  -c log_statement=all \
+    #             -c log_min_duration_statement=0 \
+    #             -c log_connections=on \
+    #             -c log_disconnections=on \
+    #             -c log_error_verbosity=verbose
   pgadmin:
     image: dpage/pgadmin4
     profiles:
@@ -48,6 +50,9 @@ services:
       - "${PGADMIN_PORT:-4000}:80"
     volumes:
       - sbx_pgadmindata:/var/lib/pgadmin
+
+    networks:
+      - net
 
   server:
     # image: server

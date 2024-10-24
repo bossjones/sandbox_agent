@@ -319,3 +319,12 @@ superfmt target:
 update-crucial-deps:
 	rye lock --update aider-chat --update langchain-core --update langchain-community --update langgraph --update langsmith --update langsmith-community --update langsmith-core --update langsmith-server --update langchain-anthropic --update langchain-chroma --update langchain-google-genai --update langchain-groq --update langchain-openai --update langchain --update langchainhub --update 'langserve[all]' --all-features
 	rye sync --all-features
+
+dc-reset:
+	docker compose down -v
+	@docker network rm net || true
+	@docker volume rm sbx_pgdata || true
+	@docker volume rm sbx_pgadmindata || true
+	@docker volume rm sbx_goob_redis_data || true
+	sleep 30
+	docker compose up -d

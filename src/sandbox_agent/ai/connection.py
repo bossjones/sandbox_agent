@@ -33,7 +33,8 @@ def connection_string() -> str:
     user = conf.pgvector_user
     password = parse.quote_plus(conf.pgvector_password.get_secret_value())
 
-    return f"postgresql+{driver}://{user}:{password}@{host}:{port}/{database}"
+    # return f"postgresql+{driver}://{user}:{password}@{host}:{port}/{database}"
+    return aiosettings.postgres_url
 
 
 @lru_cache

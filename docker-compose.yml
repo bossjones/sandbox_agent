@@ -80,16 +80,27 @@ services:
     volumes:
       - ./docker/prometheus/:/etc/prometheus/
       - sbx_prometheus:/prometheus
+    tty: true
+    stdin_open: true
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.listen-address=0.0.0.0:9090'
+      - '--log.level=info'
+      - '--enable-feature=remote-write-receiver'
+      - '--query.lookback-delta=30s'
     ports:
       - "${PROMETHEUS_PORT:-9999}:9090"
     restart: unless-stopped
     networks:
       - net
+
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
 
   grafana:
     image: grafana/grafana
@@ -97,8 +108,21 @@ services:
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
       GF_USERS_ALLOW_SIGN_UP: false
+      GRAFANA_USERNAME: admin
+      GRAFANA_PASSWORD: foobar
+      GF_INSTALL_PLUGINS: grafana-clock-panel,natel-discrete-panel,grafana-piechart-panel
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_DATAPROXY_TIMEOUT: 310
+      GF_LOG_LEVEL: info
+      GF_DATAPROXY_LOGGING: true
+      GF_EXPLORE_ENABLED: true
+      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
     volumes:
       - sbx_grafana:/var/lib/grafana
+      - ./docker/grafana/etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
     ports:
       - "${GRAFANA_PORT:-3333}:3000"
     restart: unless-stopped

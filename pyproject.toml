@@ -312,15 +312,24 @@ typecheck = {chain = [
 "docs:changelog" = "towncrier build --version main --draft"
 "ci:mypy" = "mypy  --config-file=pyproject.toml --html-report typingcov --cobertura-xml-report typingcov_cobertura --xml-report typingcov_xml --txt-report typingcov_txt ."
 "open:mypy-coverage" = "open typingcov/index.html"
-"open:chroma" = "open http://127.0.0.1:4001"
 "open:zipkin" = "open http://127.0.0.1:9411"
 "open:otel" = "open http://127.0.0.1:4317"
 "open:coverage" = "just local-open-coverage"
+"open:pgadmin" = "open http://127.0.0.1:4000"
+"open:prometheus" = "open http://127.0.0.1:9999"
+"open:grafana" = "open http://127.0.0.1:3333"
+"open:chroma" = "open http://127.0.0.1:9010"
+"open:chromadb-admin" = "open http://127.0.0.1:4001"
 open-all = {chain = [
     "open:mypy-coverage",
     "open:chroma",
     "open:zipkin",
     "open:otel",
+    "open:pgadmin",
+    "open:prometheus",
+    "open:grafana",
+    "open:chromadb-admin",
+    "open:coverage",
 ]}
 unittests-simple = {cmd = "pytest --diff-width=60 --diff-symbols --cov-append --cov-report=term-missing --junitxml=junit/test-results.xml --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --cov=."}
 unittests-debug = {cmd = "pytest -s -vv --diff-width=60 --diff-symbols --pdb --pdbcls bpdb:BPdb --showlocals --tb=short --cov-append --cov-report=term-missing --junitxml=junit/test-results.xml --cov-report=xml:cov.xml --cov-report=html:htmlcov --cov-report=annotate:cov_annotate --cov=."}

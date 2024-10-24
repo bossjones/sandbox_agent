@@ -11,7 +11,7 @@ from sandbox_agent.utils.files_import import index_file_folder
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_index_file_folder():
     """Test index_file_folder function"""
     create_collection("empty", {})
@@ -21,7 +21,7 @@ def test_index_file_folder():
 
 
 @pytest.mark.skip(reason="This test is not yet implemented")
-@pytest.mark.flaky
+@pytest.mark.flaky()
 def test_index_file_folder_fail():
     """Test index_file_folder failure"""
     with pytest.raises(FileNotFoundError) as exc:

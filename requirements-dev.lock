@@ -1094,7 +1094,7 @@ posthog==3.6.0
     # via chromadb
 pprintpp==0.4.0
     # via pytest-clarity
-pre-commit==3.8.0
+pre-commit==4.0.1
 prettytable==3.11.0
     # via sandbox-agent
 primp==0.6.3
@@ -1477,7 +1477,7 @@ ruamel-yaml==0.18.6
     # via mdformat-frontmatter
 ruamel-yaml-clib==0.2.8
     # via ruamel-yaml
-ruff==0.6.3
+ruff==0.7.1
 ruyaml==0.91.0
     # via yamlfix
 safetensors==0.4.4

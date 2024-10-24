@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from _pytest.monkeypatch import MonkeyPatch
 
 
-@pytest.fixture
+@pytest.fixture()
 def all_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     """
     Fixture to set up the environment with all tools allowed.
@@ -31,7 +31,7 @@ def all_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(aiosettings, "brave_search_api_key", "test_api_key")
 
 
-@pytest.fixture
+@pytest.fixture()
 def no_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     """
     Fixture to set up the environment with no tools allowed.
@@ -43,7 +43,7 @@ def no_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(aiosettings, "tool_allowlist", [])
 
 
-@pytest.fixture
+@pytest.fixture()
 def partial_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     """
     Fixture to set up the environment with partial tools allowed.
@@ -56,7 +56,7 @@ def partial_tools_allowed(monkeypatch: MonkeyPatch) -> None:
     monkeypatch.setattr(aiosettings, "tavily_search_max_results", 3)
 
 
-@pytest.mark.aidergenerated
+@pytest.mark.aidergenerated()
 def test_create_tools_all_allowed(all_tools_allowed: None) -> None:
     """
     Test the create_tools method with all tools allowed.
@@ -78,7 +78,7 @@ def test_create_tools_all_allowed(all_tools_allowed: None) -> None:
     assert tools[2].search_wrapper.api_key == "test_api_key"
 
 
-@pytest.mark.aidergenerated
+@pytest.mark.aidergenerated()
 def test_create_tools_no_allowed(no_tools_allowed: None) -> None:
     """
     Test the create_tools method with no tools allowed.
@@ -95,7 +95,7 @@ def test_create_tools_no_allowed(no_tools_allowed: None) -> None:
     assert len(tools) == 0
 
 
-@pytest.mark.aidergenerated
+@pytest.mark.aidergenerated()
 def test_create_tools_partial_allowed(partial_tools_allowed: None) -> None:
     """
     Test the create_tools method with partial tools allowed.

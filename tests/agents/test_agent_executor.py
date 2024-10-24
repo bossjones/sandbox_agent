@@ -29,8 +29,8 @@ if TYPE_CHECKING:
     from _pytest.logging import LogCaptureFixture
 
 
-@pytest.mark.integration
-@pytest.mark.vcronly
+@pytest.mark.integration()
+@pytest.mark.vcronly()
 @pytest.mark.default_cassette("test_create_plan_and_execute_agent.yaml")
 @pytest.mark.vcr(
     allow_playback_repeats=True,
@@ -61,8 +61,8 @@ def test_create_plan_and_execute_agent(
     # # Add more specific assertions for the create_react_agent call if needed
 
 
-@pytest.mark.integration
-@pytest.mark.vcronly
+@pytest.mark.integration()
+@pytest.mark.vcronly()
 @pytest.mark.default_cassette("test_create_plan_and_execute_agent_with_custom_llm.yaml")
 @pytest.mark.vcr(
     allow_playback_repeats=True,

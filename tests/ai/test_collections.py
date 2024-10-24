@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from _pytest.logging import LogCaptureFixture
 
 
-@pytest.mark.cursorgenerated
+@pytest.mark.cursorgenerated()
 def test_create_collection(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test create_collection function"""
     result = create_collection("test_collection", {"key": "value"})
@@ -35,7 +35,7 @@ def test_create_collection(caplog: LogCaptureFixture, capsys: CaptureFixture):
     assert result.cmetadata == {"key": "value"}
 
 
-@pytest.mark.cursorgenerated
+@pytest.mark.cursorgenerated()
 def test_collections_info(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test collections_info()"""
     result = collections_info()
@@ -44,7 +44,7 @@ def test_collections_info(caplog: LogCaptureFixture, capsys: CaptureFixture):
     assert result[0]["uuid"] is not None
 
 
-@pytest.mark.cursorgenerated
+@pytest.mark.cursorgenerated()
 def test_collection_name_exists(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test collection_name_exists function"""
     create_collection("test_collection2", {})
@@ -52,7 +52,7 @@ def test_collection_name_exists(caplog: LogCaptureFixture, capsys: CaptureFixtur
     assert collection_name_exists("nonexistent_collection") is False
 
 
-@pytest.mark.cursorgenerated
+@pytest.mark.cursorgenerated()
 def test_collection_exists(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test collection_exists function"""
     collection = create_collection("new_collection", {})
@@ -60,7 +60,7 @@ def test_collection_exists(caplog: LogCaptureFixture, capsys: CaptureFixture):
     assert collection_exists(uuid.uuid4()) is False
 
 
-@pytest.mark.cursorgenerated
+@pytest.mark.cursorgenerated()
 def test_update_collection(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test update_collection function"""
     collection = create_collection("new_collection", {})
@@ -71,8 +71,8 @@ def test_update_collection(caplog: LogCaptureFixture, capsys: CaptureFixture):
 
 
 @pytest.mark.skip(reason="Not implemented")
-@pytest.mark.flaky
-@pytest.mark.cursorgenerated
+@pytest.mark.flaky()
+@pytest.mark.cursorgenerated()
 def test_delete_collection(caplog: LogCaptureFixture, capsys: CaptureFixture):
     """Test delete_collection function"""
     collection = create_collection("new_collection", {})

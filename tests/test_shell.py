@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from pytest_mock.plugin import MockerFixture
 
 
-@pytest.fixture
+@pytest.fixture()
 def temp_file(tmp_path: pathlib.Path) -> str:
     """
     Create a temporary file for testing.
@@ -49,7 +49,7 @@ def temp_file(tmp_path: pathlib.Path) -> str:
     return str(file_path)
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_aio_run_process_and_communicate() -> None:
     """
     Test the _aio_run_process_and_communicate function.
@@ -153,7 +153,7 @@ def test_popen_stdout_lock(capsys: CaptureFixture[str]) -> None:
     assert "Hello, World!" in captured.out
 
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio()
 async def test_run_coroutine_subprocess() -> None:
     """
     Test the run_coroutine_subprocess function.

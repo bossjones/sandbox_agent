@@ -71,7 +71,7 @@ def test_check_callersname(mocker: MockerFixture) -> None:
     assert filename == expected_filename
 
 
-@pytest.mark.utilsonly
+@pytest.mark.utilsonly()
 def test_print_line_seperator(capsys: CaptureFixture) -> None:
     base.print_line_seperator("test")
     captured = capsys.readouterr()
@@ -86,7 +86,7 @@ def test_print_line_seperator(capsys: CaptureFixture) -> None:
     assert captured.out == "***************** test *****************\n"
 
 
-@pytest.mark.utilsonly
+@pytest.mark.utilsonly()
 def test_print_output(capsys: CaptureFixture) -> None:
     base.print_output("test", "output")
     captured = capsys.readouterr()
@@ -101,7 +101,7 @@ def test_print_output(capsys: CaptureFixture) -> None:
     assert captured.out == "test output"
 
 
-@pytest.mark.utilsonly
+@pytest.mark.utilsonly()
 def test_create_dict_from_filter() -> None:
     d = {"a": 1, "b": 2, "c": 3}
     white_list = ["a", "c"]
@@ -109,7 +109,7 @@ def test_create_dict_from_filter() -> None:
     assert result == {"a": 1, "c": 3}
 
 
-@pytest.mark.utilsonly
+@pytest.mark.utilsonly()
 @pytest.mark.parametrize(
     "node, whitelist, expected",
     [
@@ -127,7 +127,7 @@ def test_fltr(node: Union[dict, list], whitelist: list[str], expected: Union[dic
     assert base.fltr(node, whitelist) == expected
 
 
-@pytest.mark.utilsonly
+@pytest.mark.utilsonly()
 def test_dict_merge() -> None:
     dct = {"a": 1, "b": {"c": 2}}
     merge_dct = {"b": {"d": 3}, "e": 4}

@@ -28,6 +28,7 @@ from importlib.metadata import version as importlib_metadata_version
 from pathlib import Path
 from re import Pattern
 from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
+from urllib.parse import urlparse
 
 import aiofiles
 import anyio
@@ -57,11 +58,13 @@ from typer import Typer
 
 import sandbox_agent
 
+from sandbox_agent.ai.services import IndexWebService
 from sandbox_agent.aio_settings import aiosettings, get_rich_console
 from sandbox_agent.alembic import current, downgrade, upgrade
 from sandbox_agent.asynctyper import AsyncTyper, AsyncTyperImproved
 from sandbox_agent.bot import SandboxAgent
 from sandbox_agent.bot_logger import get_logger, global_log_config
+from sandbox_agent.types import PathLike
 from sandbox_agent.utils import repo_typing
 from sandbox_agent.utils.base import print_line_seperator
 from sandbox_agent.utils.collections_io import export_collection_data, import_collection_data
@@ -360,6 +363,29 @@ def import_file(
     kwargs = {} if not options else json.loads(options)
     num = index_file_folder(file_path=file_path, collection=collection, **kwargs)
     print(f"Collection '{collection}' updated from '{file_path}' with {num} documents.")
+
+
+@APP.command()
+def index(
+    path: Annotated[Optional[list[str]], typer.Option()] = None,
+    collection: Annotated[str, typer.Argument(help="Collection name")] = "default",
+) -> None:
+    """Add file or folder content to collection.
+
+    This command adds the content of a file or folder to the specified collection.
+
+    Args:
+        file_path (str): The path to the file or folder.
+        collection (str): The name of the collection to update.
+        options (str): Loader options in JSON format.
+    """
+    typer.echo(f"Running index with path={path}, collection={collection}")
+
+    # parsed_url = urlparse(url)
+    # remote = True if parsed_url.scheme not in ['file', ''] else False
+
+    service = IndexWebService()
+    service.run(payload=path)
 
 
 def handle_sigterm(signo, frame):  # noqa: ARG001: unused argument

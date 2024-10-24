@@ -11,7 +11,7 @@ import pathlib
 
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Union, cast
+from typing import Annotated, Any, Callable, Dict, List, Literal, Optional, Set, Union, cast
 
 from loguru import logger
 from pydantic import (
@@ -391,7 +391,7 @@ class AioSettings(BaseSettings):
 
     discord_token: SecretStr = ""
 
-    vector_store_type: str = "pgvector"
+    vector_store_type: Literal["pgvector", "chroma", "pinecone", "sklearn"] = "pgvector"
 
     # openai_token: str = ""
     openai_api_key: SecretStr = ""
@@ -580,14 +580,19 @@ class AioSettings(BaseSettings):
         env="LLM_MAX_RETRIES", description="Maximum number of retries for LLM API calls", default=3
     )
     llm_recursion_limit: int = Field(env="LLM_RECURSION_LIMIT", description="Recursion limit for LLM", default=50)
-    llm_document_loader_type: str = Field(
+    llm_document_loader_type: Literal["pymupdf", "web", "directory"] = Field(
         env="LLM_DOCUMENT_LOADER_TYPE", description="Document loader type", default="pymupdf"
     )
-    llm_vectorstore_type: str = Field(env="LLM_VECTORSTORE_TYPE", description="Vector store type", default="pgvector")
-    llm_embedding_model_type: str = Field(
+    llm_text_splitter_type: Literal["recursive_text", "recursive_character"] = Field(
+        env="LLM_TEXT_SPLITTER_TYPE", description="Text splitter type", default="recursive_text"
+    )
+    llm_vectorstore_type: Literal["pgvector", "chroma", "pinecone", "sklearn"] = Field(
+        env="LLM_VECTORSTORE_TYPE", description="Vector store type", default="pgvector"
+    )
+    llm_embedding_model_type: Literal["text-embedding-3-large", "text-embedding-ada-002"] = Field(
         env="LLM_EMBEDDING_MODEL_TYPE", description="Embedding model type", default="text-embedding-3-large"
     )
-    llm_key_value_stores_type: str = Field(
+    llm_key_value_stores_type: Literal["redis", "dynamodb"] = Field(
         env="LLM_KEY_VALUE_STORES_TYPE", description="Key-value stores type", default="redis"
     )
     # Variables for Postgres/pgvector
@@ -718,6 +723,9 @@ class AioSettings(BaseSettings):
     llm_model_name: str = Field(
         env="LLM_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
     )
+    llm_json_model_name: str = Field(
+        env="LLM_JSON_MODEL_NAME", description="Name of the LLM model to use", default="gpt-4o-mini", init=True
+    )
     provider: str = Field(env="PROVIDER", description="AI provider (openai or anthropic)", default="openai")
     chunk_size: int = Field(env="CHUNK_SIZE", description="Size of each text chunk", default=1000)
     chunk_overlap: int = Field(env="CHUNK_OVERLAP", description="Overlap between text chunks", default=200)
@@ -796,7 +804,9 @@ class AioSettings(BaseSettings):
     # Tool-specific configuration
     tavily_search_max_results: int = 3
 
-    agent_type: str = Field(env="AGENT_TYPE", description="Type of agent to use", default="basic")
+    agent_type: Literal["plan_and_execute", "basic", "advanced", "adaptive_rag"] = Field(
+        env="AGENT_TYPE", description="Type of agent to use", default="adaptive_rag"
+    )
 
     @model_validator(mode="before")
     @classmethod

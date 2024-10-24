@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain_community.vectorstores import FAISS, Chroma, PGVector
+from langchain_community.vectorstores import FAISS, Chroma, PGVector, SKLearnVectorStore
 from langchain_community.vectorstores import Redis as RedisVectorStore
 
 from sandbox_agent.aio_settings import aiosettings
@@ -32,6 +32,8 @@ class VectorStoreFactory:
             return PGVector
         elif store_type == "redis":
             return RedisVectorStore
+        elif store_type == "sklearn":
+            return SKLearnVectorStore
         # Add more vector stores as needed
         else:
             raise ValueError(f"Unsupported vector store type: {store_type}")

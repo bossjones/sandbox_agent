@@ -256,3 +256,92 @@ class TestApp:
     #     assert "Test exception" in caplog.text
     #     assert "Error Class: <class 'Exception'>" in caplog.text
     #     assert "[UNEXPECTED] Exception: Test exception" in caplog.text
+
+
+@pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+@pytest.mark.flaky
+class TestPgVectorAppCommands:
+    """Test the pgvector commands."""
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_export_collection(self, mocker: MockerFixture) -> None:
+        """Test the export_collection command."""
+        mock_export_collection_data = mocker.spy(cli, "export_collection_data")
+        folder_path = "test_folder"
+        collection = "test_collection"
+
+        result = runner.invoke(APP, ["export-collection", folder_path, collection])
+        assert result.exit_code == 0
+        assert f"Running export_collection with folder_path={folder_path}, collection={collection}" in result.stdout
+
+        mock_export_collection_data.assert_called_once_with(folder_path=folder_path, collection=collection)
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_import_collection(self, mocker: MockerFixture) -> None:
+        """Test the import_collection command."""
+        mock_import_collection_data = mocker.spy(cli, "import_collection_data")
+        folder_path = "test_folder"
+        collection = "test_collection"
+
+        result = runner.invoke(APP, ["import-collection", folder_path, collection])
+        assert result.exit_code == 0
+        assert f"Running import_collection with folder_path={folder_path}, collection={collection}" in result.stdout
+
+        mock_import_collection_data.assert_called_once_with(folder_path=folder_path, collection=collection)
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_import_file(self, mocker: MockerFixture) -> None:
+        """Test the import_file command."""
+        mock_index_file_folder = mocker.spy(cli, "index_file_folder")
+        file_path = "test_file"
+        collection = "test_collection"
+        options = '{"option1": "value1"}'
+
+        result = runner.invoke(APP, ["import-file", file_path, collection, "--options", options])
+        assert result.exit_code == 0
+        assert (
+            f"Running import_file with file_path={file_path}, collection={collection}, options={options}"
+            in result.stdout
+        )
+
+        mock_index_file_folder.assert_called_once_with(file_path=file_path, collection=collection, option1="value1")
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_db_current(self, mocker: MockerFixture) -> None:
+        """Test the db_current command."""
+        mock_current = mocker.spy(cli, "current")
+        result = runner.invoke(APP, ["db-current", "--verbose"])
+        assert result.exit_code == 0
+        assert "Running db_current with verbose=True" in result.stdout
+
+        mock_current.assert_called_once_with(True)
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_db_upgrade(self, mocker: MockerFixture) -> None:
+        """Test the db_upgrade command."""
+        mock_upgrade = mocker.spy(cli, "upgrade")
+        revision = "12345"
+
+        result = runner.invoke(APP, ["db-upgrade", "--revision", revision])
+        assert result.exit_code == 0
+        assert f"Running db_upgrade with revision={revision}" in result.stdout
+
+        mock_upgrade.assert_called_once_with(revision)
+
+    @pytest.mark.skip(reason="This is a work in progress and it is currently expected to fail")
+    @pytest.mark.flaky
+    def test_db_downgrade(self, mocker: MockerFixture) -> None:
+        """Test the db_downgrade command."""
+        mock_downgrade = mocker.spy(cli, "downgrade")
+        revision = "12345"
+
+        result = runner.invoke(APP, ["db-downgrade", "--revision", revision])
+        assert result.exit_code == 0
+        assert f"Running db_downgrade with revision={revision}" in result.stdout
+
+        mock_downgrade.assert_called_once_with(revision)

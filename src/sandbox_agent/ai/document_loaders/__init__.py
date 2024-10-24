@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from langchain_community.document_loaders import DirectoryLoader, PyMuPDFLoader, PyPDFLoader
+from langchain_community.document_loaders import DirectoryLoader, PyMuPDFLoader, PyPDFLoader, WebBaseLoader
 
 from sandbox_agent.aio_settings import aiosettings
 
@@ -29,6 +29,8 @@ class DocumentLoaderFactory:
             return PyMuPDFLoader
         elif loader_type == "directory":
             return DirectoryLoader
+        elif loader_type == "web":
+            return WebBaseLoader
         # Add more loaders as needed
         else:
             raise ValueError(f"Unsupported loader type: {loader_type}")

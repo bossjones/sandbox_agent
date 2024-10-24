@@ -14,6 +14,8 @@ services:
   pgdatabase:
     image: pgvector/pgvector:0.7.4-pg16
     container_name: pgvector16_sbx
+      # set shared memory limit when using docker-compose
+    # shm_size: 128mb
     ports:
       - 8432:5432
     volumes:

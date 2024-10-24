@@ -51,6 +51,7 @@ from sandbox_agent import shell, utils
 from sandbox_agent.agents.agent_executor import (
     AgentExecutorFactory,
     AsyncLoggingCallbackHandler,
+    format_adaptive_rag_input,
     format_user_input,
     format_user_message,
 )
@@ -1286,7 +1287,11 @@ class SandboxAgent(DiscordClient):
                 "callbacks": [StdOutCallbackHandler(), AsyncLoggingCallbackHandler()],
             }
             # inputs: Dict[str, str] = {"input": user_task}
-            inputs: MessageLikeRepresentation = format_user_message(user_task)
+
+            if aiosettings.agent_type == "adaptive_rag":
+                inputs = format_adaptive_rag_input(user_task)
+            elif aiosettings.agent_type == "basic":
+                inputs: MessageLikeRepresentation = format_user_message(user_task)
             result = await self.graph.ainvoke(inputs, config=config, debug=True)
             LOGGER.error(f"type(result) = {type(result)}")
             # bpdb.set_trace()
@@ -1389,7 +1394,10 @@ class SandboxAgent(DiscordClient):
                 # }
             }
             # inputs = {"input": user_task}
-            inputs: MessageLikeRepresentation = format_user_message(user_task)
+            if aiosettings.agent_type == "adaptive_rag":
+                inputs = format_adaptive_rag_input(user_task)
+            elif aiosettings.agent_type == "basic":
+                inputs: MessageLikeRepresentation = format_user_message(user_task)
             # agent_executor = self.setup_agent_executor(session_id, user_task)
             # Loop through the agent executor stream
             async for chunk in self.graph.astream_log(inputs, config=config):

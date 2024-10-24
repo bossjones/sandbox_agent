@@ -105,20 +105,6 @@ jobs:
           docker compose up -d
           docker ps -a
 
-      - name: Start Pgvector
-        id: pgvector-docker-compose-up
-        run: |
-          docker compose down -v || true
-          docker network rm net || true
-          docker volume rm sbx_pgdata || true
-          docker volume rm sbx_pgadmindata || true
-          docker volume rm sbx_goob_redis_data || true
-          sleep 30
-          docker compose up -d
-          ./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
-          rye run db_upgrade
-        continue-on-error: true
-
       - name: Checkout
         uses: actions/checkout@v4
       - name: get version python
@@ -140,6 +126,21 @@ jobs:
         env:
           RYE_VERSION: 0.41.0
           RYE_INSTALL_OPTION: --yes
+
+      - name: Start Pgvector
+        id: pgvector-docker-compose-up
+        run: |
+          docker compose down -v || true
+          docker network rm net || true
+          docker volume rm sbx_pgdata || true
+          docker volume rm sbx_pgadmindata || true
+          docker volume rm sbx_goob_redis_data || true
+          sleep 30
+          docker compose up -d
+          ./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+          rye run db_upgrade
+        continue-on-error: true
+
       - name: install tesseract and ffmpeg
         run: |
           sudo apt-get update

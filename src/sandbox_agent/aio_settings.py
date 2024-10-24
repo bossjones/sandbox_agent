@@ -637,6 +637,27 @@ class AioSettings(BaseSettings):
     text_chunk_overlap: int = 200
     text_splitter: Json[dict[str, Any]] = "{}"  # custom splitter settings
 
+    # LLM settings
+    qa_completion_llm: Json[dict[str, Any]] = """{
+        "_type": "openai-chat",
+        "model_name": "gpt-4o-mini",
+        "temperature": 0,
+        "max_tokens": 1000,
+        "verbose": true
+    }"""
+    qa_followup_llm: Json[dict[str, Any]] = """{
+        "_type": "openai-chat",
+        "model_name": "gpt-4o-mini",
+        "temperature": 0,
+        "max_tokens": 200,
+        "verbose": true
+    }"""
+    summarize_llm: Json[dict[str, Any]] = """{
+        "_type": "openai-chat",
+        "model_name": "gpt-4o",
+        "temperature": 0,
+        "max_tokens": 2000
+    }"""
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
     #     driver=os.environ.get("PGVECTOR_DRIVER", "psycopg"),
@@ -654,6 +675,16 @@ class AioSettings(BaseSettings):
     postgres_collection_name: Optional[str] = "langchain"
     postgres_user: Optional[str] = "langchain"
     enable_postgres: bool = True
+
+    # QA
+    qa_no_chat_history: bool = False  # don't load chat history
+    qa_followup_sim_threshold: float = 0.735  # similitude threshold in followup
+    qa_retriever: Json[dict[str, Any]] = "{}"  # custom retriever settings
+
+    # Summarization
+    summ_default_chain: str = "stuff"
+    summ_token_splitter: int = 4000
+    summ_token_overlap: int = 500
 
     # # OpenAI model settings
     # openai_model_zoo: set[str] = Field(

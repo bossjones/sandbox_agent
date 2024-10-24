@@ -1,0 +1,6 @@
+---
+_type: prompt
+input_variables:
+  - "question"
+template: |-
+  Question: {question}

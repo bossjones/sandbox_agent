@@ -548,8 +548,10 @@ def save_graph_image(graph: Any, fname: str = "graph_mermaid.png") -> None:
 
 
 # Save the graph image
-save_graph_image(graph)
+# save_graph_image(graph)
 
-# Display the image (optional, for interactive environments)
 
-# display(Image(graph.get_graph().draw_mermaid_png()))
+# Use these traces to evaluate the graph later on in langsmith:
+# https://smith.langchain.com/public/e57c65d4-aa02-414a-ac7a-1e40c1b6a991/r
+# https://smith.langchain.com/public/2ba9c8e6-7e0f-48fb-99c7-ec8911f8f3ff/r
+# https://smith.langchain.com/public/a6009433-0243-4a58-a621-f2d6e9630c84/r

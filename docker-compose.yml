@@ -29,9 +29,14 @@ services:
 
     networks:
       - net
+    # command: |
+    #   postgres -c log_statement=all
     command: |
-      postgres -c log_statement=all
-
+      postgres -c log_statement=all \
+               -c log_min_duration_statement=0 \
+               -c log_connections=on \
+               -c log_disconnections=on \
+               -c log_error_verbosity=verbose
   pgadmin:
     image: dpage/pgadmin4
     profiles:

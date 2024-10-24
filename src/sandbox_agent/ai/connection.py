@@ -31,7 +31,7 @@ def connection_string() -> str:
     port = conf.pgvector_port
     database = conf.pgvector_database
     user = conf.pgvector_user
-    password = parse.quote_plus(conf.pgvector_password)
+    password = parse.quote_plus(conf.pgvector_password.get_secret_value())
 
     return f"postgresql+{driver}://{user}:{password}@{host}:{port}/{database}"
 
@@ -70,7 +70,7 @@ def psql_command(
     port = conf.pgvector_port
     database = conf.pgvector_database
     user = conf.pgvector_user
-    password = conf.pgvector_password
+    password = conf.pgvector_password.get_secret_value()
 
     cmd = ["psql", "-U", user, "-h", host, "-p", f"{port}", "-c", cmd, database]
 

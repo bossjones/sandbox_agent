@@ -63,7 +63,7 @@ class TestSettings:
         assert test_settings.globals_ckpt_convert == False
         assert test_settings.globals_log_tokenization == False
         assert test_settings.redis_host == "localhost"
-        assert test_settings.redis_port == 7600
+        assert test_settings.redis_port == 8600
         assert test_settings.redis_user is None
         assert test_settings.redis_pass is None
         assert test_settings.redis_base is None
@@ -74,7 +74,7 @@ class TestSettings:
             assert str(test_settings.pinecone_api_key) == "**********"
             assert str(test_settings.langchain_api_key) == "**********"
             assert str(test_settings.langchain_hub_api_key) == "**********"
-        assert str(test_settings.redis_url) == "redis://localhost:7600"
+        assert str(test_settings.redis_url) == "redis://localhost:8600"
 
     @pytest_asyncio.fixture
     async def test_integration_with_deleted_envs(self, monkeypatch: MonkeyPatch) -> None:
@@ -104,7 +104,7 @@ class TestSettings:
     def test_postgres_defaults(self):
         test_settings = aio_settings.AioSettings()
         assert test_settings.postgres_host == "localhost"
-        assert test_settings.postgres_port == 7432
+        assert test_settings.postgres_port == 8432
         assert test_settings.postgres_password == "langchain"
         assert test_settings.postgres_driver == "psycopg"
         assert test_settings.postgres_database == "langchain"
@@ -114,7 +114,7 @@ class TestSettings:
 
     def test_postgres_url(self):
         test_settings = aio_settings.AioSettings()
-        expected_url = "postgresql+psycopg://langchain:langchain@localhost:7432/langchain"
+        expected_url = "postgresql+psycopg://langchain:langchain@localhost:8432/langchain"
         assert test_settings.postgres_url == expected_url
 
     @pytest.mark.parametrize(
@@ -178,7 +178,7 @@ class TestSettings:
     def test_redis_defaults(self):
         test_settings = aio_settings.AioSettings()
         assert test_settings.redis_host == "localhost"
-        assert test_settings.redis_port == 7600
+        assert test_settings.redis_port == 8600
         assert test_settings.redis_user is None
         assert test_settings.redis_pass is None
         assert test_settings.redis_base is None
@@ -186,7 +186,7 @@ class TestSettings:
 
     def test_redis_url(self):
         test_settings = aio_settings.AioSettings()
-        expected_url = "redis://localhost:7600"
+        expected_url = "redis://localhost:8600"
         assert str(test_settings.redis_url) == expected_url
 
     @pytest.mark.parametrize(
@@ -328,8 +328,8 @@ class TestSettings:
         assert test_settings.postgres_driver == "psycopg"
         assert test_settings.postgres_host == "localhost"
         assert test_settings.postgres_password == "langchain"
-        assert test_settings.postgres_port == 7432
-        assert test_settings.postgres_url == "postgresql+psycopg://langchain:langchain@localhost:7432/langchain"
+        assert test_settings.postgres_port == 8432
+        assert test_settings.postgres_url == "postgresql+psycopg://langchain:langchain@localhost:8432/langchain"
         assert test_settings.postgres_user == "langchain"
         assert test_settings.prefix == "?"
         assert test_settings.provider == "openai"
@@ -339,8 +339,8 @@ class TestSettings:
         assert test_settings.question_to_ask == "What is the main cause of climate change?"
         assert test_settings.redis_host == "localhost"
         assert str(test_settings.redis_pass) in ["**********", "", None, SecretStr(""), SecretStr("**********"), "None"]
-        assert test_settings.redis_port == 7600
-        assert str(test_settings.redis_url) == "redis://localhost:7600"
+        assert test_settings.redis_port == 8600
+        assert str(test_settings.redis_url) == "redis://localhost:8600"
         assert test_settings.redis_user is None
         assert test_settings.retry_stop_after_attempt == 3
         assert test_settings.retry_wait_exponential_max == 5

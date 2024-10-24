@@ -1,4 +1,6 @@
 ---
+exclude: '^src/sandbox_agent/alembic/.*'
+
 # To use:
 #
 #     pre-commit run -a

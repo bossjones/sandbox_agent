@@ -285,7 +285,7 @@ aider:
 	aider -c .aider.conf.yml --aiderignore .aiderignore
 
 aider-claude:
-	aider -c .aider.conf.yml --aiderignore .aiderignore --model 'claude-3-5-sonnet-20240620'
+	aider -c .aider.conf.yml --aiderignore .aiderignore --model 'anthropic/claude-3-5-sonnet-20241022'
 
 pur:
 	cp -a .github/dependabot/requirements-dev.txt pur.before.txt
@@ -315,3 +315,42 @@ regenerate-cassettes: local-regenerate-cassettes
 # This applies the ruff fixer to the target file and shows the fixes using a more aggressive formatter.
 superfmt target:
 	rye run ruff check --fix --show-fixes --select "E4,E7,E9,F,B,I,D,ERA" --fixable=ALL --unfixable="B003" --config=pyproject.toml {{ target }}
+
+update-crucial-deps:
+	rye lock --update aider-chat --update langchain-core --update langchain-community --update langgraph --update langsmith --update langsmith-community --update langsmith-core --update langsmith-server --update langchain-anthropic --update langchain-chroma --update langchain-google-genai --update langchain-groq --update langchain-openai --update langchain --update langchainhub --update 'langserve[all]' --all-features
+	rye sync --all-features
+
+dc-reset:
+	docker compose down -v
+	@docker network rm net || true
+	@docker volume rm sbx_pgdata || true
+	@docker volume rm sbx_pgadmindata || true
+	@docker volume rm sbx_goob_redis_data || true
+	sleep 30
+	docker compose up -d
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+	rye run db_upgrade
+
+dc-reset-logs:
+	docker compose down -v
+	@docker network rm net || true
+	@docker volume rm sbx_pgdata || true
+	@docker volume rm sbx_pgadmindata || true
+	@docker volume rm sbx_goob_redis_data || true
+	sleep 30
+	docker compose up -d
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+	rye run db_upgrade
+	docker compose logs -f | ccze -A
+
+dc-postgres-tuning:
+	docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c max_connections=40
+
+# -c 'shared_buffers=1GB' -c 'effective_cache_size=3GB' -c 'maintenance_work_mem=512MB' -c 'checkpoint_completion_target=0.9' -c 'wal_buffers=16MB' -c 'default_statistics_target=500' -c 'random_page_cost=1.1' -c 'effective_io_concurrency=200' -c 'work_mem=6553kB' -c 'huge_pages=off' -c 'min_wal_size=4GB' -c 'max_wal_size=16GB'
+
+nltk-download:
+	rye run python -m nltk.downloader popular
+	rye run python -m nltk.downloader punkt_tab
+
+wait-until-postgres-ready:
+	./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300

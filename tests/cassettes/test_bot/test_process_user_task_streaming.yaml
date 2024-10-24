@@ -41,7 +41,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 23 Oct 2024 17:05:25 GMT
+      - Wed, 23 Oct 2024 20:03:25 GMT
       server:
       - uvicorn
     status:
@@ -90,7 +90,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 23 Oct 2024 17:05:25 GMT
+      - Wed, 23 Oct 2024 20:03:25 GMT
       server:
       - uvicorn
     status:
@@ -100,148 +100,148 @@ interactions:
     body: !!python/object/new:_io.BytesIO
       state: !!python/tuple
       - !!binary |
-        LS05ZDk0YjI5OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjog
-        Zm9ybS1kYXRhOyBuYW1lPSJwb3N0LmE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4YzlhYjE4
-        NiINCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDc1MA0K
-        DQp7ImlkIjoiYTVjZjg1NmEtNGVhMi00MmI4LWE1M2EtOTJjODhjOWFiMTg2Iiwic3RhcnRfdGlt
-        ZSI6IjIwMjQtMTAtMjNUMTc6MDU6MjYuNjM5ODc2KzAwOjAwIiwiZXh0cmEiOnsibWV0YWRhdGEi
+        LS04YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjog
+        Zm9ybS1kYXRhOyBuYW1lPSJwb3N0Ljc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1OTU1
+        NCINCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDc1MA0K
+        DQp7ImlkIjoiNzY3YjE5YjUtMjZkOS00M2U2LWEzNDEtN2I4YTNkNTU5NTU0Iiwic3RhcnRfdGlt
+        ZSI6IjIwMjQtMTAtMjNUMjA6MDM6MjUuOTE3NzI1KzAwOjAwIiwiZXh0cmEiOnsibWV0YWRhdGEi
         OnsibHNfbWV0aG9kIjoidHJhY2VhYmxlIiwiTEFOR0NIQUlOX0RFQlVHX0xPR1MiOiIwIiwiTEFO
         R0NIQUlOX0hVQl9BUElfVVJMIjoiaHR0cHM6Ly9hcGkuaHViLmxhbmdjaGFpbi5jb20iLCJyZXZp
-        c2lvbl9pZCI6IjRkMTc0MmItZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJsYW5nc21pdGgtcHki
+        c2lvbl9pZCI6IjMwNGE0ZmEtZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJsYW5nc21pdGgtcHki
         LCJzZGtfdmVyc2lvbiI6IjAuMS4xMzUiLCJsaWJyYXJ5IjoibGFuZ3NtaXRoIiwicGxhdGZvcm0i
         OiJtYWNPUy0xNC43LWFybTY0LWFybS02NGJpdCIsInJ1bnRpbWUiOiJweXRob24iLCJweV9pbXBs
         ZW1lbnRhdGlvbiI6IkNQeXRob24iLCJydW50aW1lX3ZlcnNpb24iOiIzLjEyLjUiLCJsYW5nY2hh
         aW5fdmVyc2lvbiI6IjAuMy4zIiwibGFuZ2NoYWluX2NvcmVfdmVyc2lvbiI6IjAuMy4xMCJ9fSwi
-        dGFncyI6W10sImF0dGFjaG1lbnRzIjp7fSwiZG90dGVkX29yZGVyIjoiMjAyNDEwMjNUMTcwNTI2
-        NjM5ODc2WmE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4YzlhYjE4NiIsInRyYWNlX2lkIjoi
-        YTVjZjg1NmEtNGVhMi00MmI4LWE1M2EtOTJjODhjOWFiMTg2Iiwic2Vzc2lvbl9uYW1lIjoic2Fu
+        dGFncyI6W10sImF0dGFjaG1lbnRzIjp7fSwiZG90dGVkX29yZGVyIjoiMjAyNDEwMjNUMjAwMzI1
+        OTE3NzI1Wjc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1OTU1NCIsInRyYWNlX2lkIjoi
+        NzY3YjE5YjUtMjZkOS00M2U2LWEzNDEtN2I4YTNkNTU5NTU0Iiwic2Vzc2lvbl9uYW1lIjoic2Fu
         ZGJveF9hZ2VudCIsIm5hbWUiOiJwcm9jZXNzX3VzZXJfdGFza19zdHJlYW1pbmciLCJydW5fdHlw
-        ZSI6ImNoYWluIn0NCi0tOWQ5NGIyOTk5MWQ3NDczYmE2NDBlODdkZjFjMzIxNWINCkNvbnRlbnQt
-        RGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFtZT0icG9zdC5hNWNmODU2YS00ZWEyLTQyYjgtYTUz
-        YS05MmM4OGM5YWIxODYuaW5wdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpD
+        ZSI6ImNoYWluIn0NCi0tOGFlNDE0NzA5ODM5NGU2MmJjMGVkNTZmZDc0ZDY5OTcNCkNvbnRlbnQt
+        RGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFtZT0icG9zdC43NjdiMTliNS0yNmQ5LTQzZTYtYTM0
+        MS03YjhhM2Q1NTk1NTQuaW5wdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpD
         b250ZW50LUxlbmd0aDogNzYNCg0KeyJzZXNzaW9uX2lkIjoidGVzdF9zZXNzaW9uIiwidXNlcl90
-        YXNrIjoiVGVsbCBtZSBhIHN0b3J5IiwidGhyZWFkX2lkIjpudWxsfQ0KLS05ZDk0YjI5OTkxZDc0
-        NzNiYTY0MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1l
-        PSJwb3N0LmE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4YzlhYjE4Ni5vdXRwdXRzIg0KQ29u
-        dGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0aDogMg0KDQp7fQ0KLS05
-        ZDk0YjI5OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9y
-        bS1kYXRhOyBuYW1lPSJwb3N0LmE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4YzlhYjE4Ni5l
+        YXNrIjoiVGVsbCBtZSBhIHN0b3J5IiwidGhyZWFkX2lkIjpudWxsfQ0KLS04YWU0MTQ3MDk4Mzk0
+        ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1l
+        PSJwb3N0Ljc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1OTU1NC5vdXRwdXRzIg0KQ29u
+        dGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0aDogMg0KDQp7fQ0KLS04
+        YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9y
+        bS1kYXRhOyBuYW1lPSJwb3N0Ljc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1OTU1NC5l
         dmVudHMiDQpDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAy
-        DQoNCltdDQotLTlkOTRiMjk5OTFkNzQ3M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bv
-        c2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3QuNDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUw
-        M2Y0ZjIzZWY5Ig0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0
-        aDogOTk4DQoNCnsiaWQiOiI0NzgzOGE4Mi1jZWRkLTQ3YTctYTIwNi02ZTAzZjRmMjNlZjkiLCJz
-        dGFydF90aW1lIjoiMjAyNC0xMC0yM1QxNzowNToyNi42NDY3ODQrMDA6MDAiLCJlbmRfdGltZSI6
+        DQoNCltdDQotLThhZTQxNDcwOTgzOTRlNjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bv
+        c2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3QuODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0
+        MmYxMGJkMDk4Ig0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0
+        aDogOTk4DQoNCnsiaWQiOiI4MmJmY2NiOS1hZjIyLTQ0M2EtOGFlOS1iMzQyZjEwYmQwOTgiLCJz
+        dGFydF90aW1lIjoiMjAyNC0xMC0yM1QyMDowMzoyNS45MjQ3NjYrMDA6MDAiLCJlbmRfdGltZSI6
         bnVsbCwiZXh0cmEiOnsibWV0YWRhdGEiOnsic2Vzc2lvbl9pZCI6InRlc3Rfc2Vzc2lvbiIsInRo
         cmVhZF9pZCI6bnVsbCwibHNfbWV0aG9kIjoidHJhY2VhYmxlIiwiTEFOR0NIQUlOX0RFQlVHX0xP
         R1MiOiIwIiwiTEFOR0NIQUlOX0hVQl9BUElfVVJMIjoiaHR0cHM6Ly9hcGkuaHViLmxhbmdjaGFp
-        bi5jb20iLCJyZXZpc2lvbl9pZCI6IjRkMTc0MmItZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJs
+        bi5jb20iLCJyZXZpc2lvbl9pZCI6IjMwNGE0ZmEtZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJs
         YW5nc21pdGgtcHkiLCJzZGtfdmVyc2lvbiI6IjAuMS4xMzUiLCJsaWJyYXJ5IjoibGFuZ2NoYWlu
         LWNvcmUiLCJwbGF0Zm9ybSI6Im1hY09TLTE0LjctYXJtNjQtYXJtLTY0Yml0IiwicnVudGltZSI6
         InB5dGhvbiIsInB5X2ltcGxlbWVudGF0aW9uIjoiQ1B5dGhvbiIsInJ1bnRpbWVfdmVyc2lvbiI6
         IjMuMTIuNSIsImxhbmdjaGFpbl92ZXJzaW9uIjoiMC4zLjMiLCJsYW5nY2hhaW5fY29yZV92ZXJz
         aW9uIjoiMC4zLjEwIiwibGlicmFyeV92ZXJzaW9uIjoiMC4zLjEwIn19LCJlcnJvciI6bnVsbCwi
-        cmVmZXJlbmNlX2V4YW1wbGVfaWQiOm51bGwsInBhcmVudF9ydW5faWQiOiJhNWNmODU2YS00ZWEy
-        LTQyYjgtYTUzYS05MmM4OGM5YWIxODYiLCJ0YWdzIjpbXSwiYXR0YWNobWVudHMiOnt9LCJzZXNz
+        cmVmZXJlbmNlX2V4YW1wbGVfaWQiOm51bGwsInBhcmVudF9ydW5faWQiOiI3NjdiMTliNS0yNmQ5
+        LTQzZTYtYTM0MS03YjhhM2Q1NTk1NTQiLCJ0YWdzIjpbXSwiYXR0YWNobWVudHMiOnt9LCJzZXNz
         aW9uX25hbWUiOiJzYW5kYm94X2FnZW50Iiwic2Vzc2lvbl9pZCI6bnVsbCwiZG90dGVkX29yZGVy
-        IjoiMjAyNDEwMjNUMTcwNTI2NjM5ODc2WmE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4Yzlh
-        YjE4Ni4yMDI0MTAyM1QxNzA1MjY2NDY3ODRaNDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUwM2Y0
-        ZjIzZWY5IiwidHJhY2VfaWQiOiJhNWNmODU2YS00ZWEyLTQyYjgtYTUzYS05MmM4OGM5YWIxODYi
-        LCJuYW1lIjoiTGFuZ0dyYXBoIiwicnVuX3R5cGUiOiJjaGFpbiJ9DQotLTlkOTRiMjk5OTFkNzQ3
-        M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
-        InBvc3QuNDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUwM2Y0ZjIzZWY5LmlucHV0cyINCkNvbnRl
+        IjoiMjAyNDEwMjNUMjAwMzI1OTE3NzI1Wjc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1
+        OTU1NC4yMDI0MTAyM1QyMDAzMjU5MjQ3NjZaODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0MmYx
+        MGJkMDk4IiwidHJhY2VfaWQiOiI3NjdiMTliNS0yNmQ5LTQzZTYtYTM0MS03YjhhM2Q1NTk1NTQi
+        LCJuYW1lIjoiTGFuZ0dyYXBoIiwicnVuX3R5cGUiOiJjaGFpbiJ9DQotLThhZTQxNDcwOTgzOTRl
+        NjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
+        InBvc3QuODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0MmYxMGJkMDk4LmlucHV0cyINCkNvbnRl
         bnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDQxDQoNCnsibWVzc2Fn
-        ZXMiOltbInVzZXIiLCJUZWxsIG1lIGEgc3RvcnkiXV19DQotLTlkOTRiMjk5OTFkNzQ3M2JhNjQw
-        ZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3Qu
-        NDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUwM2Y0ZjIzZWY5Lm91dHB1dHMiDQpDb250ZW50LVR5
-        cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyDQoNCnt9DQotLTlkOTRiMjk5
-        OTFkNzQ3M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7
-        IG5hbWU9InBvc3QuNDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUwM2Y0ZjIzZWY5LmV2ZW50cyIN
+        ZXMiOltbInVzZXIiLCJUZWxsIG1lIGEgc3RvcnkiXV19DQotLThhZTQxNDcwOTgzOTRlNjJiYzBl
+        ZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3Qu
+        ODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0MmYxMGJkMDk4Lm91dHB1dHMiDQpDb250ZW50LVR5
+        cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyDQoNCnt9DQotLThhZTQxNDcw
+        OTgzOTRlNjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7
+        IG5hbWU9InBvc3QuODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0MmYxMGJkMDk4LmV2ZW50cyIN
         CkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDYwDQoNClt7
-        Im5hbWUiOiJzdGFydCIsInRpbWUiOiIyMDI0LTEwLTIzVDE3OjA1OjI2LjY0Njc4NCswMDowMCJ9
-        XQ0KLS05ZDk0YjI5OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlv
-        bjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LjI1NGJlNmNmLWYyOGMtNDBjMi1iMmUxLWZiODU4NjAz
-        OTk1NCINCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDEy
-        OTMNCg0KeyJpZCI6IjI1NGJlNmNmLWYyOGMtNDBjMi1iMmUxLWZiODU4NjAzOTk1NCIsInN0YXJ0
-        X3RpbWUiOiIyMDI0LTEwLTIzVDE3OjA1OjI2LjY1MjYxNCswMDowMCIsImVuZF90aW1lIjoiMjAy
-        NC0xMC0yM1QxNzowNToyNi42NTg1MDErMDA6MDAiLCJleHRyYSI6eyJtZXRhZGF0YSI6eyJzZXNz
+        Im5hbWUiOiJzdGFydCIsInRpbWUiOiIyMDI0LTEwLTIzVDIwOjAzOjI1LjkyNDc2NiswMDowMCJ9
+        XQ0KLS04YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlv
+        bjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LmU2YzIyODNlLWMxMzMtNDA3Ni04NGM5LTNmMWFlMDhl
+        NGJiMSINCkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDEy
+        OTMNCg0KeyJpZCI6ImU2YzIyODNlLWMxMzMtNDA3Ni04NGM5LTNmMWFlMDhlNGJiMSIsInN0YXJ0
+        X3RpbWUiOiIyMDI0LTEwLTIzVDIwOjAzOjI1LjkzMDkzNSswMDowMCIsImVuZF90aW1lIjoiMjAy
+        NC0xMC0yM1QyMDowMzoyNS45Mzc2MTErMDA6MDAiLCJleHRyYSI6eyJtZXRhZGF0YSI6eyJzZXNz
         aW9uX2lkIjoidGVzdF9zZXNzaW9uIiwidGhyZWFkX2lkIjpudWxsLCJsc19tZXRob2QiOiJ0cmFj
         ZWFibGUiLCJsYW5nZ3JhcGhfc3RlcCI6MCwibGFuZ2dyYXBoX25vZGUiOiJfX3N0YXJ0X18iLCJs
         YW5nZ3JhcGhfdHJpZ2dlcnMiOlsiX19zdGFydF9fIl0sImxhbmdncmFwaF9wYXRoIjpbIl9fcHJl
         Z2VsX3B1bGwiLCJfX3N0YXJ0X18iXSwibGFuZ2dyYXBoX2NoZWNrcG9pbnRfbnMiOiJfX3N0YXJ0
-        X186ZGMxYTk4NmQtYmQ5MC1lMTBlLWI5MDctNmU1Y2M2MWQ2YzIwIiwiTEFOR0NIQUlOX0RFQlVH
+        X186YmM0Y2MyYWEtNDU4Yy03MzY3LTc1YTQtYzBjMGFhYWM1ZGQ4IiwiTEFOR0NIQUlOX0RFQlVH
         X0xPR1MiOiIwIiwiTEFOR0NIQUlOX0hVQl9BUElfVVJMIjoiaHR0cHM6Ly9hcGkuaHViLmxhbmdj
-        aGFpbi5jb20iLCJyZXZpc2lvbl9pZCI6IjRkMTc0MmItZGlydHkifSwicnVudGltZSI6eyJzZGsi
+        aGFpbi5jb20iLCJyZXZpc2lvbl9pZCI6IjMwNGE0ZmEtZGlydHkifSwicnVudGltZSI6eyJzZGsi
         OiJsYW5nc21pdGgtcHkiLCJzZGtfdmVyc2lvbiI6IjAuMS4xMzUiLCJsaWJyYXJ5IjoibGFuZ3Nt
         aXRoIiwicGxhdGZvcm0iOiJtYWNPUy0xNC43LWFybTY0LWFybS02NGJpdCIsInJ1bnRpbWUiOiJw
         eXRob24iLCJweV9pbXBsZW1lbnRhdGlvbiI6IkNQeXRob24iLCJydW50aW1lX3ZlcnNpb24iOiIz
         LjEyLjUiLCJsYW5nY2hhaW5fdmVyc2lvbiI6IjAuMy4zIiwibGFuZ2NoYWluX2NvcmVfdmVyc2lv
         biI6IjAuMy4xMCJ9fSwiZXJyb3IiOm51bGwsInJlZmVyZW5jZV9leGFtcGxlX2lkIjpudWxsLCJw
-        YXJlbnRfcnVuX2lkIjoiNDc4MzhhODItY2VkZC00N2E3LWEyMDYtNmUwM2Y0ZjIzZWY5IiwidGFn
-        cyI6WyJncmFwaDpzdGVwOjAiLCJsYW5nc21pdGg6aGlkZGVuIl0sImF0dGFjaG1lbnRzIjp7fSwi
+        YXJlbnRfcnVuX2lkIjoiODJiZmNjYjktYWYyMi00NDNhLThhZTktYjM0MmYxMGJkMDk4IiwidGFn
+        cyI6WyJsYW5nc21pdGg6aGlkZGVuIiwiZ3JhcGg6c3RlcDowIl0sImF0dGFjaG1lbnRzIjp7fSwi
         c2Vzc2lvbl9uYW1lIjoic2FuZGJveF9hZ2VudCIsInNlc3Npb25faWQiOm51bGwsImRvdHRlZF9v
-        cmRlciI6IjIwMjQxMDIzVDE3MDUyNjYzOTg3NlphNWNmODU2YS00ZWEyLTQyYjgtYTUzYS05MmM4
-        OGM5YWIxODYuMjAyNDEwMjNUMTcwNTI2NjQ2Nzg0WjQ3ODM4YTgyLWNlZGQtNDdhNy1hMjA2LTZl
-        MDNmNGYyM2VmOS4yMDI0MTAyM1QxNzA1MjY2NTI2MTRaMjU0YmU2Y2YtZjI4Yy00MGMyLWIyZTEt
-        ZmI4NTg2MDM5OTU0IiwidHJhY2VfaWQiOiJhNWNmODU2YS00ZWEyLTQyYjgtYTUzYS05MmM4OGM5
-        YWIxODYiLCJuYW1lIjoiX19zdGFydF9fIiwicnVuX3R5cGUiOiJjaGFpbiJ9DQotLTlkOTRiMjk5
-        OTFkNzQ3M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7
-        IG5hbWU9InBvc3QuMjU0YmU2Y2YtZjI4Yy00MGMyLWIyZTEtZmI4NTg2MDM5OTU0LmlucHV0cyIN
+        cmRlciI6IjIwMjQxMDIzVDIwMDMyNTkxNzcyNVo3NjdiMTliNS0yNmQ5LTQzZTYtYTM0MS03Yjhh
+        M2Q1NTk1NTQuMjAyNDEwMjNUMjAwMzI1OTI0NzY2WjgyYmZjY2I5LWFmMjItNDQzYS04YWU5LWIz
+        NDJmMTBiZDA5OC4yMDI0MTAyM1QyMDAzMjU5MzA5MzVaZTZjMjI4M2UtYzEzMy00MDc2LTg0Yzkt
+        M2YxYWUwOGU0YmIxIiwidHJhY2VfaWQiOiI3NjdiMTliNS0yNmQ5LTQzZTYtYTM0MS03YjhhM2Q1
+        NTk1NTQiLCJuYW1lIjoiX19zdGFydF9fIiwicnVuX3R5cGUiOiJjaGFpbiJ9DQotLThhZTQxNDcw
+        OTgzOTRlNjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7
+        IG5hbWU9InBvc3QuZTZjMjI4M2UtYzEzMy00MDc2LTg0YzktM2YxYWUwOGU0YmIxLmlucHV0cyIN
         CkNvbnRlbnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDQxDQoNCnsi
-        bWVzc2FnZXMiOltbInVzZXIiLCJUZWxsIG1lIGEgc3RvcnkiXV19DQotLTlkOTRiMjk5OTFkNzQ3
-        M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
-        InBvc3QuMjU0YmU2Y2YtZjI4Yy00MGMyLWIyZTEtZmI4NTg2MDM5OTU0Lm91dHB1dHMiDQpDb250
+        bWVzc2FnZXMiOltbInVzZXIiLCJUZWxsIG1lIGEgc3RvcnkiXV19DQotLThhZTQxNDcwOTgzOTRl
+        NjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
+        InBvc3QuZTZjMjI4M2UtYzEzMy00MDc2LTg0YzktM2YxYWUwOGU0YmIxLm91dHB1dHMiDQpDb250
         ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiA0MQ0KDQp7Im1lc3Nh
-        Z2VzIjpbWyJ1c2VyIiwiVGVsbCBtZSBhIHN0b3J5Il1dfQ0KLS05ZDk0YjI5OTkxZDc0NzNiYTY0
-        MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0
-        LjI1NGJlNmNmLWYyOGMtNDBjMi1iMmUxLWZiODU4NjAzOTk1NC5ldmVudHMiDQpDb250ZW50LVR5
+        Z2VzIjpbWyJ1c2VyIiwiVGVsbCBtZSBhIHN0b3J5Il1dfQ0KLS04YWU0MTQ3MDk4Mzk0ZTYyYmMw
+        ZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0
+        LmU2YzIyODNlLWMxMzMtNDA3Ni04NGM5LTNmMWFlMDhlNGJiMS5ldmVudHMiDQpDb250ZW50LVR5
         cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAxMTcNCg0KW3sibmFtZSI6InN0
-        YXJ0IiwidGltZSI6IjIwMjQtMTAtMjNUMTc6MDU6MjYuNjUyNjE0KzAwOjAwIn0seyJuYW1lIjoi
-        ZW5kIiwidGltZSI6IjIwMjQtMTAtMjNUMTc6MDU6MjYuNjU4NTAxKzAwOjAwIn1dDQotLTlkOTRi
-        Mjk5OTFkNzQ3M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRh
-        dGE7IG5hbWU9InBvc3QuZTNlMjQ5Y2MtMTJmOC00NjQ2LTk2YzAtN2NiNmRmM2VlMzA0Ig0KQ29u
+        YXJ0IiwidGltZSI6IjIwMjQtMTAtMjNUMjA6MDM6MjUuOTMwOTM1KzAwOjAwIn0seyJuYW1lIjoi
+        ZW5kIiwidGltZSI6IjIwMjQtMTAtMjNUMjA6MDM6MjUuOTM3NjExKzAwOjAwIn1dDQotLThhZTQx
+        NDcwOTgzOTRlNjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRh
+        dGE7IG5hbWU9InBvc3QuZjkxZjE1N2EtYmEyYi00ZTU5LThhNzYtOThhODk5MDZkYTlhIg0KQ29u
         dGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uDQpDb250ZW50LUxlbmd0aDogMTI3Mg0KDQp7Imlk
-        IjoiZTNlMjQ5Y2MtMTJmOC00NjQ2LTk2YzAtN2NiNmRmM2VlMzA0Iiwic3RhcnRfdGltZSI6IjIw
-        MjQtMTAtMjNUMTc6MDU6MjYuNjYzNjE0KzAwOjAwIiwiZW5kX3RpbWUiOm51bGwsImV4dHJhIjp7
+        IjoiZjkxZjE1N2EtYmEyYi00ZTU5LThhNzYtOThhODk5MDZkYTlhIiwic3RhcnRfdGltZSI6IjIw
+        MjQtMTAtMjNUMjA6MDM6MjUuOTQyNjExKzAwOjAwIiwiZW5kX3RpbWUiOm51bGwsImV4dHJhIjp7
         Im1ldGFkYXRhIjp7InNlc3Npb25faWQiOiJ0ZXN0X3Nlc3Npb24iLCJ0aHJlYWRfaWQiOm51bGws
         ImxzX21ldGhvZCI6InRyYWNlYWJsZSIsImxhbmdncmFwaF9zdGVwIjoxLCJsYW5nZ3JhcGhfbm9k
         ZSI6ImNoYXRib3QiLCJsYW5nZ3JhcGhfdHJpZ2dlcnMiOlsic3RhcnQ6Y2hhdGJvdCJdLCJsYW5n
         Z3JhcGhfcGF0aCI6WyJfX3ByZWdlbF9wdWxsIiwiY2hhdGJvdCJdLCJsYW5nZ3JhcGhfY2hlY2tw
-        b2ludF9ucyI6ImNoYXRib3Q6ZGMzNWQ5NTMtNGJmOC1lMjVlLTcyZDMtZTg0OTBiYTAxMTZhIiwi
+        b2ludF9ucyI6ImNoYXRib3Q6NWZmMWZlMDYtYTA1Yy1jZmJhLTUzMjItMjA3MjA1OTk5YmQ0Iiwi
         TEFOR0NIQUlOX0RFQlVHX0xPR1MiOiIwIiwiTEFOR0NIQUlOX0hVQl9BUElfVVJMIjoiaHR0cHM6
-        Ly9hcGkuaHViLmxhbmdjaGFpbi5jb20iLCJyZXZpc2lvbl9pZCI6IjRkMTc0MmItZGlydHkifSwi
+        Ly9hcGkuaHViLmxhbmdjaGFpbi5jb20iLCJyZXZpc2lvbl9pZCI6IjMwNGE0ZmEtZGlydHkifSwi
         cnVudGltZSI6eyJzZGsiOiJsYW5nc21pdGgtcHkiLCJzZGtfdmVyc2lvbiI6IjAuMS4xMzUiLCJs
         aWJyYXJ5IjoibGFuZ2NoYWluLWNvcmUiLCJwbGF0Zm9ybSI6Im1hY09TLTE0LjctYXJtNjQtYXJt
         LTY0Yml0IiwicnVudGltZSI6InB5dGhvbiIsInB5X2ltcGxlbWVudGF0aW9uIjoiQ1B5dGhvbiIs
         InJ1bnRpbWVfdmVyc2lvbiI6IjMuMTIuNSIsImxhbmdjaGFpbl92ZXJzaW9uIjoiMC4zLjMiLCJs
         YW5nY2hhaW5fY29yZV92ZXJzaW9uIjoiMC4zLjEwIiwibGlicmFyeV92ZXJzaW9uIjoiMC4zLjEw
         In19LCJlcnJvciI6bnVsbCwicmVmZXJlbmNlX2V4YW1wbGVfaWQiOm51bGwsInBhcmVudF9ydW5f
-        aWQiOiI0NzgzOGE4Mi1jZWRkLTQ3YTctYTIwNi02ZTAzZjRmMjNlZjkiLCJ0YWdzIjpbImdyYXBo
+        aWQiOiI4MmJmY2NiOS1hZjIyLTQ0M2EtOGFlOS1iMzQyZjEwYmQwOTgiLCJ0YWdzIjpbImdyYXBo
         OnN0ZXA6MSJdLCJhdHRhY2htZW50cyI6e30sInNlc3Npb25fbmFtZSI6InNhbmRib3hfYWdlbnQi
-        LCJzZXNzaW9uX2lkIjpudWxsLCJkb3R0ZWRfb3JkZXIiOiIyMDI0MTAyM1QxNzA1MjY2Mzk4NzZa
-        YTVjZjg1NmEtNGVhMi00MmI4LWE1M2EtOTJjODhjOWFiMTg2LjIwMjQxMDIzVDE3MDUyNjY0Njc4
-        NFo0NzgzOGE4Mi1jZWRkLTQ3YTctYTIwNi02ZTAzZjRmMjNlZjkuMjAyNDEwMjNUMTcwNTI2NjYz
-        NjE0WmUzZTI0OWNjLTEyZjgtNDY0Ni05NmMwLTdjYjZkZjNlZTMwNCIsInRyYWNlX2lkIjoiYTVj
-        Zjg1NmEtNGVhMi00MmI4LWE1M2EtOTJjODhjOWFiMTg2IiwibmFtZSI6ImNoYXRib3QiLCJydW5f
-        dHlwZSI6ImNoYWluIn0NCi0tOWQ5NGIyOTk5MWQ3NDczYmE2NDBlODdkZjFjMzIxNWINCkNvbnRl
-        bnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFtZT0icG9zdC5lM2UyNDljYy0xMmY4LTQ2NDYt
-        OTZjMC03Y2I2ZGYzZWUzMDQuaW5wdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29u
+        LCJzZXNzaW9uX2lkIjpudWxsLCJkb3R0ZWRfb3JkZXIiOiIyMDI0MTAyM1QyMDAzMjU5MTc3MjVa
+        NzY3YjE5YjUtMjZkOS00M2U2LWEzNDEtN2I4YTNkNTU5NTU0LjIwMjQxMDIzVDIwMDMyNTkyNDc2
+        Nlo4MmJmY2NiOS1hZjIyLTQ0M2EtOGFlOS1iMzQyZjEwYmQwOTguMjAyNDEwMjNUMjAwMzI1OTQy
+        NjExWmY5MWYxNTdhLWJhMmItNGU1OS04YTc2LTk4YTg5OTA2ZGE5YSIsInRyYWNlX2lkIjoiNzY3
+        YjE5YjUtMjZkOS00M2U2LWEzNDEtN2I4YTNkNTU5NTU0IiwibmFtZSI6ImNoYXRib3QiLCJydW5f
+        dHlwZSI6ImNoYWluIn0NCi0tOGFlNDE0NzA5ODM5NGU2MmJjMGVkNTZmZDc0ZDY5OTcNCkNvbnRl
+        bnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsgbmFtZT0icG9zdC5mOTFmMTU3YS1iYTJiLTRlNTkt
+        OGE3Ni05OGE4OTkwNmRhOWEuaW5wdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29u
         DQpDb250ZW50LUxlbmd0aDogMTY1DQoNCnsibWVzc2FnZXMiOlt7ImNvbnRlbnQiOiJUZWxsIG1l
         IGEgc3RvcnkiLCJhZGRpdGlvbmFsX2t3YXJncyI6e30sInJlc3BvbnNlX21ldGFkYXRhIjp7fSwi
-        dHlwZSI6Imh1bWFuIiwiaWQiOiI5NTVhYTRmOC02NDhiLTRkZDktOTMxNS0yOThjMGEwNWZhOTci
-        LCJleGFtcGxlIjpmYWxzZX1dfQ0KLS05ZDk0YjI5OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yg0K
-        Q29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LmUzZTI0OWNjLTEyZjgt
-        NDY0Ni05NmMwLTdjYjZkZjNlZTMwNC5vdXRwdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlv
-        bi9qc29uDQpDb250ZW50LUxlbmd0aDogMg0KDQp7fQ0KLS05ZDk0YjI5OTkxZDc0NzNiYTY0MGU4
-        N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LmUz
-        ZTI0OWNjLTEyZjgtNDY0Ni05NmMwLTdjYjZkZjNlZTMwNC5ldmVudHMiDQpDb250ZW50LVR5cGU6
+        dHlwZSI6Imh1bWFuIiwiaWQiOiJmOGJiMzcwOC04OWFjLTQ3MDUtODg1MC1kMzA1OTFhMjAyZWQi
+        LCJleGFtcGxlIjpmYWxzZX1dfQ0KLS04YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0K
+        Q29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LmY5MWYxNTdhLWJhMmIt
+        NGU1OS04YTc2LTk4YTg5OTA2ZGE5YS5vdXRwdXRzIg0KQ29udGVudC1UeXBlOiBhcHBsaWNhdGlv
+        bi9qc29uDQpDb250ZW50LUxlbmd0aDogMg0KDQp7fQ0KLS04YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1
+        NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwb3N0LmY5
+        MWYxNTdhLWJhMmItNGU1OS04YTc2LTk4YTg5OTA2ZGE5YS5ldmVudHMiDQpDb250ZW50LVR5cGU6
         IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiA2MA0KDQpbeyJuYW1lIjoic3RhcnQi
-        LCJ0aW1lIjoiMjAyNC0xMC0yM1QxNzowNToyNi42NjM2MTQrMDA6MDAifV0NCi0tOWQ5NGIyOTk5
-        MWQ3NDczYmE2NDBlODdkZjFjMzIxNWINCkNvbnRlbnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsg
-        bmFtZT0icG9zdC4wMmRjOTNiNy01NzU5LTQ5OWYtYmYzYS1hZmFlZjNjYTY2NjUiDQpDb250ZW50
-        LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyMTYzDQoNCnsiaWQiOiIw
-        MmRjOTNiNy01NzU5LTQ5OWYtYmYzYS1hZmFlZjNjYTY2NjUiLCJzdGFydF90aW1lIjoiMjAyNC0x
-        MC0yM1QxNzowNToyNi42NzA1MzErMDA6MDAiLCJlbmRfdGltZSI6bnVsbCwiZXh0cmEiOnsiaW52
+        LCJ0aW1lIjoiMjAyNC0xMC0yM1QyMDowMzoyNS45NDI2MTErMDA6MDAifV0NCi0tOGFlNDE0NzA5
+        ODM5NGU2MmJjMGVkNTZmZDc0ZDY5OTcNCkNvbnRlbnQtRGlzcG9zaXRpb246IGZvcm0tZGF0YTsg
+        bmFtZT0icG9zdC5lMDY3MjIyYy02ZjU5LTRhN2UtYjEzNi1hODE3ODYxZGEwYTYiDQpDb250ZW50
+        LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyMTYzDQoNCnsiaWQiOiJl
+        MDY3MjIyYy02ZjU5LTRhN2UtYjEzNi1hODE3ODYxZGEwYTYiLCJzdGFydF90aW1lIjoiMjAyNC0x
+        MC0yM1QyMDowMzoyNS45NDk0NzkrMDA6MDAiLCJlbmRfdGltZSI6bnVsbCwiZXh0cmEiOnsiaW52
         b2NhdGlvbl9wYXJhbXMiOnsibW9kZWwiOiJjbGF1ZGUtMy01LXNvbm5ldC0yMDI0MDYyMCIsIm1h
         eF90b2tlbnMiOjEwMjQsInRlbXBlcmF0dXJlIjpudWxsLCJ0b3BfayI6bnVsbCwidG9wX3AiOm51
         bGwsIm1vZGVsX2t3YXJncyI6e30sInN0cmVhbWluZyI6ZmFsc2UsIm1heF9yZXRyaWVzIjoyLCJk
@@ -251,13 +251,13 @@ interactions:
         b2QiOiJ0cmFjZWFibGUiLCJsYW5nZ3JhcGhfc3RlcCI6MSwibGFuZ2dyYXBoX25vZGUiOiJjaGF0
         Ym90IiwibGFuZ2dyYXBoX3RyaWdnZXJzIjpbInN0YXJ0OmNoYXRib3QiXSwibGFuZ2dyYXBoX3Bh
         dGgiOlsiX19wcmVnZWxfcHVsbCIsImNoYXRib3QiXSwibGFuZ2dyYXBoX2NoZWNrcG9pbnRfbnMi
-        OiJjaGF0Ym90OmRjMzVkOTUzLTRiZjgtZTI1ZS03MmQzLWU4NDkwYmEwMTE2YSIsImNoZWNrcG9p
-        bnRfbnMiOiJjaGF0Ym90OmRjMzVkOTUzLTRiZjgtZTI1ZS03MmQzLWU4NDkwYmEwMTE2YSIsImxz
+        OiJjaGF0Ym90OjVmZjFmZTA2LWEwNWMtY2ZiYS01MzIyLTIwNzIwNTk5OWJkNCIsImNoZWNrcG9p
+        bnRfbnMiOiJjaGF0Ym90OjVmZjFmZTA2LWEwNWMtY2ZiYS01MzIyLTIwNzIwNTk5OWJkNCIsImxz
         X3Byb3ZpZGVyIjoiYW50aHJvcGljIiwibHNfbW9kZWxfbmFtZSI6ImNsYXVkZS0zLTUtc29ubmV0
         LTIwMjQwNjIwIiwibHNfbW9kZWxfdHlwZSI6ImNoYXQiLCJsc190ZW1wZXJhdHVyZSI6bnVsbCwi
         bHNfbWF4X3Rva2VucyI6MTAyNCwiTEFOR0NIQUlOX0RFQlVHX0xPR1MiOiIwIiwiTEFOR0NIQUlO
         X0hVQl9BUElfVVJMIjoiaHR0cHM6Ly9hcGkuaHViLmxhbmdjaGFpbi5jb20iLCJyZXZpc2lvbl9p
-        ZCI6IjRkMTc0MmItZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJsYW5nc21pdGgtcHkiLCJzZGtf
+        ZCI6IjMwNGE0ZmEtZGlydHkifSwicnVudGltZSI6eyJzZGsiOiJsYW5nc21pdGgtcHkiLCJzZGtf
         dmVyc2lvbiI6IjAuMS4xMzUiLCJsaWJyYXJ5IjoibGFuZ2NoYWluLWNvcmUiLCJwbGF0Zm9ybSI6
         Im1hY09TLTE0LjctYXJtNjQtYXJtLTY0Yml0IiwicnVudGltZSI6InB5dGhvbiIsInB5X2ltcGxl
         bWVudGF0aW9uIjoiQ1B5dGhvbiIsInJ1bnRpbWVfdmVyc2lvbiI6IjMuMTIuNSIsImxhbmdjaGFp
@@ -269,30 +269,30 @@ interactions:
         b3BpY19hcGlfdXJsIjoiaHR0cHM6Ly9hcGkuYW50aHJvcGljLmNvbSIsImFudGhyb3BpY19hcGlf
         a2V5Ijp7ImxjIjoxLCJ0eXBlIjoic2VjcmV0IiwiaWQiOlsiQU5USFJPUElDX0FQSV9LRVkiXX0s
         InN0cmVhbV91c2FnZSI6dHJ1ZX0sIm5hbWUiOiJDaGF0QW50aHJvcGljIn0sInJlZmVyZW5jZV9l
-        eGFtcGxlX2lkIjpudWxsLCJwYXJlbnRfcnVuX2lkIjoiZTNlMjQ5Y2MtMTJmOC00NjQ2LTk2YzAt
-        N2NiNmRmM2VlMzA0IiwidGFncyI6WyJzZXE6c3RlcDoxIl0sImF0dGFjaG1lbnRzIjp7fSwic2Vz
+        eGFtcGxlX2lkIjpudWxsLCJwYXJlbnRfcnVuX2lkIjoiZjkxZjE1N2EtYmEyYi00ZTU5LThhNzYt
+        OThhODk5MDZkYTlhIiwidGFncyI6WyJzZXE6c3RlcDoxIl0sImF0dGFjaG1lbnRzIjp7fSwic2Vz
         c2lvbl9uYW1lIjoic2FuZGJveF9hZ2VudCIsInNlc3Npb25faWQiOm51bGwsImRvdHRlZF9vcmRl
-        ciI6IjIwMjQxMDIzVDE3MDUyNjYzOTg3NlphNWNmODU2YS00ZWEyLTQyYjgtYTUzYS05MmM4OGM5
-        YWIxODYuMjAyNDEwMjNUMTcwNTI2NjQ2Nzg0WjQ3ODM4YTgyLWNlZGQtNDdhNy1hMjA2LTZlMDNm
-        NGYyM2VmOS4yMDI0MTAyM1QxNzA1MjY2NjM2MTRaZTNlMjQ5Y2MtMTJmOC00NjQ2LTk2YzAtN2Ni
-        NmRmM2VlMzA0LjIwMjQxMDIzVDE3MDUyNjY3MDUzMVowMmRjOTNiNy01NzU5LTQ5OWYtYmYzYS1h
-        ZmFlZjNjYTY2NjUiLCJ0cmFjZV9pZCI6ImE1Y2Y4NTZhLTRlYTItNDJiOC1hNTNhLTkyYzg4Yzlh
-        YjE4NiIsIm5hbWUiOiJDaGF0QW50aHJvcGljIiwicnVuX3R5cGUiOiJsbG0ifQ0KLS05ZDk0YjI5
-        OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yg0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRh
-        OyBuYW1lPSJwb3N0LjAyZGM5M2I3LTU3NTktNDk5Zi1iZjNhLWFmYWVmM2NhNjY2NS5pbnB1dHMi
+        ciI6IjIwMjQxMDIzVDIwMDMyNTkxNzcyNVo3NjdiMTliNS0yNmQ5LTQzZTYtYTM0MS03YjhhM2Q1
+        NTk1NTQuMjAyNDEwMjNUMjAwMzI1OTI0NzY2WjgyYmZjY2I5LWFmMjItNDQzYS04YWU5LWIzNDJm
+        MTBiZDA5OC4yMDI0MTAyM1QyMDAzMjU5NDI2MTFaZjkxZjE1N2EtYmEyYi00ZTU5LThhNzYtOThh
+        ODk5MDZkYTlhLjIwMjQxMDIzVDIwMDMyNTk0OTQ3OVplMDY3MjIyYy02ZjU5LTRhN2UtYjEzNi1h
+        ODE3ODYxZGEwYTYiLCJ0cmFjZV9pZCI6Ijc2N2IxOWI1LTI2ZDktNDNlNi1hMzQxLTdiOGEzZDU1
+        OTU1NCIsIm5hbWUiOiJDaGF0QW50aHJvcGljIiwicnVuX3R5cGUiOiJsbG0ifQ0KLS04YWU0MTQ3
+        MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Nw0KQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRh
+        OyBuYW1lPSJwb3N0LmUwNjcyMjJjLTZmNTktNGE3ZS1iMTM2LWE4MTc4NjFkYTBhNi5pbnB1dHMi
         DQpDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAxOTgNCg0K
         eyJtZXNzYWdlcyI6W1t7ImxjIjoxLCJ0eXBlIjoiY29uc3RydWN0b3IiLCJpZCI6WyJsYW5nY2hh
         aW4iLCJzY2hlbWEiLCJtZXNzYWdlcyIsIkh1bWFuTWVzc2FnZSJdLCJrd2FyZ3MiOnsiY29udGVu
-        dCI6IlRlbGwgbWUgYSBzdG9yeSIsInR5cGUiOiJodW1hbiIsImlkIjoiOTU1YWE0ZjgtNjQ4Yi00
-        ZGQ5LTkzMTUtMjk4YzBhMDVmYTk3In19XV19DQotLTlkOTRiMjk5OTFkNzQ3M2JhNjQwZTg3ZGYx
-        YzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3QuMDJkYzkz
-        YjctNTc1OS00OTlmLWJmM2EtYWZhZWYzY2E2NjY1Lm91dHB1dHMiDQpDb250ZW50LVR5cGU6IGFw
-        cGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyDQoNCnt9DQotLTlkOTRiMjk5OTFkNzQ3
-        M2JhNjQwZTg3ZGYxYzMyMTViDQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
-        InBvc3QuMDJkYzkzYjctNTc1OS00OTlmLWJmM2EtYWZhZWYzY2E2NjY1LmV2ZW50cyINCkNvbnRl
+        dCI6IlRlbGwgbWUgYSBzdG9yeSIsInR5cGUiOiJodW1hbiIsImlkIjoiZjhiYjM3MDgtODlhYy00
+        NzA1LTg4NTAtZDMwNTkxYTIwMmVkIn19XV19DQotLThhZTQxNDcwOTgzOTRlNjJiYzBlZDU2ZmQ3
+        NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9InBvc3QuZTA2NzIy
+        MmMtNmY1OS00YTdlLWIxMzYtYTgxNzg2MWRhMGE2Lm91dHB1dHMiDQpDb250ZW50LVR5cGU6IGFw
+        cGxpY2F0aW9uL2pzb24NCkNvbnRlbnQtTGVuZ3RoOiAyDQoNCnt9DQotLThhZTQxNDcwOTgzOTRl
+        NjJiYzBlZDU2ZmQ3NGQ2OTk3DQpDb250ZW50LURpc3Bvc2l0aW9uOiBmb3JtLWRhdGE7IG5hbWU9
+        InBvc3QuZTA2NzIyMmMtNmY1OS00YTdlLWIxMzYtYTgxNzg2MWRhMGE2LmV2ZW50cyINCkNvbnRl
         bnQtVHlwZTogYXBwbGljYXRpb24vanNvbg0KQ29udGVudC1MZW5ndGg6IDYwDQoNClt7Im5hbWUi
-        OiJzdGFydCIsInRpbWUiOiIyMDI0LTEwLTIzVDE3OjA1OjI2LjY3MDUzMSswMDowMCJ9XQ0KLS05
-        ZDk0YjI5OTkxZDc0NzNiYTY0MGU4N2RmMWMzMjE1Yi0tDQo=
+        OiJzdGFydCIsInRpbWUiOiIyMDI0LTEwLTIzVDIwOjAzOjI1Ljk0OTQ3OSswMDowMCJ9XQ0KLS04
+        YWU0MTQ3MDk4Mzk0ZTYyYmMwZWQ1NmZkNzRkNjk5Ny0tDQo=
       - 0
       - null
     headers:
@@ -305,7 +305,7 @@ interactions:
       Content-Length:
       - '10979'
       Content-Type:
-      - multipart/form-data; boundary=9d94b29991d7473ba640e87df1c3215b
+      - multipart/form-data; boundary=8ae4147098394e62bc0ed56fd74d6997
       User-Agent:
       - langsmith-py/0.1.135
       x-api-key:
@@ -337,7 +337,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Wed, 23 Oct 2024 17:05:26 GMT
+      - Wed, 23 Oct 2024 20:03:25 GMT
       server:
       - uvicorn
     status:
@@ -383,150 +383,850 @@ interactions:
     uri: https://api.anthropic.com/v1/messages
   response:
     body:
-      string: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_0148dfq77wwE9rk4ZEio8Xnp\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3-5-sonnet-20240620\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":11,\"output_tokens\":5}}
-        \             }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}
-        \    }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Once
-        upon a time,\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        in\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        a small\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        coastal\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        town, there lived a\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        young girl name\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        Lily. She\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        was known\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        throughout\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the village\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        for her vib\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"rant
-        imagination\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        and her\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        love of collecting\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        se\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ashells
-        along\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the shore\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".\"}
-        \      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"\\n\\nOne\"}
-        \         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        day, while\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        com\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"bing
-        the beach for\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        treas\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ures,
-        Lily stum\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"bled
-        upon an unusual\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",\"}
-        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        i\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ridescent
-        shell. As\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        she picked it up,\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        she notice\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        tiny\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        symbols\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        et\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ched
-        into its surface.\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        Intrigued,\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        she took it home to\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        examine\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        it more\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        closely.\\n\\nThat\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        night, as\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        Lily sl\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ept
-        with\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the shell on\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        her nightstand, she\"}               }\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        was\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        awoken by a soft\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",\"}
-        \      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        melo\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"dious
-        hum\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ming.\"}
-        \  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        To\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        her amazement, the\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        shell was\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        gl\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"owing,\"}
-        \        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        and the symbols\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        were\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        dancing\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        across\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        its surface.\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"\\n\\nSuddenly\"}
-        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",
-        a\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        sh\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"immering
-        figure emerge\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        from the shell \u2013\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        a tiny\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        sea\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        sprite\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        name\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        Pearl\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".
-        Pearl\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        explained that she was\"}              }\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the guardian of the ocean\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"'s
-        secrets\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        and that\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        Lily had been\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        chosen to help\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        protect the sea\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        an\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        its creatures\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".\"}
-        \     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"\\n\\nFrom\"}
-        \      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        that day forwar\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d,
-        Lily an\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        Pearl became ins\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"eparable
-        friends\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".
-        Together\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",
-        they embar\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ked
-        on magical\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        underwater\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        adventures, cleaning\"}             }\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        up\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        pollution\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",\"}
-        \     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        rescuing marine\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        animals\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\",\"}
-        \        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        and spreading awareness\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        about ocean\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        conservation throughout\"}             }\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the town\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".\"}
-        \          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"\\n\\nAs
-        Lily grew older, she\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        became\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        a marine\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        biologist,\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        dedic\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"ating
-        her life to protecting\"}            }\n\nevent: content_block_delta\ndata:
-        {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the oc\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"eans
-        she\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        had come to love so\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        deeply\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".
-        And though\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        Pearl\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        eventually\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        returned to her\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        home\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        beneath\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        the waves,\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        Lily never\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        forgot the magical\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        friendship that\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        ha\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        changed her life an\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        the\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        world aroun\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"d
-        her.\\n\\nThe\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"
-        end.\"}       }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0
-        \             }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"output_tokens\":312}
-        \   }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"        }\n\n"
+      string: 'event: message_start
+
+        data: {"type":"message_start","message":{"id":"msg_01Dz4cGCA7QA9h1sNQgUFg2q","type":"message","role":"assistant","model":"claude-3-5-sonnet-20240620","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":11,"output_tokens":1}}         }
+
+
+        event: content_block_start
+
+        data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}           }
+
+
+        event: ping
+
+        data: {"type": "ping"}
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Here"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"''s"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        a short story for you"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":":\n\nThe"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Ol"}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        Oak''s"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Secret"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nIn"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        a small"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        town"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        nest"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"led
+        among"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        rolling hills, there stoo"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        an ancient"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        oak tree."}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Its g"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"narled
+        branches reache"}}
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        towards"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        the sky, an"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        its roots ran deep into"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        the earth."}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        The town"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"speople
+        often"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        gathere"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        beneath"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        its shade, sharing"}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        stories an"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        laughter."}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nOne
+        day, a"}}
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        young girl"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        name"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        Lily"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        notice"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        something peculiar about the"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        old oak. As she"}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        trace"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        her fingers along its"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        rough"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        bark, she felt a"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        slight"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        vib"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ration."}
+        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Curious, she pressed her"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        ear against"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        the trunk and heard a"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        f"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"aint
+        whisper."}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\n\"Hello"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":",
+        little"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        one,\" the tree seeme"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        to say."} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nStart"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"led,
+        Lily stum"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"bled
+        backwar"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d.
+        She"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        looke"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        aroun"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d,
+        but"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        no one else was"}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        there."}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Gathering"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        her courage, she approache"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        the tree"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        again."}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\n\"Can
+        you really"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        talk?\" she asked soft"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ly.\n\nThe"}
+        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        leaves"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        rustled g"} }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ently,"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        an"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        the voice"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        returne"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d."}         }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        \"I"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"''ve"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        been"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        waiting"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        for someone"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        like you,"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        someone"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        who woul"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        listen"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":".\"\n\nFrom"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        that day on,"}}
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Lily visite"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        the oak"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        tree every"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        afternoon"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"."}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        The"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        tree shared stories of the"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        town"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"''s
+        history, secrets"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        of the forest, an"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        wisdom"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        gathere"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        over centuries."}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Lily''s"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        imagination"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        bl"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"ossomed,"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        and she began"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        writing"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        down the tree''s tales"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"."}
+        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"\n\nAs
+        years"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        passed, Lily grew"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        into a belove"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        storyteller,"}     }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        ench"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"anting
+        the"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        town with her fant"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"astical
+        stories"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"."}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        Though"}           }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        she never reveale"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        the source"}    }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        of her inspiration, she"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        always"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        smile"}  }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        when she looke"}       }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        at"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        the old oak,"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        keeper"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        of secrets"}      }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        and g"}            }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"iver
+        of stories"}   }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":".\n\nAn"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        so, the oak"}             }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        continue"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"d
+        to watch"}              }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        over the town, waiting"}        }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        for the"}          }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        next curious"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        soul to discover"}               }
+
+
+        event: content_block_delta
+
+        data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"
+        its magic."}            }
+
+
+        event: content_block_stop
+
+        data: {"type":"content_block_stop","index":0            }
+
+
+        event: message_delta
+
+        data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"output_tokens":342}    }
+
+
+        event: message_stop
+
+        data: {"type":"message_stop"              }
+
+
+        '
     headers:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 8d734fde79900ca2-EWR
+      - 8d745497684f18ee-EWR
       Cache-Control:
       - no-cache
       Connection:
@@ -534,7 +1234,7 @@ interactions:
       Content-Type:
       - text/event-stream; charset=utf-8
       Date:
-      - Wed, 23 Oct 2024 17:05:27 GMT
+      - Wed, 23 Oct 2024 20:03:26 GMT
       Server:
       - cloudflare
       Transfer-Encoding:
@@ -546,15 +1246,15 @@ interactions:
       anthropic-ratelimit-requests-remaining:
       - '999'
       anthropic-ratelimit-requests-reset:
-      - '2024-10-23T17:06:23Z'
+      - '2024-10-23T20:04:23Z'
       anthropic-ratelimit-tokens-limit:
       - '80000'
       anthropic-ratelimit-tokens-remaining:
       - '79000'
       anthropic-ratelimit-tokens-reset:
-      - '2024-10-23T17:05:27Z'
+      - '2024-10-23T20:03:26Z'
       request-id:
-      - req_01WuEtHvNuCn1QvVRRrESS64
+      - req_01SBPqYBrohehfcuBBFDfwZf
       via:
       - 1.1 google
     status:

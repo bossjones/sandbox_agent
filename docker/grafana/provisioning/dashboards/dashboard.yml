@@ -1,0 +1,23 @@
+---
+apiVersion: 1
+
+providers:
+# - name: 'Prometheus'
+#   orgId: 1
+#   folder: ''
+#   type: file
+#   disableDeletion: false
+#   editable: true
+#   options:
+#     path: /etc/grafana/provisioning/dashboards
+  - name: dashboards
+    type: file
+    disableDeletion: true
+    editable: true
+  # Grafana automatically reloads dashboards at regular intervals
+    updateIntervalSeconds: 60
+    allowUiUpdates: false
+    options:
+    # path is the path to the dashboards volume mount
+      path: /etc/grafana/provisioning/dashboards
+      foldersFromFilesStructure: true

@@ -9,6 +9,18 @@ from loguru import logger
 from typing_extensions import TypedDict
 
 
+"""
+Graphs¶
+At its core, LangGraph models agent workflows as graphs. You define the behavior of your agents using three key components:
+
+State: A shared data structure that represents the current snapshot of your application. It can be any Python type, but is typically a TypedDict or Pydantic BaseModel.
+
+Nodes: Python functions that encode the logic of your agents. They receive the current State as input, perform some computation or side-effect, and return an updated State.
+
+Edges: Python functions that determine which Node to execute next based on the current State. They can be conditional branches or fixed transitions.
+"""
+
+
 class State(TypedDict):
     """
     Represents the state of the conversation.

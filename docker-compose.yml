@@ -11,55 +11,34 @@ networks:
     driver: bridge
 services:
 # docker run --name pgvector-container -e POSTGRES_USER=langchain -e POSTGRES_PASSWORD=langchain -e POSTGRES_DB=langchain -p 6024:5432 -d pgvector/pgvector:pg16
-  db:
-    image: pgvector/pgvector:pg14
-    container_name: pgvector
+  pgdatabase:
+    image: pgvector/pgvector:0.7.4-pg16
+    container_name: pgvector16_sbx
     ports:
-      - 7432:5432
+      - 8432:5432
     volumes:
       # This script initialises the DB for integration tests
-      - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
-      - db:/var/lib/postgresql/data
+      # - ./docker/pgvector/scripts:/docker-entrypoint-initdb.d
+      - ./docker/postgres/tuning.sql:/docker-entrypoint-initdb.d/tuning.sql
+      - sbx_pgdata:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 5
+    healthcheck:
+      test: "pg_isready -U langchain -d langchain"
+      # test: "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+      interval: "10s"
+      timeout: "5s"
+      retries: 5
     environment:
       - POSTGRES_PASSWORD=langchain
       - POSTGRES_USER=langchain
+      - PGUSER=langchain
       - POSTGRES_DB=langchain
-
-    restart: unless-stopped
-    # logging: *logging
-    networks:
-      - net
-    command: |
-      postgres -c log_statement=all
-
-  server:
-    # image: server
-    image: chromadb/chroma:latest
-    container_name: chroma
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    volumes:
-      # Be aware that indexed data are located in "/chroma/chroma/"
-      # Default configuration for persist_directory in chromadb/config.py
-      # Read more about deployments: https://docs.trychroma.com/deployment
-      # - chroma-data:/chroma/chroma
-      - ./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw
-
-    command: "--workers 1 --host 0.0.0.0 --port 8010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
-      \ 30"
-    environment:
-      - IS_PERSISTENT=TRUE
-      - ALLOW_RESET=TRUE
-      - CHROMA_SERVER_AUTHN_PROVIDER=${CHROMA_SERVER_AUTHN_PROVIDER}
-      - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=${CHROMA_SERVER_AUTHN_CREDENTIALS_FILE}
-      - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
-      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=${CHROMA_AUTH_TOKEN_TRANSPORT_HEADER}
-      - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
-
-      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
-
-      - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - TZ=America/New_York
     ulimits:
       memlock:
         soft: -1
@@ -67,60 +46,209 @@ services:
       nofile:
         soft: 65536
         hard: 65536
-    restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
+    restart: unless-stopped
 
+    networks:
+      - net
+    # command: |
+    #   postgres -c log_statement=all
+
+    # command: |
+    #   postgres  -c log_statement=all \
+    #             -c log_min_duration_statement=0 \
+    #             -c log_connections=on \
+    #             -c log_disconnections=on \
+    #             -c log_error_verbosity=verbose
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_sbx
+    profiles:
+      - "admin"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-admin}
     ports:
-      - "8010:8010"
-    healthcheck:
-      # Adjust below to match your container port
-      test:
-        - "CMD"
-        - "curl"
-        - "-f"
-        - "http://localhost:8010/api/v1/heartbeat"
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - "${PGADMIN_PORT:-4000}:80"
+    volumes:
+      - sbx_pgadmindata:/var/lib/pgadmin
+
     networks:
       - net
 
-  # NOTE: Use http://host.docker.internal:8010 to access the server from the admin container
-  chromadb-admin:
-    image: "fengzhichao/chromadb-admin:latest"
-    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
-    # hostname: 'chromadb-admin'
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus_sbx
+    volumes:
+      - ./docker/prometheus/:/etc/prometheus/
+      - sbx_prometheus:/prometheus
+    tty: true
+    stdin_open: true
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.listen-address=0.0.0.0:9090'
+      - '--log.level=info'
+      - '--enable-feature=remote-write-receiver'
+      - '--query.lookback-delta=30s'
     ports:
-      - "3000:3000/tcp"
-    container_name: chromadb-admin
-    expose:
-      - 3000
+      - "${PROMETHEUS_PORT:-9999}:9090"
     restart: unless-stopped
     networks:
       - net
-    # depends_on:
-    # - server
+
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana_sbx
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: foobar
+      GF_USERS_ALLOW_SIGN_UP: false
+      GRAFANA_USERNAME: admin
+      GRAFANA_PASSWORD: foobar
+      GF_INSTALL_PLUGINS: grafana-clock-panel,natel-discrete-panel,grafana-piechart-panel
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_DATAPROXY_TIMEOUT: 310
+      GF_LOG_LEVEL: info
+      GF_DATAPROXY_LOGGING: true
+      GF_EXPLORE_ENABLED: true
+      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+    volumes:
+      - sbx_grafana:/var/lib/grafana
+      - ./docker/grafana/etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
+    ports:
+      - "${GRAFANA_PORT:-3333}:3000"
+    restart: unless-stopped
+    networks:
+      - net
+
+  postgresql-exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgresql-exporter_sbx
+    ports:
+      - "9187:9187"
+    environment:
+      DATA_SOURCE_NAME: "postgres://langchain:langchain@pgdatabase:5432/langchain?sslmode=disable"
+      POSTGRES_PASSWORD: langchain
+      POSTGRES_USER: langchain
+      POSTGRES_DB: langchain
     depends_on:
-      server:
+      prometheus:
         condition: service_started
+      pgdatabase:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - net
+
+  # server:
+  #   # image: server
+  #   image: chromadb/chroma:latest
+  #   container_name: chroma_sbx
+  #   # build:
+  #   #   context: .
+  #   #   dockerfile: Dockerfile
+  #   volumes:
+  #     # Be aware that indexed data are located in "/chroma/chroma/"
+  #     # Default configuration for persist_directory in chromadb/config.py
+  #     # Read more about deployments: https://docs.trychroma.com/deployment
+  #     # - chroma-data:/chroma/chroma
+  #     - ./src/sandbox_agent/data/chroma/vectorstorage:/chroma/chroma:rw
+
+  #   command: "--workers 1 --host 0.0.0.0 --port 9010 --proxy-headers --log-config chromadb/log_config.yml --timeout-keep-alive\
+  #     \ 30"
+  #   environment:
+  #     - IS_PERSISTENT=TRUE
+  #     - ALLOW_RESET=TRUE
+  #     - CHROMA_SERVER_AUTHN_PROVIDER=${CHROMA_SERVER_AUTHN_PROVIDER}
+  #     - CHROMA_SERVER_AUTHN_CREDENTIALS_FILE=${CHROMA_SERVER_AUTHN_CREDENTIALS_FILE}
+  #     - CHROMA_SERVER_AUTHN_CREDENTIALS=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+  #     - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER=${CHROMA_AUTH_TOKEN_TRANSPORT_HEADER}
+  #     - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
+
+  #     - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
+
+  #     - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   restart: unless-stopped # possible values are: "no", always", "on-failure", "unless-stopped"
+
+  #   ports:
+  #     - "9010:9010"
+  #   healthcheck:
+  #     # Adjust below to match your container port
+  #     test:
+  #       - "CMD"
+  #       - "curl"
+  #       - "-f"
+  #       - "http://localhost:9010/api/v1/heartbeat"
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   networks:
+  #     - net
+
+  # # NOTE: Use http://host.docker.internal:9010 to access the server from the admin container
+  # chromadb-admin:
+  #   image: "fengzhichao/chromadb-admin:latest"
+  #   # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+  #   # hostname: 'chromadb-admin'
+  #   ports:
+  #     - "4001:3000/tcp"
+  #   container_name: chromadb-admin-sbx
+  #   expose:
+  #     - 4001
+  #   restart: unless-stopped
+  #   networks:
+  #     - net
+  #   # depends_on:
+  #   # - server
+  #   depends_on:
+  #     server:
+  #       condition: service_started
 
   redis:
     image: bitnami/redis:6.2.10
-    hostname: "goob-redis"
+    hostname: "goob-redis-sbx"
     restart: always
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
-      REDIS_PORT_NUMBER: 7600
+      REDIS_PORT_NUMBER: 8600
     healthcheck:
       test: redis-cli ping
       interval: 1s
       timeout: 3s
       retries: 50
     ports:
-      - "7600:7600"
+      - "8600:8600"
     volumes:
-      - 'goob_redis_data:/bitnami/redis/data'
+      - 'sbx_goob_redis_data:/bitnami/redis/data'
 
 volumes:
-  goob_redis_data:
+  sbx_goob_redis_data:
     driver: local
-  db:
+  sbx_pgdata:
+    name: ${PGVECTOR_VOLUME_NAME:-pgdata}
+  sbx_pgadmindata:
+    name: ${PGADMIN_VOLUME_NAME:-pgadmindata}
+  sbx_postgresql:
+  sbx_prometheus:
+  sbx_grafana:
+  sbx_postgresql-exporter:
+  # breviaappdata:
+  #   name: ${BREVIA_APP_VOLUME_NAME:-breviaapp}
+  # breviaapidata:
+  #   name: ${BREVIA_API_VOLUME_NAME:-breviaapi}

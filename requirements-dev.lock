@@ -12,7 +12,7 @@
 -e file:.
 absl-py==2.1.0
     # via tensorboard
-aider-chat==0.59.1
+aider-chat==0.60.0
     # via sandbox-agent
 aiocache==0.12.2
     # via sandbox-agent
@@ -53,6 +53,9 @@ aiosignal==1.3.1
 aiosql==11.1
     # via sandbox-agent
 aiosqlite==0.20.0
+    # via langgraph-checkpoint-sqlite
+    # via sandbox-agent
+alembic==1.13.3
     # via sandbox-agent
 altair==5.4.1
     # via streamlit
@@ -200,6 +203,7 @@ click==8.1.7
     # via maison
     # via mkdocs
     # via mkdocstrings
+    # via nltk
     # via pur
     # via pyinspect
     # via rich-click
@@ -548,6 +552,7 @@ jiter==0.5.0
     # via anthropic
     # via openai
 joblib==1.4.2
+    # via nltk
     # via scikit-learn
 jq==1.8.0
     # via sandbox-agent
@@ -628,7 +633,6 @@ langchain-core==0.3.10
     # via langchain-google-genai
     # via langchain-groq
     # via langchain-openai
-    # via langchain-postgres
     # via langchain-text-splitters
     # via langgraph
     # via langgraph-checkpoint
@@ -640,10 +644,9 @@ langchain-groq==0.2.0
     # via sandbox-agent
 langchain-openai==0.2.2
     # via sandbox-agent
-langchain-postgres==0.0.12
-    # via sandbox-agent
 langchain-text-splitters==0.3.0
     # via langchain
+    # via sandbox-agent
 langchainhub==0.1.21
     # via sandbox-agent
 langgraph==0.2.38
@@ -651,10 +654,14 @@ langgraph==0.2.38
 langgraph-checkpoint==2.0.1
     # via langgraph
     # via langgraph-checkpoint-postgres
+    # via langgraph-checkpoint-sqlite
 langgraph-checkpoint-postgres==2.0.1
+    # via sandbox-agent
+langgraph-checkpoint-sqlite==2.0.0
     # via sandbox-agent
 langgraph-sdk==0.1.33
     # via langgraph
+    # via sandbox-agent
 langserve==0.3.0
     # via sandbox-agent
 langsmith==0.1.135
@@ -693,6 +700,8 @@ lz4==4.3.3
     # via pinecone-client
 maison==2.0.0
     # via yamlfix
+mako==1.3.6
+    # via alembic
 manhole==1.8.1
     # via hunter
 markdown==3.7
@@ -717,6 +726,7 @@ markdown2==2.5.0
 markupsafe==2.1.5
     # via aider-chat
     # via jinja2
+    # via mako
     # via mkdocs
     # via mkdocs-autorefs
     # via mkdocstrings
@@ -862,6 +872,8 @@ nest-asyncio==1.6.0
 networkx==3.2.1
     # via aider-chat
     # via torch
+nltk==3.9.1
+    # via sandbox-agent
 nodeenv==1.9.1
     # via pre-commit
     # via pyright
@@ -881,7 +893,6 @@ numpy==1.26.4
     # via langchain
     # via langchain-chroma
     # via langchain-community
-    # via langchain-postgres
     # via matplotlib
     # via moviepy
     # via onnxruntime
@@ -1036,8 +1047,10 @@ peewee==3.17.6
 pexpect==4.9.0
     # via aider-chat
     # via ipython
-pgvector==0.2.5
-    # via langchain-postgres
+pgsql==2.2
+    # via sandbox-agent
+pgvector==0.3.5
+    # via sandbox-agent
 pickledb==0.9.2
     # via sandbox-agent
 pillow==10.4.0
@@ -1119,13 +1132,15 @@ psutil==6.0.0
     # via ipykernel
     # via memory-profiler
     # via wandb
-psycopg==3.2.1
-    # via langchain-postgres
+psycopg==3.2.3
     # via langgraph-checkpoint-postgres
+    # via sandbox-agent
+psycopg-binary==3.2.3
+    # via psycopg
 psycopg-pool==3.2.2
-    # via langchain-postgres
     # via langgraph-checkpoint-postgres
-psycopg2-binary==2.9.9
+    # via psycopg
+psycopg2-binary==2.9.10
     # via sandbox-agent
 ptyprocess==0.7.0
     # via aider-chat
@@ -1377,6 +1392,7 @@ referencing==0.35.1
 regex==2024.9.11
     # via aider-chat
     # via mkdocs-material
+    # via nltk
     # via simpletransformers
     # via tiktoken
     # via transformers
@@ -1540,9 +1556,12 @@ soupsieve==2.6
     # via sandbox-agent
 sourcery==1.22.0
 sqlalchemy==2.0.32
+    # via alembic
     # via langchain
     # via langchain-community
-    # via langchain-postgres
+    # via sqlalchemy-utils
+sqlalchemy-utils==0.41.2
+    # via sandbox-agent
 sse-starlette==1.8.2
     # via langserve
 stack-data==0.6.3
@@ -1654,6 +1673,7 @@ tqdm==4.66.5
     # via google-generativeai
     # via huggingface-hub
     # via moviepy
+    # via nltk
     # via openai
     # via pinecone-client
     # via proglog
@@ -1741,6 +1761,7 @@ typing-extensions==4.12.2
     # via aiodebug
     # via aiomonitor
     # via aiosqlite
+    # via alembic
     # via altair
     # via anthropic
     # via application-properties

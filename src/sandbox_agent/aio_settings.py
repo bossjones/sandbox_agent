@@ -13,13 +13,14 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import Annotated, Any, Callable, Dict, List, Optional, Set, Union, cast
 
-from loguru import logger as LOGGER
+from loguru import logger
 from pydantic import (
     AliasChoices,
     AmqpDsn,
     BaseModel,
     Field,
     ImportString,
+    Json,
     PostgresDsn,
     RedisDsn,
     SecretBytes,
@@ -465,7 +466,7 @@ class AioSettings(BaseSettings):
 
     # Variables for Redis
     redis_host: str = "localhost"
-    redis_port: int = 7600
+    redis_port: int = 8600
     redis_user: Optional[str] = None
     redis_pass: SecretStr | None = None
     redis_base: Optional[int] = None
@@ -477,9 +478,9 @@ class AioSettings(BaseSettings):
 
     # Variables for ChromaDB
 
-    # client = chromadb.HttpClient(host="localhost", port="8010", settings=Settings(allow_reset=True))
+    # client = chromadb.HttpClient(host="localhost", port="9010", settings=Settings(allow_reset=True))
     chroma_host: str = "localhost"
-    chroma_port: str = "8010"
+    chroma_port: str = "9010"
     enable_chroma: bool = True
 
     dev_mode: bool = Field(env="DEV_MODE", description="enable dev mode", default=False)
@@ -589,6 +590,52 @@ class AioSettings(BaseSettings):
     llm_key_value_stores_type: str = Field(
         env="LLM_KEY_VALUE_STORES_TYPE", description="Key-value stores type", default="redis"
     )
+    # Variables for Postgres/pgvector
+    pgvector_driver: str = Field(
+        env="PGVECTOR_DRIVER",
+        description="The database driver to use for pgvector (e.g., psycopg)",
+        default="psycopg",
+    )
+    pgvector_host: str = Field(
+        env="PGVECTOR_HOST",
+        description="The hostname or IP address of the pgvector database server",
+        default="localhost",
+    )
+    pgvector_port: int = Field(
+        env="PGVECTOR_PORT",
+        description="The port number of the pgvector database server",
+        default=6432,
+    )
+    pgvector_database: str = Field(
+        env="PGVECTOR_DATABASE",
+        description="The name of the pgvector database",
+        default="langchain",
+    )
+    pgvector_user: str = Field(
+        env="PGVECTOR_USER",
+        description="The username to connect to the pgvector database",
+        default="langchain",
+    )
+    pgvector_password: SecretStr = Field(
+        env="PGVECTOR_PASSWORD",
+        description="The password to connect to the pgvector database",
+        default="langchain",
+    )
+    pgvector_pool_size: int = Field(
+        env="PGVECTOR_POOL_SIZE",
+        description="The size of the connection pool for the pgvector database",
+        default=10,
+    )
+    pgvector_dsn_uri: str = Field(
+        env="PGVECTOR_DSN_URI",
+        description="optional DSN URI, if set other pgvector_* settings are ignored",
+        default="",
+    )
+
+    # Index - text splitter settings
+    text_chunk_size: int = 2000
+    text_chunk_overlap: int = 200
+    text_splitter: Json[dict[str, Any]] = "{}"  # custom splitter settings
 
     # Variables for Postgres/pgvector
     # CONNECTION_STRING = PGVector.connection_string_from_db_params(
@@ -600,7 +647,7 @@ class AioSettings(BaseSettings):
     #     password=os.environ.get("PGVECTOR_PASSWORD", "langchain"),
     # )
     postgres_host: str = "localhost"
-    postgres_port: int = 7432
+    postgres_port: int = 8432
     postgres_password: Optional[str] = "langchain"
     postgres_driver: Optional[str] = "psycopg"
     postgres_database: Optional[str] = "langchain"
@@ -709,8 +756,11 @@ class AioSettings(BaseSettings):
         default=False,
     )
 
+    llm_memory_type: str = Field(env="LLM_MEMORY_TYPE", description="Type of memory to use", default="memorysaver")
+    llm_memory_enabled: bool = Field(env="LLM_MEMORY_ENABLED", description="Enable memory", default=True)
+    llm_human_loop_enabled: bool = Field(env="LLM_HUMAN_LOOP_ENABLED", description="Enable human loop", default=False)
     # Tool allowlist
-    tool_allowlist: list[str] = ["tavily_search"]
+    tool_allowlist: list[str] = ["tavily_search", "magic_function"]
 
     # Tool-specific configuration
     tavily_search_max_results: int = 3
@@ -722,8 +772,8 @@ class AioSettings(BaseSettings):
     def pre_update(cls, values: dict[str, Any]) -> dict[str, Any]:
         llm_model_name = values.get("llm_model_name")
         llm_embedding_model_name = values.get("llm_embedding_model_name")
-        LOGGER.info(f"llm_model_name: {llm_model_name}")
-        LOGGER.info(f"llm_embedding_model_name: {llm_embedding_model_name}")
+        logger.info(f"llm_model_name: {llm_model_name}")
+        logger.info(f"llm_embedding_model_name: {llm_embedding_model_name}")
         if llm_model_name:
             values["max_tokens"] = MODEL_CONFIG[llm_model_name]["max_tokens"]
             values["max_output_tokens"] = MODEL_CONFIG[llm_model_name]["max_output_tokens"]
@@ -735,8 +785,8 @@ class AioSettings(BaseSettings):
         else:
             llm_model_name = "gpt-4o-mini"
             llm_embedding_model_name = "text-embedding-3-large"
-            LOGGER.info(f"setting default llm_model_name: {llm_model_name}")
-            LOGGER.info(f"setting default llm_embedding_model_name: {llm_embedding_model_name}")
+            logger.info(f"setting default llm_model_name: {llm_model_name}")
+            logger.info(f"setting default llm_embedding_model_name: {llm_embedding_model_name}")
             values["max_tokens"] = MODEL_CONFIG[llm_model_name]["max_tokens"]
             values["max_output_tokens"] = MODEL_CONFIG[llm_model_name]["max_output_tokens"]
             values["prompt_cost_per_token"] = MODEL_CONFIG[llm_model_name]["prompt_cost_per_token"]
@@ -751,9 +801,9 @@ class AioSettings(BaseSettings):
         redis_path = f"/{self.redis_base}" if self.redis_base is not None else ""
         redis_pass = self.redis_pass if self.redis_pass is not None else None
         redis_user = self.redis_user if self.redis_user is not None else None
-        LOGGER.info(f"before redis_path: {redis_path}")
-        LOGGER.info(f"before redis_pass: {redis_pass}")
-        LOGGER.info(f"before redis_user: {redis_user}")
+        logger.info(f"before redis_path: {redis_path}")
+        logger.info(f"before redis_pass: {redis_pass}")
+        logger.info(f"before redis_user: {redis_user}")
         if redis_pass is None and redis_user is None:
             self.redis_url = URL.build(
                 scheme="redis",

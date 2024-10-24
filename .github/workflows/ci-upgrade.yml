@@ -81,6 +81,7 @@ jobs:
           docker compose up -d
           docker ps -a
         continue-on-error: true
+
       - name: Checkout
         uses: actions/checkout@v4
       - name: get version python
@@ -100,6 +101,7 @@ jobs:
         env:
           RYE_VERSION: latest
           RYE_INSTALL_OPTION: --yes
+
       - name: install tesseract
         run: |
           # wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | sudo tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
@@ -121,6 +123,24 @@ jobs:
           sudo apt-get install -y build-essential libssl-dev zlib1g-dev libbz2-dev \
           libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
           xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git
+
+      - uses: extractions/setup-just@v1
+        with:
+          just-version: 1.36.0  # optional semver specification, otherwise latest
+
+      - name: Start Pgvector
+        id: pgvector-docker-compose-up
+        run: |
+          docker compose down -v || true
+          docker network rm net || true
+          docker volume rm sbx_pgdata || true
+          docker volume rm sbx_pgadmindata || true
+          docker volume rm sbx_goob_redis_data || true
+          sleep 30
+          docker compose up -d
+          ./scripts/wait-until "docker compose exec -T -e PGPASSWORD=langchain pgdatabase psql -U langchain langchain -c 'select 1'" 300
+          rye run db_upgrade
+        continue-on-error: true
 
       # Allow debugging with tmate
       - name: Setup tmate session
@@ -155,6 +175,8 @@ jobs:
           pip install pre-commit
           pre-commit install
           pre-commit autoupdate
+
+          just dc-reset || true
 
           just fmt || true
           just fmt || true

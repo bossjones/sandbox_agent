@@ -1287,10 +1287,10 @@ class SandboxAgent(DiscordClient):
             }
             # inputs: Dict[str, str] = {"input": user_task}
             inputs: MessageLikeRepresentation = format_user_message(user_task)
-            result = await self.graph.ainvoke(inputs, config=config)
+            result = await self.graph.ainvoke(inputs, config=config, debug=True)
             LOGGER.error(f"type(result) = {type(result)}")
             # bpdb.set_trace()
-            if aiosettings.agent_type == "basic":
+            if aiosettings.agent_type == "basic" or aiosettings.agent_type == "advanced":
                 # example results for basic:
                 #                 >>> rich.print(messages)
                 # [

@@ -225,45 +225,7 @@ class SKLearnVectorStoreAdapter(VectorStoreAdapter):
         logger.info(f"Deleting SKLearn vector store from {aiosettings.sklearn_persist_path} ....")
         # NOTE: would run this but need to check if it works
         # os.remove(aiosettings.sklearn_persist_path)
-        # return self.vectorstore.delete()
         raise NotImplementedError("Delete method not implemented for SKLearnVectorStore")
-
-
-# class ChromaAdapter(VectorStoreAdapter):
-#     def __init__(self, vectorstore: Chroma):
-#         self.client = chromadb.HttpClient(
-#             host=aiosettings.chroma_host,
-#             port=aiosettings.chroma_port,
-#             settings=ChromaSettings(allow_reset=True, is_persistent=True, persist_directory=CHROMA_PATH),
-#         )
-#         self.embeddings = EmbeddingModelFactory.create()
-#         self.vectorstore: Chroma = vectorstore(persist_directory=CHROMA_PATH, embedding_function=self.embeddings)
-
-#     def add_documents(self, documents: list[Document]) -> None:
-#         self.vectorstore.add_documents(documents)
-
-#     def search(self, query: str, k: int = 4) -> list[Document]:
-#         return self.vectorstore.similarity_search(query, k=k)
-
-#     def persist(self) -> None:
-#         # PGVector does not support persistence, so this is a no-op
-#         pass
-
-
-# class PGVectorAdapter(VectorStoreAdapter):
-#     def __init__(self, pgvector: PGVector):
-#         self.vectorstore: PGVector = pgvector
-
-#     # TODO: look at this for implementation ideas: https://github.com/brevia-ai/brevia/blob/12f5ccec582253bc5d90c9620ad267cd5774e577/brevia/index.py#L88
-#     def add_documents(self, documents: list[Document]) -> None:
-#         self.vectorstore.add_documents(documents)
-
-#     def search(self, query: str, k: int = 4) -> list[Document]:
-#         return self.vectorstore.similarity_search(query, k=k)
-
-#     def persist(self) -> None:
-#         # PGVector does not support persistence, so this is a no-op
-#         pass
 
 
 def get_vector_store_adapter(store_type: str) -> VectorStoreAdapter:
@@ -272,20 +234,7 @@ def get_vector_store_adapter(store_type: str) -> VectorStoreAdapter:
     """
     logger.info(f"Getting vector store adapter for {store_type} ....")
     if store_type == "sklearn":
-        # sklearn = SKLearnVectorStore(**kwargs)
         return SKLearnVectorStoreAdapter()
-    # elif store_type == "chroma":
-    #     # from langchain.vectorstores import Chroma
-
-    #     # chroma = Chroma(**kwargs)
-    #     # return ChromaAdapter(chroma)
-    #     raise ValueError(f"Unsupported vector store adaptor type: {store_type}")
-    # elif store_type == "pgvector":
-    #     # from langchain.vectorstores import PGVector
-
-    #     # pgvector = PGVector(**kwargs)
-    #     # return PGVectorAdapter(pgvector)
-    #     raise ValueError(f"Unsupported vector store adaptor type: {store_type}")
     else:
         raise ValueError(f"Unsupported vector store adaptor type: {store_type}")
 
@@ -321,18 +270,3 @@ class VectorStoreFactory:
         # Add more vector stores as needed
         else:
             raise ValueError(f"Unsupported vector store type: {store_type}")
-
-
-# # Example usage
-# store_type = "chroma"
-# persist_directory = "db"
-# embedding_function = None  # Assuming you have a valid embedding function
-
-# vector_store = vector_store_adapter(
-#     store_type, persist_directory=persist_directory, embedding_function=embedding_function
-# )
-
-# documents = [Document(page_content="..."), Document(page_content="...")]
-# vector_store.add_documents(documents)
-# results = vector_store.search("query", k=2)
-# vector_store.persist()

@@ -10,7 +10,9 @@ from sandbox_agent.aio_settings import aiosettings
 
 class VectorStoreFactory:
     @staticmethod
-    def create(store_type: str = aiosettings.llm_vectorstore_type):
+    def create(
+        store_type: str = aiosettings.llm_vectorstore_type,
+    ) -> type[FAISS | Chroma | PGVector | RedisVectorStore | SKLearnVectorStore]:
         """
         Create a vector store instance based on the given store type.
 
@@ -19,7 +21,7 @@ class VectorStoreFactory:
                 Defaults to the value of `aiosettings.llm_vectorstore_type`.
 
         Returns:
-            The created vector store class.
+            type[FAISS | Chroma | PGVector | RedisVectorStore | SKLearnVectorStore]: The created vector store class.
 
         Raises:
             ValueError: If an unsupported vector store type is provided.

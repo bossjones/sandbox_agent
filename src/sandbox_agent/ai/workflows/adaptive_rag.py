@@ -202,14 +202,16 @@ class GraphState(TypedDict):
 llm = ChatModelFactory.create()
 llm_json_mode = EvaluatorFactory.create()
 # Load documents
-docs = [DocumentLoaderFactory.create(url).load() for url in urls]
+docs = [DocumentLoaderFactory.create("web")(url).load() for url in urls]
 docs_list = [item for sublist in docs for item in sublist]
 
 text_splitter = TextSplitterFactory.create()
 doc_splits = text_splitter.split_documents(docs_list)
 embeddings = EmbeddingModelFactory.create()
 vector_store = VectorStoreFactory.create("sklearn").from_documents(documents=doc_splits, embedding=embeddings)
-retriever = RetrieverFactory.create(vector_store)
+# Create retriever
+retriever = vector_store.as_retriever(k=3)
+# retriever = RetrieverFactory.create(vector_store)
 
 
 web_search_tool = TavilySearchResults(k=3)
@@ -218,7 +220,7 @@ web_search_tool = TavilySearchResults(k=3)
 ### Nodes
 
 
-def retrieve(state: GraphState) -> dict[str, list[Document]]:
+async def retrieve(state: GraphState) -> dict[str, list[Document]]:
     """
     Retrieve documents from the vector store based on the user's question.
 
@@ -243,12 +245,12 @@ def retrieve(state: GraphState) -> dict[str, list[Document]]:
     question = state["question"]
 
     # Retrieve relevant documents from the vector store
-    documents = retriever.invoke(question)
+    documents = await retriever.ainvoke(question)
 
     return {"documents": documents}
 
 
-def generate(state: GraphState):
+async def generate(state: GraphState):
     """
     Generate answer using RAG on retrieved documents
 
@@ -266,11 +268,11 @@ def generate(state: GraphState):
     # RAG generation
     docs_txt = format_docs(documents)
     rag_prompt_formatted = rag_prompt.format(context=docs_txt, question=question)
-    generation = llm.invoke([HumanMessage(content=rag_prompt_formatted)])
+    generation = await llm.ainvoke([HumanMessage(content=rag_prompt_formatted)])
     return {"generation": generation, "loop_step": loop_step + 1}
 
 
-def grade_documents(state: GraphState):
+async def grade_documents(state: GraphState):
     """
     Determines whether the retrieved documents are relevant to the question
     If any document is not relevant, we will set a flag to run web search
@@ -291,7 +293,7 @@ def grade_documents(state: GraphState):
     web_search = "No"
     for d in documents:
         doc_grader_prompt_formatted = doc_grader_prompt.format(document=d.page_content, question=question)
-        result = llm_json_mode.invoke(
+        result = await llm_json_mode.ainvoke(
             [SystemMessage(content=doc_grader_instructions)] + [HumanMessage(content=doc_grader_prompt_formatted)]
         )
         grade = json.loads(result.content)["binary_score"]
@@ -309,7 +311,7 @@ def grade_documents(state: GraphState):
     return {"documents": filtered_docs, "web_search": web_search}
 
 
-def web_search(state: GraphState):
+async def web_search(state: GraphState):
     """
     Web search based based on the question
 
@@ -325,7 +327,7 @@ def web_search(state: GraphState):
     documents = state.get("documents", [])
 
     # Web search
-    docs = web_search_tool.invoke({"query": question})
+    docs = await web_search_tool.ainvoke({"query": question})
     web_results = "\n".join([d["content"] for d in docs])
     web_results = Document(page_content=web_results)
     documents.append(web_results)
@@ -335,7 +337,7 @@ def web_search(state: GraphState):
 ### Edges
 
 
-def route_question(state: GraphState):
+async def route_question(state: GraphState):
     """
     Route question to web search or RAG
 
@@ -347,7 +349,7 @@ def route_question(state: GraphState):
     """
 
     print("---ROUTE QUESTION---")
-    route_question = llm_json_mode.invoke(
+    route_question = await llm_json_mode.ainvoke(
         [SystemMessage(content=router_instructions)] + [HumanMessage(content=state["question"])]
     )
     source = json.loads(route_question.content)["datasource"]
@@ -359,7 +361,7 @@ def route_question(state: GraphState):
         return "vectorstore"
 
 
-def decide_to_generate(state: GraphState):
+async def decide_to_generate(state: GraphState):
     """
     Determines whether to generate an answer, or add web search
 
@@ -386,7 +388,7 @@ def decide_to_generate(state: GraphState):
         return "generate"
 
 
-def grade_generation_v_documents_and_question(state: GraphState):
+async def grade_generation_v_documents_and_question(state: GraphState):
     """
     Determines whether the generation is grounded in the document and answers question
 
@@ -406,7 +408,7 @@ def grade_generation_v_documents_and_question(state: GraphState):
     hallucination_grader_prompt_formatted = hallucination_grader_prompt.format(
         documents=format_docs(documents), generation=generation.content
     )
-    result = llm_json_mode.invoke(
+    result = await llm_json_mode.ainvoke(
         [SystemMessage(content=hallucination_grader_instructions)]
         + [HumanMessage(content=hallucination_grader_prompt_formatted)]
     )
@@ -419,7 +421,7 @@ def grade_generation_v_documents_and_question(state: GraphState):
         print("---GRADE GENERATION vs QUESTION---")
         # Test using question and generation from above
         answer_grader_prompt_formatted = answer_grader_prompt.format(question=question, generation=generation.content)
-        result = llm_json_mode.invoke(
+        result = await llm_json_mode.ainvoke(
             [SystemMessage(content=answer_grader_instructions)] + [HumanMessage(content=answer_grader_prompt_formatted)]
         )
         grade = json.loads(result.content)["binary_score"]

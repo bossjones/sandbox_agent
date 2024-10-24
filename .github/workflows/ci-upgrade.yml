@@ -124,6 +124,10 @@ jobs:
           libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
           xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git
 
+      - uses: extractions/setup-just@v1
+        with:
+          just-version: 1.36.0  # optional semver specification, otherwise latest
+
       - name: Start Pgvector
         id: pgvector-docker-compose-up
         run: |

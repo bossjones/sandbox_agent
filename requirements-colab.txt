@@ -1002,7 +1002,7 @@ pyinspect==0.1.0
     # via sandbox-agent
 pyinstrument==4.7.2
     # via sandbox-agent
-pymongo==4.8.0
+pymongo==4.18.3
     # via motor
 pymupdf==1.24.10
     # via sandbox-agent

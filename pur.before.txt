@@ -663,7 +663,7 @@ libsass==0.23.0
     # via mkdocs-with-pdf
 linkify-it-py==2.0.3
     # via markdown-it-py
-litellm==1.47.0
+litellm==1.100.4
     # via aider-chat
 locket==1.0.0
     # via partd

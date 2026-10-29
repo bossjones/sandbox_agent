@@ -1198,7 +1198,7 @@ pymdown-extensions==10.9
     # via mkdocs-material
     # via mkdocs-mermaid2-plugin
     # via mkdocstrings
-pymongo==4.8.0
+pymongo==4.18.3
     # via motor
 pymupdf==1.24.10
     # via sandbox-agent

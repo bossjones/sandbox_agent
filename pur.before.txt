@@ -1212,7 +1212,7 @@ pyparsing==3.1.4
     # via grandalf
     # via httplib2
     # via matplotlib
-pypdf==4.3.1
+pypdf==6.21.4
     # via sandbox-agent
 pypdf2==3.0.1
     # via sandbox-agent

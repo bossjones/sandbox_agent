@@ -936,7 +936,7 @@ pyarrow==17.0.0
     # via datasets
     # via sandbox-agent
     # via streamlit
-pyasn1==0.6.0
+pyasn1==0.6.5
     # via pyasn1-modules
     # via rsa
 pyasn1-modules==0.4.0
